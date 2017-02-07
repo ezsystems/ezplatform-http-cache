@@ -1,0 +1,33 @@
+{
+    "name": "ezsystems/ezplatform-http-cache",
+    "description": "HTTP cache handling for eZ Platform.",
+    "type": "ezplatform-bundle",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "eZ Systems",
+            "email": "dev-team@ez.no"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "ezsystems/ezpublish-kernel": "^6.7",
+        "friendsofsymfony/http-cache-bundle": "~1.2|^1.3.8",
+        "symfony/symfony": "^2.7 | ^3.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.7.0",
+        "matthiasnoback/symfony-dependency-injection-test": "0.*",
+        "phpspec/phpspec": "^3.2",
+        "memio/spec-gen": "^0.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "EzSystems\\PlatformHttpCacheBundle\\": "src",
+            "EzSystems\\PlatformHttpCacheBundle\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": "1.0.x-dev"
+    }
+}

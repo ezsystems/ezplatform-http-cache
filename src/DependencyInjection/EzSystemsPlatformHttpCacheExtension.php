@@ -17,6 +17,7 @@ class EzSystemsPlatformHttpCacheExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('default_settings.yml');
         $loader->load('services.yml');
+        $loader->load('slot.yml');
         $loader->load('view_cache.yml');
     }
 }

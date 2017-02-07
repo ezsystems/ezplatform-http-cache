@@ -1,0 +1,124 @@
+services:
+    # Content
+    ezplatform.http_cache.signalslot.abstract_content:
+        abstract: true
+        arguments: ["@ezplatform.http_cache.purge_client"]
+
+    ezplatform.http_cache.signalslot.assign_section:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\AssignSectionSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: SectionService\AssignSectionSignal }
+
+    ezplatform.http_cache.signalslot.copy_content:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\CopyContentSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: ContentService\CopyContentSignal }
+
+    ezplatform.http_cache.signalslot.create_location:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\CreateLocationSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: LocationService\CreateLocationSignal }
+
+    ezplatform.http_cache.signalslot.delete_content:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\DeleteContentSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: ContentService\DeleteContentSignal }
+
+    ezplatform.http_cache.signalslot.delete_location:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\DeleteLocationSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: LocationService\DeleteLocationSignal }
+
+    ezplatform.http_cache.signalslot.delete_version:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\DeleteVersionSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: ContentService\DeleteVersionSignal }
+
+    ezplatform.http_cache.signalslot.hide_location:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\HideLocationSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: LocationService\HideLocationSignal }
+
+    ezplatform.http_cache.signalslot.move_subtree:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\MoveSubtreeSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: LocationService\MoveSubtreeSignal }
+
+    ezplatform.http_cache.signalslot.publish_version:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\PublishVersionSlot
+        arguments: ["@ezplatform.http_cache.purge_client", "@ezpublish.spi.persistence.cache.locationHandler"]
+        tags:
+            - { name: ezpublish.api.slot, signal: ContentService\PublishVersionSignal }
+
+    ezplatform.http_cache.signalslot.set_content_state:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\SetContentStateSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: ObjectStateService\SetContentStateSignal }
+
+    ezplatform.http_cache.signalslot.swap_location:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\SwapLocationSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: LocationService\SwapLocationSignal }
+
+    ezplatform.http_cache.signalslot.unhide_location:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\UnhideLocationSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: LocationService\UnhideLocationSignal }
+
+    ezplatform.http_cache.signalslot.update_location:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\UpdateLocationSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: LocationService\UpdateLocationSignal }
+
+    ezplatform.http_cache.signalslot.update_user:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\UpdateUserSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: UserService\UpdateUserSignal }
+
+    ezplatform.http_cache.signalslot.assign_user_to_user_group:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\AssignUserToUserGroupSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: UserService\AssignUserToUserGroupSignal }
+
+    ezplatform.http_cache.signalslot.unassign_user_from_user_group:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\UnassignUserFromUserGroupSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: UserService\UnAssignUserFromUserGroupSignal }
+
+    ezplatform.http_cache.signalslot.trash:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\TrashSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: TrashService\TrashSignal }
+
+    ezplatform.http_cache.signalslot.recover:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RecoverSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: TrashService\RecoverSignal }
+
+    # Content Type
+    ezplatform.http_cache.signalslot.publish_content_type:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\PublishContentTypeSlot
+        arguments: ["@ezplatform.http_cache.purge_client"]
+        tags: [{ name: ezpublish.api.slot, signal: ContentTypeService\PublishContentTypeDraftSignal }]
+
+    ezplatform.http_cache.signalslot.delete_content_type:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\DeleteContentTypeSlot
+        arguments: ["@ezplatform.http_cache.purge_client"]
+        tags: [{ name: ezpublish.api.slot, signal: ContentTypeService\DeleteContentTypeSignal }]

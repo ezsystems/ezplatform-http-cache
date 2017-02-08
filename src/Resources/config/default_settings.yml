@@ -1,0 +1,2 @@
+parameters:
+    ezplatform.http_cache.store.root: "%kernel.cache_dir%/http_cache"

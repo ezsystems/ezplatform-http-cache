@@ -20,8 +20,7 @@ function time()
 
 namespace eZ\Publish\Core\MVC\Symfony\Cache\Tests;
 
-use eZ\Publish\Core\MVC\Symfony\Cache\Http\ContentPurger;
-use eZ\Publish\Core\MVC\Symfony\Cache\Http\RequestAwarePurger;
+use EzSystems\PlatformHttpCacheBundle\RequestAwarePurger;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,16 +41,5 @@ class LocalPurgeClientTest extends PHPUnit_Framework_TestCase
 
         $purgeClient = new LocalPurgeClient($cacheStore);
         $purgeClient->purge($locationIds);
-    }
-
-    public function testPurgeAll()
-    {
-        $cacheStore = $this->getMock(ContentPurger::class);
-        $cacheStore
-            ->expects($this->once())
-            ->method('purgeAllContent');
-
-        $purgeClient = new LocalPurgeClient($cacheStore);
-        $purgeClient->purgeAll();
     }
 }

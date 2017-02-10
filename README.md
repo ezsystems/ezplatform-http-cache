@@ -24,6 +24,15 @@ Add the package to `app/AppKernel.php`, *before* the EzPublishCoreBundle declara
 
 The package will replace the services from the kernel, thus enabling the new features, such as multi-tagging.
 
+The application cache class needs to be customized. If you haven't changed the `AppCache` class, you can do so
+by setting the `SYMFONY_HTTP_CACHE_CLASS` environment variable:
+
+    export SYMFONY_HTTP_CACHE_CLASS='EzSystems\PlatformHttpCacheBundle\AppCache'
+
+Do not forget to restart your web server.
+
+Alternatively, if you use your own `AppCache` class, you will have to make it to extend from this class instead.
+
 ## Features
 
 ### `xkey` header on ContentView responses

@@ -10,17 +10,17 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- *
+ * Disables some of the http-cache services declared by the kernel so that
+ * they can be replaced with this bundle's.
  */
 class KernelPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        // slots
         foreach ($container->getDefinitions() as $id => $definition) {
             if ($this->isSignalSlot($id) ||
                 $this->isSmartCacheListener($id) ||
-                $this->isCacheTagListener($id)
+                $this->isResponseCacheListener($id)
             ) {
                 $container->removeDefinition($id);
             }
@@ -44,7 +44,7 @@ class KernelPass implements CompilerPassInterface
      */
     protected function isSmartCacheListener($id)
     {
-        return preg_match('/ezpublish.cache_clear.content.[a-z_]]_listener/', $id);
+        return preg_match('/^ezpublish\.cache_clear\.content.[a-z_]+_listener/', $id);
     }
 
     /**
@@ -52,7 +52,7 @@ class KernelPass implements CompilerPassInterface
      *
      * @return bool
      */
-    protected function isCacheTagListener($id)
+    protected function isResponseCacheListener($id)
     {
         return $id === 'ezpublish.view.cache_response_listener';
     }

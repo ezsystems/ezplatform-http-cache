@@ -39,6 +39,12 @@ services:
         tags:
             - {name: ezplatform.cache_response_tagger}
 
+    ezplatform.view_cache.response_tagger.view_parameters:
+        class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Delegator\ViewParametersTagger
+        arguments: ['@ezplatform.view_cache.response_tagger.dispatcher']
+        tags:
+            - {name: ezplatform.cache_response_tagger}
+
     ezplatform.view_cache.response_tagger.content_info:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\ContentInfoTagger
         tags:

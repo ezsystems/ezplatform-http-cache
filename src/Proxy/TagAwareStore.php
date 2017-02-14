@@ -123,7 +123,7 @@ class TagAwareStore extends Store implements RequestAwarePurger
 
     /**
      * Purges data from $request.
-     * If xkey or X-Location-Id (deprecated) header is present, the store will purge cache for given locationId or group of locationIds.
+     * If key or X-Location-Id (deprecated) header is present, the store will purge cache for given locationId or group of locationIds.
      * If not, regular purge by URI will occur.
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
@@ -132,7 +132,7 @@ class TagAwareStore extends Store implements RequestAwarePurger
      */
     public function purgeByRequest(Request $request)
     {
-        if (!$request->headers->has('X-Location-Id') && !$request->headers->has('xkey')) {
+        if (!$request->headers->has('X-Location-Id') && !$request->headers->has('key')) {
             return $this->purge($request->getUri());
         }
 
@@ -142,8 +142,8 @@ class TagAwareStore extends Store implements RequestAwarePurger
             return $this->purgeAllContent();
         }
 
-        if ($request->headers->has('xkey')) {
-            $tags = explode(' ', $request->headers->get('xkey'));
+        if ($request->headers->has('key')) {
+            $tags = explode(' ', $request->headers->get('key'));
         } elseif ($locationId[0] === '(' && substr($locationId, -1) === ')') {
             // Deprecated: (123|456|789) => Purge for #123, #456 and #789 location IDs.
             $tags = array_map(

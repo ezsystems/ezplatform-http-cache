@@ -29,7 +29,7 @@ by setting the `SYMFONY_HTTP_CACHE_CLASS` environment variable for your PHP or w
 If you use your own `AppCache` class, you will have to make it to extend from this class instead
 of from the CoreBundle's.
 
-For PHP's internal server you can set it as shell enviroment variable before starting server:
+For PHP's internal server you can set it as shell environment variable before starting server:
 
     export SYMFONY_HTTP_CACHE_CLASS='EzSystems\PlatformHttpCacheBundle\AppCache'
 

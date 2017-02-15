@@ -20,10 +20,11 @@ For Varnish to work properly with eZ, you'll need to use the provided configurat
 Example installation on Debian/Ubuntu:
 --------------------------------------
 Starting with Debian 9 and Ubuntu 16.10 installation of `xkey` VMOD is greatly
-simplied as new [varnish-modules](https://github.com/varnish/varnish-modules) package now exists.
+simplified as new [varnish-modules](https://github.com/varnish/varnish-modules) package now exists.
 
+Install:
 ```bash
-# If you havnt updated package meta info in a while
+# If you haven't updated package meta info in a while
 apt-get update -q -y
 
 # Install varnish and varnish-modules

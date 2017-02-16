@@ -29,7 +29,7 @@ by setting the `SYMFONY_HTTP_CACHE_CLASS` environment variable for your PHP or w
 If you use your own `AppCache` class, you will have to make it to extend from this class instead
 of from the CoreBundle's.
 
-For PHP's internal server:
+For PHP's internal server you can set it as shell environment variable before starting server:
 
     export SYMFONY_HTTP_CACHE_CLASS='EzSystems\PlatformHttpCacheBundle\AppCache'
 
@@ -40,9 +40,14 @@ variables above in your virtualhost, and set the values accordingly:
 
 For Nginx, set the variables using `fastcgi_param`:
 
-    fastcgi_param SYMFONY_HTTP_CACHE "1";
+    fastcgi_param SYMFONY_HTTP_CACHE_CLASS "EzSystems\PlatformHttpCacheBundle\AppCache";
     
 Do not forget to restart your web server.
+
+## Usage with Varnish
+
+For usage with Varnish see the dedicated document in [docs/varnish](docs/varnish/varnish.md)
+
 
 ## Features
 

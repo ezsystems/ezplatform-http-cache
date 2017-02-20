@@ -16,7 +16,7 @@ Add the package to `app/AppKernel.php`, *before* the EzPublishCoreBundle declara
         $bundles = array(
             // ...
             new FOS\HttpCacheBundle\FOSHttpCacheBundle(),
-            new EzSystems\PlatformHttpCacheBundle\EzSystemsPlatformHttpCacheBundle();
+            new EzSystems\PlatformHttpCacheBundle\EzSystemsPlatformHttpCacheBundle(),
             new eZ\Bundle\EzPublishCoreBundle\EzPublishCoreBundle(),
             // ...
         );

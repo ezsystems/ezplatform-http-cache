@@ -12,7 +12,7 @@ services:
 
     ezplatform.http_cache.purge_client.fos:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\FOSPurgeClient
-        arguments: ["@ezpublish.http_cache.cache_manager"]
+        arguments: ["@ezplatform.http_cache.cache_manager"]
 
     ezplatform.http_cache.purge_client.local:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient

@@ -8,7 +8,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
-use eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface;
+use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use PHPUnit_Framework_TestCase;
 
 abstract class AbstractSlotTest extends PHPUnit_Framework_TestCase
@@ -16,7 +16,7 @@ abstract class AbstractSlotTest extends PHPUnit_Framework_TestCase
     /** @var \EzSystems\PlatformHttpCacheBundle\SignalSlot\AbstractSlot */
     protected $slot;
 
-    /** @var \eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $purgeClientMock;
 
     private $signal;

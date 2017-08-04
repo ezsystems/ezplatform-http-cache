@@ -112,6 +112,14 @@ services:
         tags:
             - { name: ezpublish.api.slot, signal: TrashService\RecoverSignal }
 
+    ezplatform.http_cache.signalslot.remove_translation:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RemoveTranslationSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        arguments:
+            - "@ezpublish.spi.persistence.cache.locationHandler"
+        tags:
+            - { name: ezpublish.api.slot, signal: ContentService\RemoveTranslationSignal }
+
     # Content Type
     ezplatform.http_cache.signalslot.publish_content_type:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\PublishContentTypeSlot

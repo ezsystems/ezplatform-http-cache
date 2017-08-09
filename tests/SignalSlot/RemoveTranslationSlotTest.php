@@ -24,6 +24,16 @@ class RemoveTranslationSlotTest extends AbstractContentSlotTest
      */
     private $locationHandlerMock;
 
+    /**
+     * Check if required signal exists due to BC.
+     */
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists(RemoveTranslationSignal::class)) {
+            self::markTestSkipped('RemoveTranslationSignal does not exist');
+        }
+    }
+
     public function setUp()
     {
         $this->locationHandlerMock = $this->getMock(LocationHandler::class);

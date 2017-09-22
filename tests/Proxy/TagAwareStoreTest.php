@@ -10,9 +10,10 @@ namespace EzSystems\PlatformHttpCacheBundle\Tests\Proxy;
 
 use EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore;
 use Symfony\Component\HttpFoundation\Request;
-use PHPUnit_Framework_TestCase;
+use Symfony\Component\Filesystem\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class TagAwareStoreTest extends PHPUnit_Framework_TestCase
+class TagAwareStoreTest extends TestCase
 {
     /**
      * @var \EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore
@@ -74,7 +75,7 @@ class TagAwareStoreTest extends PHPUnit_Framework_TestCase
      */
     private function getFilesystemMock()
     {
-        return $this->getMock('Symfony\\Component\\Filesystem\\Filesystem');
+        return $this->createMock(Filesystem::class);
     }
 
     public function testPurgeByRequestSingleLocation()

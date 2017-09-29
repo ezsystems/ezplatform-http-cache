@@ -22,10 +22,10 @@ namespace eZ\Publish\Core\MVC\Symfony\Cache\Tests;
 
 use EzSystems\PlatformHttpCacheBundle\RequestAwarePurger;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
-class LocalPurgeClientTest extends PHPUnit_Framework_TestCase
+class LocalPurgeClientTest extends TestCase
 {
     public function testPurge()
     {
@@ -33,7 +33,7 @@ class LocalPurgeClientTest extends PHPUnit_Framework_TestCase
         $expectedBanRequest = Request::create('http://localhost', 'PURGE');
         $expectedBanRequest->headers->set('key', 'location-123 location-456 location-789');
 
-        $cacheStore = $this->getMock(RequestAwarePurger::class);
+        $cacheStore = $this->createMock(RequestAwarePurger::class);
         $cacheStore
             ->expects($this->once())
             ->method('purgeByRequest')

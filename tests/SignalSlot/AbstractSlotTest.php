@@ -9,9 +9,9 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-abstract class AbstractSlotTest extends PHPUnit_Framework_TestCase
+abstract class AbstractSlotTest extends TestCase
 {
     /** @var \EzSystems\PlatformHttpCacheBundle\SignalSlot\AbstractSlot */
     protected $slot;
@@ -23,7 +23,7 @@ abstract class AbstractSlotTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->purgeClientMock = $this->getMock(PurgeClientInterface::class);
+        $this->purgeClientMock = $this->createMock(PurgeClientInterface::class);
         $this->slot = $this->createSlot();
         $this->signal = $this->createSignal();
     }

@@ -36,7 +36,7 @@ class RemoveTranslationSlotTest extends AbstractContentSlotTest
 
     public function setUp()
     {
-        $this->locationHandlerMock = $this->getMock(LocationHandler::class);
+        $this->locationHandlerMock = $this->createMock(LocationHandler::class);
         parent::setUp();
     }
 

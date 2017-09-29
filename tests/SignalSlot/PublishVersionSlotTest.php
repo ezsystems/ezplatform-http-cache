@@ -10,6 +10,7 @@ namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use eZ\Publish\Core\SignalSlot\Signal\ContentService\PublishVersionSignal;
 use eZ\Publish\SPI\Persistence\Content\Location;
+use eZ\Publish\SPI\Persistence\Content\Location\Handler;
 
 class PublishVersionSlotTest extends AbstractContentSlotTest
 {
@@ -38,7 +39,7 @@ class PublishVersionSlotTest extends AbstractContentSlotTest
     {
         $class = $this->getSlotClass();
         if ($this->spiLocationHandlerMock === null) {
-            $this->spiLocationHandlerMock = $this->getMock('eZ\Publish\SPI\Persistence\Content\Location\Handler');
+            $this->spiLocationHandlerMock = $this->createMock(Handler::class);
         }
 
         return new $class($this->purgeClientMock, $this->spiLocationHandlerMock);

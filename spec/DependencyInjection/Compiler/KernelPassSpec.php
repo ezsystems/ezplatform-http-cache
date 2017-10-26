@@ -13,6 +13,7 @@ class KernelPassSpec extends ObjectBehavior
     {
         $container->getDefinitions()->willReturn([]);
         $container->getAlias('ezpublish.http_cache.purge_client')->willReturn('some_random_id');
+        $container->getAlias('ezpublish.http_cache.purger')->willReturn('some_random_id');
     }
 
     function it_is_initializable()
@@ -20,38 +21,28 @@ class KernelPassSpec extends ObjectBehavior
         $this->shouldHaveType(KernelPass::class);
     }
 
-    function it_disables_the_kernels_httpcache_slots(ContainerBuilder $container)
+    function it_disables_the_kernels_httpcache_services(ContainerBuilder $container)
     {
         $container->getDefinitions()->willReturn([
             'ezpublish.http_cache.witness_service' => new Definition(),
             'ezpublish.http_cache.signalslot.some_slot' => new Definition(),
             'ezpublish.http_cache.signalslot.some_other_slot' => new Definition(),
+            'ezpublish.cache_clear.content.some_listener' => new Definition(),
+            'ezpublish.view.cache_response_listener' => new Definition(),
+            'ezpublish.http_cache.purger.some_purger' => new Definition(),
+            'ezpublish.http_cache.purger.some_other_purger' => new Definition(),
             'witness_service' => new Definition(),
         ]);
+        $container->getDefinition('cache_clearer')->willReturn(new Definition(null, [
+            ['ezpublish.http_cache.purger.some_purger', 'ezpublish.http_cache.purger.some_other_purger']
+        ]));
         $container->removeDefinition('ezpublish.http_cache.signalslot.some_slot')->shouldBeCalled();
         $container->removeDefinition('ezpublish.http_cache.signalslot.some_other_slot')->shouldBeCalled();
-
-        $this->process($container);
-    }
-
-    function it_disables_the_kernels_smartcache_event_listeners(ContainerBuilder $container)
-    {
-        $container->getDefinitions()->willReturn([
-            'ezpublish.cache_clear.content.some_listener' => new Definition(),
-            'witness_service' => new Definition(),
-        ]);
         $container->removeDefinition('ezpublish.cache_clear.content.some_listener')->shouldBeCalled();
-
-        $this->process($container);
-    }
-
-    function it_disables_the_kernels_view_cache_response_listener(ContainerBuilder $container)
-    {
-        $container->getDefinitions()->willReturn([
-            'ezpublish.view.cache_response_listener' => new Definition(),
-            'witness_service' => new Definition(),
-        ]);
         $container->removeDefinition('ezpublish.view.cache_response_listener')->shouldBeCalled();
+        $container->removeDefinition('ezpublish.http_cache.purger.some_purger')->shouldBeCalled();
+        $container->removeDefinition('ezpublish.http_cache.purger.some_other_purger')->shouldBeCalled();
+        $container->removeAlias('ezpublish.http_cache.purger')->shouldBeCalled();
 
         $this->process($container);
     }

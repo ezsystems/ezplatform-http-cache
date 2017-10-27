@@ -9,20 +9,15 @@ use Symfony\Component\DependencyInjection\Definition;
 
 class KernelPassSpec extends ObjectBehavior
 {
-    function let(ContainerBuilder $container)
-    {
-        $container->getDefinitions()->willReturn([]);
-        $container->getAlias('ezpublish.http_cache.purge_client')->willReturn('some_random_id');
-        $container->getAlias('ezpublish.http_cache.purger')->willReturn('some_random_id');
-    }
-
     function it_is_initializable()
     {
         $this->shouldHaveType(KernelPass::class);
     }
 
-    function it_disables_the_kernels_httpcache_services(ContainerBuilder $container)
+    function it_disables_the_kernels_httpcache_services(ContainerBuilder $container, Definition $cacheClearer)
     {
+        $container->getAlias('ezpublish.http_cache.purge_client')->willReturn('some_random_id');
+        $container->getAlias('ezpublish.http_cache.purger')->willReturn('some_random_id');
         $container->getDefinitions()->willReturn([
             'ezpublish.http_cache.witness_service' => new Definition(),
             'ezpublish.http_cache.signalslot.some_slot' => new Definition(),
@@ -33,9 +28,7 @@ class KernelPassSpec extends ObjectBehavior
             'ezpublish.http_cache.purger.some_other_purger' => new Definition(),
             'witness_service' => new Definition(),
         ]);
-        $container->getDefinition('cache_clearer')->willReturn(new Definition(null, [
-            ['ezpublish.http_cache.purger.some_purger', 'ezpublish.http_cache.purger.some_other_purger']
-        ]));
+        $container->getDefinition('cache_clearer')->willReturn($cacheClearer);
         $container->removeDefinition('ezpublish.http_cache.signalslot.some_slot')->shouldBeCalled();
         $container->removeDefinition('ezpublish.http_cache.signalslot.some_other_slot')->shouldBeCalled();
         $container->removeDefinition('ezpublish.cache_clear.content.some_listener')->shouldBeCalled();
@@ -43,6 +36,21 @@ class KernelPassSpec extends ObjectBehavior
         $container->removeDefinition('ezpublish.http_cache.purger.some_purger')->shouldBeCalled();
         $container->removeDefinition('ezpublish.http_cache.purger.some_other_purger')->shouldBeCalled();
         $container->removeAlias('ezpublish.http_cache.purger')->shouldBeCalled();
+
+        $cacheClearer->getArguments()->willReturn([
+            [
+                'ezpublish.http_cache.witness_service',
+                'ezpublish.http_cache.purger.some_purger',
+                'ezpublish.http_cache.purger.some_other_purger',
+                'witness_service'
+            ]
+        ]);
+        $cacheClearer->setArguments([
+            [
+                'ezpublish.http_cache.witness_service',
+                'witness_service'
+            ]
+        ])->shouldBeCalled();
 
         $this->process($container);
     }

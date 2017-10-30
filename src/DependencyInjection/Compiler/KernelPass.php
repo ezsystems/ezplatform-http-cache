@@ -20,11 +20,21 @@ class KernelPass implements CompilerPassInterface
         foreach ($container->getDefinitions() as $id => $definition) {
             if ($this->isSignalSlot($id) ||
                 $this->isSmartCacheListener($id) ||
-                $this->isResponseCacheListener($id)
+                $this->isResponseCacheListener($id) ||
+                $this->isCachePurger($id)
             ) {
                 $container->removeDefinition($id);
             }
         }
+        $container->removeAlias('ezpublish.http_cache.purger');
+        $arguments = $container->getDefinition('cache_clearer')->getArguments();
+        $arguments[0] =  array_values(array_filter($arguments[0], function ($argument) {
+            if ($this->isCachePurger($argument)) {
+                return false;
+            }
+            return true;
+        }));
+        $container->getDefinition('cache_clearer')->setArguments($arguments);
     }
 
     /**
@@ -55,5 +65,15 @@ class KernelPass implements CompilerPassInterface
     protected function isResponseCacheListener($id)
     {
         return $id === 'ezpublish.view.cache_response_listener';
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
+    protected function isCachePurger($id)
+    {
+        return strpos($id, 'ezpublish.http_cache.purger.') === 0;
     }
 }

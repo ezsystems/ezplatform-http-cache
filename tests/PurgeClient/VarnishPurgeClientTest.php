@@ -8,13 +8,13 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Tests\PurgeClient;
 
-use EzSystems\PlatformHttpCacheBundle\PurgeClient\FOSPurgeClient;
+use EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient;
 use FOS\HttpCache\ProxyClient\ProxyClientInterface;
 use FOS\HttpCacheBundle\CacheManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class FOSPurgeClientTest extends TestCase
+class VarnishPurgeClientTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -22,7 +22,7 @@ class FOSPurgeClientTest extends TestCase
     private $cacheManager;
 
     /**
-     * @var FOSPurgeClient
+     * @var VarnishPurgeClient
      */
     private $purgeClient;
 
@@ -39,7 +39,7 @@ class FOSPurgeClientTest extends TestCase
                 )
             )
             ->getMock();
-        $this->purgeClient = new FOSPurgeClient($this->cacheManager);
+        $this->purgeClient = new VarnishPurgeClient($this->cacheManager);
     }
 
     public function testPurgeNoLocationIds()

@@ -10,11 +10,8 @@ use FOS\HttpCacheBundle\CacheManager;
 
 /**
  * Purge client based on FOSHttpCacheBundle.
- *
- * Only support BAN requests on purpose, to be able to invalidate cache for a
- * collection of Location/Content objects.
  */
-class FOSPurgeClient implements PurgeClientInterface
+class VarnishPurgeClient implements PurgeClientInterface
 {
     /**
      * @var \FOS\HttpCacheBundle\CacheManager

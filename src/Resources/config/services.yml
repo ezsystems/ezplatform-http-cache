@@ -10,8 +10,8 @@ services:
     ezplatform.http_cache.purge_client:
         alias: ezplatform.http_cache.purge_client.local
 
-    ezplatform.http_cache.purge_client.fos:
-        class: EzSystems\PlatformHttpCacheBundle\PurgeClient\FOSPurgeClient
+    ezplatform.http_cache.purge_client.varnish:
+        class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient
         arguments: ["@ezplatform.http_cache.cache_manager"]
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: http}

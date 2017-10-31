@@ -13,10 +13,14 @@ services:
     ezplatform.http_cache.purge_client.fos:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\FOSPurgeClient
         arguments: ["@ezplatform.http_cache.cache_manager"]
+        tags:
+            - {name: ezplatform.http_cache.purge_client, purge_type: http}
 
     ezplatform.http_cache.purge_client.local:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient
         arguments: ["@ezplatform.http_cache.store"]
+        tags:
+            - {name: ezplatform.http_cache.purge_client, purge_type: local}
 
     ezplatform.http_cache.store:
         alias: ezplatform.http_cache.tag_aware_store

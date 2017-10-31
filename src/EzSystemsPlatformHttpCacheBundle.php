@@ -4,6 +4,7 @@ namespace EzSystems\PlatformHttpCacheBundle;
 
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\ResponseTaggersPass;
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\KernelPass;
+use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\PurgeTypeSettingsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -15,5 +16,6 @@ class EzSystemsPlatformHttpCacheBundle extends Bundle
 
         $container->addCompilerPass(new ResponseTaggersPass());
         $container->addCompilerPass(new KernelPass());
+        $container->addCompilerPass(new PurgeTypeSettingsPass());
     }
 }

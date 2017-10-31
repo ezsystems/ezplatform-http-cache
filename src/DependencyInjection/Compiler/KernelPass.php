@@ -29,16 +29,18 @@ class KernelPass implements CompilerPassInterface
         $container->removeAlias('ezpublish.http_cache.purger');
         $arguments = $container->getDefinition('cache_clearer')->getArguments();
 
-        // BC Symfony < 3.4
-        if (is_array($arguments[0])) {
-            $arguments[0] = array_values(array_filter($arguments[0], function ($argument) {
-                if ($this->isCachePurger($argument)) {
-                    return false;
-                }
-                return true;
-            }));
-            $container->getDefinition('cache_clearer')->setArguments($arguments);
+        // BC Symfony < 3.4, as of 3.4 and up handles this itself, on lower versions we need to adjust the arguments manually
+        if (!is_array($arguments[0])) {
+            return;
         }
+
+        $arguments[0] = array_values(array_filter($arguments[0], function ($argument) {
+            if ($this->isCachePurger($argument)) {
+                return false;
+            }
+            return true;
+        }));
+        $container->getDefinition('cache_clearer')->setArguments($arguments);
     }
 
     /**

@@ -16,6 +16,12 @@ services:
         tags:
             - { name: ezpublish.api.slot, signal: ContentService\CopyContentSignal }
 
+    ezplatform.http_cache.signalslot.copy_subtree:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\CopySubtreeSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        tags:
+            - { name: ezpublish.api.slot, signal: ContentService\CopySubtreeSignal }
+
     ezplatform.http_cache.signalslot.create_location:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\CreateLocationSlot
         parent: ezplatform.http_cache.signalslot.abstract_content

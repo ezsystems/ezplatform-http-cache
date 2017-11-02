@@ -15,6 +15,7 @@ services:
         arguments: ["@ezplatform.http_cache.cache_manager"]
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: http}
+            - {name: ezplatform.http_cache.purge_client, purge_type: varnish}
 
     ezplatform.http_cache.purge_client.local:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient
@@ -30,6 +31,9 @@ services:
         arguments: ["%ezplatform.http_cache.store.root%"]
 
     ezplatform.http_cache.tag_handler:
+        alias: ezplatform.http_cache.tag_handler.xkey
+
+    ezplatform.http_cache.tag_handler.xkey:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
         arguments:
          - '@ezplatform.http_cache.cache_manager'

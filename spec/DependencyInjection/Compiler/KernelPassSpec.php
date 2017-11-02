@@ -52,8 +52,6 @@ class KernelPassSpec extends ObjectBehavior
             ]
         ])->shouldBeCalled();
 
-        $container->getParameter('purge_type')->shouldBeCalled();
-
         $this->process($container);
     }
 }

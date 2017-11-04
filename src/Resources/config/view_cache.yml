@@ -41,3 +41,11 @@ services:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\LocationTagger
         tags:
             - {name: ezplatform.cache_response_tagger}
+
+    ezplatform.view_cache.response_tagger.xlocationid:
+        class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Delegator\XLocationIdBCTagger
+        arguments:
+            - '@ezpublish.api.repository'
+            - '@ezplatform.view_cache.response_tagger.location'
+        tags:
+            - {name: ezplatform.cache_response_tagger}

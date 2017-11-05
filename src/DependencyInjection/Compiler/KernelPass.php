@@ -41,6 +41,11 @@ class KernelPass implements CompilerPassInterface
             return true;
         }));
         $container->getDefinition('cache_clearer')->setArguments($arguments);
+        
+        $container->getDefinition('cache_clearer')->setArguments($arguments);
+        if ($container->getAlias('ezpublish.http_cache.purge_client') == 'ezpublish.http_cache.purge_client.fos') {
+            $container->setAlias('ezplatform.http_cache.purge_client', 'ezplatform.http_cache.purge_client.fos');
+        }
     }
 
     /**

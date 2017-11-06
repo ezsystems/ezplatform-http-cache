@@ -5,10 +5,10 @@
 
 # platform-http-cache
 
-Experimental HTTP cache handling for [eZ Platform][ezplatform].
+Default HTTP cache handling for [eZ Platform][ezplatform].
 
-This package aims at externalizing the HTTP cache handling of [ezpublish-kernel][ezpublish-kernel].
-It is by default installed with ezplatform 1.8, but is not enabled in the `AppKernel`, as it is experimental.
+This package externalizes the HTTP cache handling of [ezpublish-kernel][ezpublish-kernel].
+It is by default installed with ezplatform 1.8, and has been enabled in the `AppKernel` from 1.12.
 
 ## Enabling the package
 Add the package to `app/AppKernel.php`, *before* the EzPublishCoreBundle declaration:

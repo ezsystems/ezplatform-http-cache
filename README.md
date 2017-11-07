@@ -5,13 +5,12 @@
 
 # platform-http-cache
 
-Default HTTP cache handling for [eZ Platform][ezplatform].
+Provides HTTP cache handling for [eZ Platform][ezplatform], by default since version 1.12. From [ezpublish-kernel](ezpublish-kernel),
+it adds support for mult-tagging for Symfony Proxy, Varnish _(using [xkey][Varnish-xkey])_. Support for Fastly is part of the
+eZ Platform Cloud Enterprise offer as of 1.13 LTS.
 
-This package externalizes the HTTP cache handling of [ezpublish-kernel][ezpublish-kernel].
-It is by default installed with ezplatform 1.8, and has been enabled in the `AppKernel` from 1.12.
-
-## Enabling the package
-Add the package to `app/AppKernel.php`, *before* the EzPublishCoreBundle declaration:
+## Enabling the package on versions prior to 1.12
+1. Add the package to `app/AppKernel.php`, *before* `EzPublishCoreBundle`, but after `FOSHttpCacheBundle`:
 
 ```php
     public function registerBundles()
@@ -25,26 +24,11 @@ Add the package to `app/AppKernel.php`, *before* the EzPublishCoreBundle declara
         );
 ```
 
-The package will replace the services from the kernel, thus enabling the new features, such as multi-tagging.
+The package will replace several services from the kernel, thus enabling the new features, such as multi-tagging.
 
-The application cache class needs to be customized. If you haven't changed the `AppCache` class, you can do so
-by setting the `SYMFONY_HTTP_CACHE_CLASS` environment variable for your PHP or web server user.
-If you use your own `AppCache` class, you will have to make it to extend from this class instead
-of from the CoreBundle's.
+2. The application cache class needs to be customized. This is done by modifying `AppCache` class, you will have to make
+it extend `EzSystems\PlatformHttpCacheBundle\AppCache`.
 
-For PHP's internal server you can set it as shell environment variable before starting server:
-
-    export SYMFONY_HTTP_CACHE_CLASS='EzSystems\PlatformHttpCacheBundle\AppCache'
-
-For Apache, with the default eZ Platform virtual host definition, uncomment the `SetEnv` lines for the two
-variables above in your virtualhost, and set the values accordingly:
-
-    SetEnv SYMFONY_HTTP_CACHE_CLASS 'EzSystems\PlatformHttpCacheBundle\AppCache'
-
-For Nginx, set the variables using `fastcgi_param`:
-
-    fastcgi_param SYMFONY_HTTP_CACHE_CLASS "EzSystems\PlatformHttpCacheBundle\AppCache";
-    
 Do not forget to restart your web server.
 
 ## Usage with Varnish
@@ -81,5 +65,34 @@ Responses from `/content/view` will be made cachable, and the shared max age wil
 ### Purging of tagged HTTP cache on Repository operations
 A set of Slots will send HTTP PURGE requests for each cache tag affected by write operations. 
 
+
+## Configuration
+
+### Drivers
+
+This bundle lets you configure drivers for handling HTTP cache. The following exists from eZ:
+- `local`: extended Symfony Proxy to support tagging and varying by user rights _(available in this bundle)_
+- `http` aka `varnish`: Varnish proxy using and customizing FosHttpCache for purging _(available in this bundle)_
+- `fastly`: Fastly CDN proxy _(available with eZ Platform Enterprise and documented separately)_
+
+
+Configuring these is done using global `ezpublish.http_cache.purge_type` config. By default it is set to use
+`%purge_type%` parameter, and can be set in `app/config/parameters.yml` like so:
+
+```
+parameters:
+    purge_type: varnish
+```
+
+For further reading on drivers see [doc/drivers.md](doc/drivers.md).
+
+
+### Tags
+
+
+For further reading on tags see [doc/using_tags.md](doc/using_tags.md).
+
+
 [ezplatform]: http://github.com/ezsystems/ezplatform
 [ezpublish-kernel]: http://github.com/ezsystems/ezpubish-kernel
+[Varnish-xkey]: https://github.com/varnish/varnish-modules/blob/master/docs/vmod_xkey.rst

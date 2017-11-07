@@ -18,7 +18,6 @@ class EzSystemsPlatformHttpCacheExtension extends Extension implements PrependEx
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('default_settings.yml');
         $loader->load('services.yml');
         $loader->load('slot.yml');
         $loader->load('view_cache.yml');
@@ -26,7 +25,11 @@ class EzSystemsPlatformHttpCacheExtension extends Extension implements PrependEx
 
     public function prepend(ContainerBuilder $container)
     {
-        // Default settings for FOSHttpCacheBundle
+        // Load params early as we use them in below
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('default_settings.yml');
+
+        // Override default settings for FOSHttpCacheBundle
         $configFile = __DIR__ . '/../Resources/config/fos_http_cache.yml';
         $config = Yaml::parse(file_get_contents($configFile));
         $container->prependExtensionConfig('fos_http_cache', $config);

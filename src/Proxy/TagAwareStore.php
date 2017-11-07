@@ -73,10 +73,6 @@ class TagAwareStore extends Store implements RequestAwarePurger
         $digest = $response->headers->get('X-Content-Digest');
         $tags = $response->headers->get('xkey', null, false);
 
-        if ($response->headers->has('X-Location-Id')) {
-            $tags[] = 'location-' . $response->headers->get('X-Location-Id');
-        }
-
         foreach (array_unique($tags) as $tag) {
             if (false === $this->saveTag($tag, $digest)) {
                 throw new \RuntimeException('Unable to store the cache tag meta information.');

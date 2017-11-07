@@ -2,12 +2,15 @@
 
 namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection;
 
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\Yaml\Yaml;
 
-class EzSystemsPlatformHttpCacheExtension extends Extension
+class EzSystemsPlatformHttpCacheExtension extends Extension implements PrependExtensionInterface
 {
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -19,5 +22,14 @@ class EzSystemsPlatformHttpCacheExtension extends Extension
         $loader->load('services.yml');
         $loader->load('slot.yml');
         $loader->load('view_cache.yml');
+    }
+
+    public function prepend(ContainerBuilder $container)
+    {
+        // Default settings for FOSHttpCacheBundle
+        $configFile = __DIR__ . '/../Resources/config/fos_http_cache.yml';
+        $config = Yaml::parse(file_get_contents($configFile));
+        $container->prependExtensionConfig('fos_http_cache', $config);
+        $container->addResource(new FileResource($configFile));
     }
 }

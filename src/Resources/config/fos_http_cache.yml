@@ -1,0 +1,17 @@
+proxy_client:
+    default: varnish
+    varnish:
+        servers: [$http_cache.purge_servers$]
+
+user_context:
+    enabled: true
+    hash_cache_ttl: 600
+    user_hash_header: X-User-Hash
+
+tags:
+    # Configure tag header for FosHttpCache
+    # WARNING: Please don't use the TagHandler from FOS yet in generic reusable code:
+    # 1. Until 2.x it is hardcoded to use comma separated list of tags, which won't work on Fastly and
+    #    will conflict with the one header per key format we currently use with xkey (as per their doc)
+    # 2. In FosHttpCache 1.x it is only available if proxy client is configured as "varnish" or "custom"
+    header: xkey

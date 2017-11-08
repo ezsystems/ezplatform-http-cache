@@ -28,6 +28,9 @@
             "EzSystems\\PlatformHttpCacheBundle\\Tests\\": "tests"
         }
     },
+    "scripts": {
+        "fix-cs": "@php ./vendor/bin/php-cs-fixer fix -v --show-progress=estimating"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "0.1.x-dev"

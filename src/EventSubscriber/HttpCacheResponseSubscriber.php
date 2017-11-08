@@ -39,9 +39,13 @@ class HttpCacheResponseSubscriber implements EventSubscriberInterface
 
     public function configureCache(FilterResponseEvent $event)
     {
-        $view = $event->getRequest()->attributes->get('view');
-        if (!$view instanceof CachableView || !$view->isCacheEnabled()) {
-            return;
+        if ($event->getRequest()->attributes->has('is_rest_request') && $event->getRequest()->attributes->get('is_rest_request') === true) {
+            $view = null;
+        } else {
+            $view = $event->getRequest()->attributes->get('view');
+            if (!$view instanceof CachableView || !$view->isCacheEnabled()) {
+                return;
+            }
         }
 
         $response = $event->getResponse();

@@ -7,6 +7,12 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    ezplatform.x_location_id.response_subscriber:
+        class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\XLocationIdResponseSubscriber
+        arguments: ['%ezplatform.http_cache.tags.header%']
+        tags:
+            - { name: kernel.event_subscriber }
+
     ezplatform.view_cache.response_configurator:
         class: EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ConfigurableResponseCacheConfigurator
         arguments:

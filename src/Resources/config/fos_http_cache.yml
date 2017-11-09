@@ -14,4 +14,4 @@ tags:
     # 1. Until 2.x it is hardcoded to use comma separated list of tags, which won't work on Fastly and
     #    will conflict with the one header per key format we currently use with xkey (as per their doc)
     # 2. In FosHttpCache 1.x it is only available if proxy client is configured as "varnish" or "custom"
-    header: xkey
+    header: '%ezplatform.http_cache.tags.header%'

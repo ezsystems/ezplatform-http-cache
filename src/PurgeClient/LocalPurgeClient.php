@@ -55,6 +55,8 @@ class LocalPurgeClient implements PurgeClientInterface
      */
     public function purgeAll()
     {
-        $this->cacheStore->purgeAllContent();
+        $purgeRequest = Request::create('http://localhost/', 'PURGE');
+        $purgeRequest->headers->set('X-Location-Id', '*');
+        $this->cacheStore->purgeByRequest($purgeRequest);
     }
 }

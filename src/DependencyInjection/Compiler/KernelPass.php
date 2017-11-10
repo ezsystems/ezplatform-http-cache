@@ -44,10 +44,6 @@ class KernelPass implements CompilerPassInterface
         }));
         $container->getDefinition('cache_clearer')->setArguments($arguments);
 
-        if ($container->getAlias('ezpublish.http_cache.purge_client') == 'ezpublish.http_cache.purge_client.fos') {
-            $container->setAlias('ezplatform.http_cache.purge_client', 'ezplatform.http_cache.purge_client.fos');
-        }
-
         $purgeType = $container->getParameter('purge_type');
         if ($purgeType === 'http') {
             // Injecting our own Tag handler

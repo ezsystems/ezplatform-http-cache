@@ -57,7 +57,7 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
         );
 
         if ($response->headers->has($this->tagHeader)) {
-            $tags = array_merge($response->headers->get($this->tagHeader, null, false) , $tags);
+            $tags = array_merge($response->headers->get($this->tagHeader, null, false), $tags);
         }
 
         // @todo we need to use abstract tag writer to also be able to support Fastly

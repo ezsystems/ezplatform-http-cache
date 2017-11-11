@@ -39,7 +39,7 @@ For PHP's internal server you can set it as shell environment variable before st
 For Apache, with the default eZ Platform virtual host definition, uncomment the `SetEnv` lines for the two
 variables above in your virtualhost, and set the values accordingly:
 
-    SetEnv SYMFONY_HTTP_CACHE_CLASS='EzSystems\PlatformHttpCacheBundle\AppCache'
+    SetEnv SYMFONY_HTTP_CACHE_CLASS 'EzSystems\PlatformHttpCacheBundle\AppCache'
 
 For Nginx, set the variables using `fastcgi_param`:
 

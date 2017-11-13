@@ -8,6 +8,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface;
 
 /**
  * Rewrites the X-Location-Id HTTP header.
@@ -22,13 +23,13 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
     const LOCATION_ID_HEADER = 'X-Location-Id';
 
     /**
-     * @var string
+     * @var EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface
      */
-    private $tagHeader;
+    private $tagHandler;
 
-    public function __construct($tagHeader)
+    public function __construct(TagHandlerInterface $tagHandler)
     {
-        $this->tagHeader = $tagHeader;
+        $this->tagHandler = $tagHandler;
     }
 
     public static function getSubscribedEvents()
@@ -56,13 +57,7 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
             explode(',', $response->headers->get(static::LOCATION_ID_HEADER))
         );
 
-        if ($response->headers->has($this->tagHeader)) {
-            $tags = array_merge($response->headers->get($this->tagHeader, null, false), $tags);
-        }
-
-        // @todo we need to use abstract tag writer to also be able to support Fastly
-        // FOS has some stuff around this in 2.x but not in a good way in 1.x
-        $response->headers->set($this->tagHeader, array_unique($tags));
+        $this->tagHandler->addTagHeaders($response, array_unique($tags));
         $response->headers->remove(static::LOCATION_ID_HEADER);
     }
 }

@@ -9,11 +9,10 @@ use FOS\HttpCacheBundle\CacheManager;
 /**
  * This is not a full implementation of FOS TagHandler
  * It extends extends TagHandler and implements invalidateTags() and purge() so that you may run
- * php app/console fos:httpcache:invalidate:tag <tag>
+ * php app/console fos:httpcache:invalidate:tag <tag>.
  *
  * It implements tagResponse() to make sure TagSubscriber( a FOS event listener ) do not try to tag the response.
  * as we use ConfigurableResponseCacheConfigurator for that purpose instead.
- *
  */
 class TagHandler extends FOSTagHandler implements TagHandlerInterface
 {

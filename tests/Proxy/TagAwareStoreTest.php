@@ -67,7 +67,7 @@ class TagAwareStoreTest extends TestCase
 
         $path = $this->store->getPath("$prefix/en" . sha1('someContent'));
         $this->assertStringStartsWith(__DIR__ . "/$prefix", $path);
-        $this->assertFalse(file_exists($lockFile));
+        $this->assertFileNotExists($lockFile);
     }
 
     /**

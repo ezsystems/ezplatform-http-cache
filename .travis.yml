@@ -1,8 +1,11 @@
 language: php
 
-php:
-    - 5.6
-    - 7.0
+matrix:
+    include:
+        - php: 5.6
+        - php: 7.0
+        - php: 7.1
+          env: CHECK_CS=true
 
 # test only master (+ Pull requests)
 branches:
@@ -14,7 +17,9 @@ before_script:
     - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - travis_retry composer install --prefer-dist --no-interaction
 
-script: php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty
+script:
+    - php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty
+    - if [ "$CHECK_CS" == "true" ]; then phpenv config-rm xdebug.ini && ./vendor/bin/php-cs-fixer fix -v --dry-run --diff --show-progress=estimating; fi
 
 notifications:
     email: false

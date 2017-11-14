@@ -22,7 +22,7 @@ class CopySubtreeSlotTest extends AbstractContentSlotTest
         return new CopySubtreeSignal([
             'subtreeId' => $this->subtreeId,
             'targetParentLocationId' => $this->targetParentLocationId,
-            'targetNewSubtreeId' => $this->targetNewSubtreeId
+            'targetNewSubtreeId' => $this->targetNewSubtreeId,
         ]);
     }
 
@@ -30,7 +30,7 @@ class CopySubtreeSlotTest extends AbstractContentSlotTest
     {
         return [
             'location-' . $this->targetParentLocationId,
-            'parent-' . $this->targetParentLocationId
+            'parent-' . $this->targetParentLocationId,
         ];
     }
 
@@ -43,5 +43,4 @@ class CopySubtreeSlotTest extends AbstractContentSlotTest
     {
         return [CopySubtreeSignal::class];
     }
-
 }

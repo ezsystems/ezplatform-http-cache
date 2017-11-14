@@ -3,7 +3,6 @@
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
-
 namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -38,6 +37,7 @@ class KernelPass implements CompilerPassInterface
             if ($this->isCachePurger($argument)) {
                 return false;
             }
+
             return true;
         }));
         $container->getDefinition('cache_clearer')->setArguments($arguments);

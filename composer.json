@@ -19,6 +19,7 @@
         "phpunit/phpunit": "^5.7",
         "matthiasnoback/symfony-dependency-injection-test": "~1.0",
         "phpspec/phpspec": "^3.2",
+        "friendsofphp/php-cs-fixer": "~2.7.1",
         "memio/spec-gen": "^0.6"
     },
     "autoload": {
@@ -26,6 +27,9 @@
             "EzSystems\\PlatformHttpCacheBundle\\": "src",
             "EzSystems\\PlatformHttpCacheBundle\\Tests\\": "tests"
         }
+    },
+    "scripts": {
+        "fix-cs": "@php ./vendor/bin/php-cs-fixer fix -v --show-progress=estimating"
     },
     "extra": {
         "branch-alias": {

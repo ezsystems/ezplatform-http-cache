@@ -10,18 +10,20 @@ use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface;
 
 class XLocationIdResponseSubscriberSpec extends ObjectBehavior
 {
     public function let(
         FilterResponseEvent $event,
         Response $response,
+        TagHandlerInterface $tagHandler,
         ResponseHeaderBag $responseHeaders
     ) {
         $response->headers = $responseHeaders;
         $event->getResponse()->willReturn($response);
 
-        $this->beConstructedWith('Surrogate-Key');
+        $this->beConstructedWith($tagHandler);
     }
 
     public function it_does_not_rewrite_header_if_there_is_none(

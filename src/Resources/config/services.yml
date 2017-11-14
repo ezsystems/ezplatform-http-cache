@@ -24,3 +24,11 @@ services:
     ezplatform.http_cache.tag_aware_store:
         class: EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore
         arguments: ["%ezplatform.http_cache.store.root%"]
+
+    ezplatform.http_cache.tag_handler:
+        class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
+        arguments:
+         - '@ezplatform.http_cache.cache_manager'
+         - '%ezplatform.http_cache.tags.header%'
+         - '@ezplatform.http_cache.purge_client'
+

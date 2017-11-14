@@ -9,7 +9,7 @@ services:
 
     ezplatform.x_location_id.response_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\XLocationIdResponseSubscriber
-        arguments: ['%ezplatform.http_cache.tags.header%']
+        arguments: ['@ezplatform.http_cache.tag_handler']
         tags:
             - { name: kernel.event_subscriber }
 
@@ -19,6 +19,7 @@ services:
             - '$content.view_cache$'
             - '$content.ttl_cache$'
             - '$content.default_ttl$'
+            - '@ezplatform.http_cache.tag_handler'
 
     ezplatform.view_cache.response_tagger.dispatcher:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Delegator\DispatcherTagger

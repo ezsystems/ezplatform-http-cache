@@ -9,9 +9,8 @@
             "email": "dev-team@ez.no"
         }
     ],
-    "minimum-stability": "stable",
     "require": {
-        "ezsystems/ezpublish-kernel": "^6.7@dev || ^7.0@dev",
+        "ezsystems/ezpublish-kernel": "~6.7.7@dev || ^6.12.1@dev || ^7.0@dev",
         "friendsofsymfony/http-cache-bundle": "~1.2|^1.3.8",
         "symfony/symfony": "^2.7 | ^3.1"
     },
@@ -33,7 +32,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.1.x-dev"
+            "dev-master": "0.3.x-dev"
         }
     }
 }

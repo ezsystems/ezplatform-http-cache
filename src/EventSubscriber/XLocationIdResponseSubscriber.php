@@ -49,13 +49,13 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
             E_USER_DEPRECATED
         );
 
-        // Map the tag, even if not officially supported, handle comma separated values as was possible with Varnish
-        $tags = array_map(
-            function ($id) {
-                return 'location-' . trim($id);
-            },
-            explode(',', $response->headers->get(static::LOCATION_ID_HEADER))
-        );
+        // Map the tags, even if not officially supported, handle comma separated values as was possible with Varnish
+        $tags = [];
+        foreach (explode(',', $response->headers->get(static::LOCATION_ID_HEADER)) as $id) {
+            $id = trim($id);
+            $tags[] = "location-$id";
+            $tags[] = "path-$id";
+        }
 
         $this->tagHandler->addTagHeaders($response, array_unique($tags));
         $response->headers->remove(static::LOCATION_ID_HEADER);

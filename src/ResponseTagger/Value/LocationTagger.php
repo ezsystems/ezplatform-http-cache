@@ -5,7 +5,7 @@ namespace EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value;
 use EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ResponseCacheConfigurator;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger;
 use Symfony\Component\HttpFoundation\Response;
-use eZ\Publish\Core\Repository\Values\Content\Location;
+use eZ\Publish\API\Repository\Values\Content\Location;
 
 class LocationTagger implements ResponseTagger
 {

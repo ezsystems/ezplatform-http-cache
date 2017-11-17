@@ -4,8 +4,10 @@ namespace EzSystems\PlatformHttpCacheBundle;
 
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\ResponseTaggersPass;
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\KernelPass;
+use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\DriverPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use EzSystems\PlatformHttpCacheBundle\DependencyInjection\EzPlatformHttpCacheExtension;
 
 class EzSystemsPlatformHttpCacheBundle extends Bundle
 {
@@ -15,5 +17,11 @@ class EzSystemsPlatformHttpCacheBundle extends Bundle
 
         $container->addCompilerPass(new ResponseTaggersPass());
         $container->addCompilerPass(new KernelPass());
+        $container->addCompilerPass(new DriverPass());
+    }
+
+    public function getContainerExtension()
+    {
+        return new EzPlatformHttpCacheExtension();
     }
 }

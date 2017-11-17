@@ -7,8 +7,6 @@ namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
-use EzSystems\PlatformHttpCacheBundle\Handler\TagHandler;
 
 /**
  * Disables some of the http-cache services declared by the kernel so that
@@ -43,18 +41,6 @@ class KernelPass implements CompilerPassInterface
             return true;
         }));
         $container->getDefinition('cache_clearer')->setArguments($arguments);
-
-        if ($container->getAlias('ezpublish.http_cache.purge_client') == 'ezpublish.http_cache.purge_client.fos') {
-            $container->setAlias('ezplatform.http_cache.purge_client', 'ezplatform.http_cache.purge_client.fos');
-        }
-
-        $purgeType = $container->getParameter('purge_type');
-        if ($purgeType === 'http') {
-            // Injecting our own Tag handler
-            $definition = $container->getDefinition('fos_http_cache.handler.tag_handler');
-            $definition->setClass(TagHandler::class);
-            $definition->addArgument(new Reference('ezplatform.http_cache.purge_client.fos'));
-        }
     }
 
     /**

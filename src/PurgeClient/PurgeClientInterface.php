@@ -16,11 +16,16 @@ use eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface as KernelPurgeClientI
 interface PurgeClientInterface extends KernelPurgeClientInterface
 {
     /**
-     * Triggers the cache purge $locationIds.
+     * Triggers the cache purge of $tags.
      *
-     * It's up to the implementor to decide whether to purge $locationIds right away or to delegate to a separate process.
+     * It's up to the implementor to decide whether to purge tags right away or to delegate to a separate process.
      *
-     * @param array $locationIds Cache resource(s) to purge (e.g. array of URI to purge in a reverse proxy)
+     * @param array $tags Array of tags to purge
      */
-    public function purge($locationIds);
+    public function purge($tags);
+
+    /**
+     * Purge the whole http cache.
+     */
+    public function purgeAll();
 }

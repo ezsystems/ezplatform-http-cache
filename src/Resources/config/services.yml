@@ -5,21 +5,21 @@ services:
 
     ezplatform.http_cache.proxy_client.varnish.factory:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishProxyClientFactory
-        arguments: ["@ezpublish.config.resolver", "@ezpublish.config.dynamic_setting.parser", "%fos_http_cache.proxy_client.varnish.class%"]
+        arguments: ['@ezpublish.config.resolver', '@ezpublish.config.dynamic_setting.parser', '%fos_http_cache.proxy_client.varnish.class%']
 
     ezplatform.http_cache.purge_client:
         alias: ezplatform.http_cache.purge_client.local
 
     ezplatform.http_cache.purge_client.varnish:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient
-        arguments: ["@ezplatform.http_cache.cache_manager"]
+        arguments: ['@ezplatform.http_cache.cache_manager']
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: http}
             - {name: ezplatform.http_cache.purge_client, purge_type: varnish}
 
     ezplatform.http_cache.purge_client.local:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient
-        arguments: ["@ezplatform.http_cache.store"]
+        arguments: ['@ezplatform.http_cache.store']
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: local}
 
@@ -28,7 +28,7 @@ services:
 
     ezplatform.http_cache.tag_aware_store:
         class: EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore
-        arguments: ["%ezplatform.http_cache.store.root%"]
+        arguments: ['%ezplatform.http_cache.store.root%']
 
     ezplatform.http_cache.tag_handler:
         alias: ezplatform.http_cache.tag_handler.xkey

@@ -56,7 +56,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost']);
+            ->with('/', ['key' => ["location-$locationId"], 'Host' => 'localhost']);
 
         $this->purgeClient->purge($locationId);
     }
@@ -64,25 +64,39 @@ class VarnishPurgeClientTest extends TestCase
     /**
      * @dataProvider purgeTestProvider
      */
-    public function testPurge(array $locationIds)
+    public function testPurge(array $tags, $expectedTags)
     {
-        foreach ($locationIds as $key => $locationId) {
+        $this->cacheManager
+            ->expects($this->once())
+            ->method('invalidatePath')
+            ->with('/', ['key' => $expectedTags, 'Host' => 'localhost']);
+
+        $this->purgeClient->purge($tags);
+    }
+
+    /**
+     * @dataProvider purgeTestProvider
+     */
+    public function testPurgeWithOnePurgePerTag(array $tags, $expectedTags)
+    {
+        $this->purgeClient->enableOnePurgePerTag(true);
+        foreach ($expectedTags as $key => $expectedTag) {
             $this->cacheManager
                 ->expects($this->at($key))
                 ->method('invalidatePath')
-                ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost']);
+                ->with('/', ['key' => $expectedTag, 'Host' => 'localhost']);
         }
 
-        $this->purgeClient->purge($locationIds);
+        $this->purgeClient->purge($tags);
     }
 
     public function purgeTestProvider()
     {
-        return array(
-            array(array(123)),
-            array(array(123, 456)),
-            array(array(123, 456, 789)),
-        );
+        return [
+            [[123], ['location-123']],
+            [[123, 'parent-456'], ['location-123', 'parent-456']],
+            [[123, 'content-456', 789], ['location-123', 'content-456', 'location-789']],
+        ];
     }
 
     public function testPurgeAll()

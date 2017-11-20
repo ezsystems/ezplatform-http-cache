@@ -12,7 +12,10 @@ services:
 
     ezplatform.http_cache.purge_client.varnish:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient
-        arguments: ['@ezplatform.http_cache.cache_manager']
+        arguments:
+            - '@ezplatform.http_cache.cache_manager'
+            - '%ezplatform.http_cache.varnish.purge_header%'
+            - '%ezplatform.http_cache.varnish.one_purge_per_tag%'
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: http}
             - {name: ezplatform.http_cache.purge_client, purge_type: varnish}

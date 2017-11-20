@@ -1,3 +1,7 @@
 parameters:
     ezplatform.http_cache.store.root: "%kernel.cache_dir%/http_cache"
     ezplatform.http_cache.tags.header: 'xkey'
+    # In case VCL is altered to use different purge header, then the default "key"
+    ezplatform.http_cache.varnish.purge_header: 'key'
+    # For use when running with varnish modules 0.9.x which does not support purging by several headers
+    ezplatform.http_cache.varnish.one_purge_per_tag: false

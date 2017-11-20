@@ -18,9 +18,27 @@ class VarnishPurgeClient implements PurgeClientInterface
      */
     private $cacheManager;
 
-    public function __construct(CacheManager $cacheManager)
+    /**
+     * @var string
+     */
+    private $purgeHeader;
+
+    /**
+     * @var bool
+     */
+    private $onePurgePerTag;
+
+    /**
+     * VarnishPurgeClient constructor.
+     * @param CacheManager $cacheManager
+     * @param string $purgeHeader
+     * @param bool $onePurgePerTag
+     */
+    public function __construct(CacheManager $cacheManager, $purgeHeader = 'key', $onePurgePerTag = false)
     {
         $this->cacheManager = $cacheManager;
+        $this->purgeHeader = $purgeHeader;
+        $this->onePurgePerTag = $onePurgePerTag;
     }
 
     public function __destruct()
@@ -34,16 +52,25 @@ class VarnishPurgeClient implements PurgeClientInterface
             return;
         }
 
-        // As key only support one tag being invalidated at a time, we loop.
-        // These will be queued by FOS\HttpCache\ProxyClient\Varnish and handled on kernel.terminate.
-        foreach (array_unique((array)$tags) as $tag) {
-            if (is_numeric($tag)) {
-                $tag = 'location-' . $tag;
-            }
+        $tags = array_map(
+            function ($tag) {
+                return is_numeric($tag) ? 'location-' . $tag : $tag;
+            },
+            (array)$tags
+        );
 
+        // We either send all tags or one by one to FOS\HttpCache\ProxyClient\Varnish que & handled on kernel.terminate.
+        if (!$this->onePurgePerTag) {
+            return $this->cacheManager->invalidatePath(
+                '/',
+                [$this->purgeHeader => $tags, 'Host' => empty($_SERVER['SERVER_NAME']) ? 'localhost' : $_SERVER['SERVER_NAME']]
+            );
+        }
+
+        foreach ($tags as $tag) {
             $this->cacheManager->invalidatePath(
                 '/',
-                ['key' => $tag, 'Host' => empty($_SERVER['SERVER_NAME']) ? 'localhost' : $_SERVER['SERVER_NAME']]
+                [$this->purgeHeader => $tag, 'Host' => empty($_SERVER['SERVER_NAME']) ? 'localhost' : $_SERVER['SERVER_NAME']]
             );
         }
     }
@@ -51,5 +78,13 @@ class VarnishPurgeClient implements PurgeClientInterface
     public function purgeAll()
     {
         $this->cacheManager->invalidate(['key' => '.*']);
+    }
+
+    /**
+     * @internal Only for use by tests.
+     */
+    public function enableOnePurgePerTag($state = true)
+    {
+        $this->onePurgePerTag = $state;
     }
 }

@@ -12,6 +12,11 @@ use Symfony\Component\Yaml\Yaml;
 
 class EzPlatformHttpCacheExtension extends Extension implements PrependExtensionInterface
 {
+    public function getAlias()
+    {
+        return 'ez_platform_http_cache';
+    }
+
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();

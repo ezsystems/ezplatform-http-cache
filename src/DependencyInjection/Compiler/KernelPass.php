@@ -26,6 +26,17 @@ class KernelPass implements CompilerPassInterface
             }
         }
         $container->removeAlias('ezpublish.http_cache.purger');
+        $this->symfonyPre34BC($container);
+
+        // Let's re-export purge_type setting so that driver's don't have to depend on kernel in order to acquire it
+        $container->setParameter('ezplatform.http_cache.purge_type', $container->getParameter('ezpublish.http_cache.purge_type'));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    protected function symfonyPre34BC(ContainerBuilder $container)
+    {
         $arguments = $container->getDefinition('cache_clearer')->getArguments();
 
         // BC Symfony < 3.4, as of 3.4 and up handles this itself, on lower versions we need to adjust the arguments manually

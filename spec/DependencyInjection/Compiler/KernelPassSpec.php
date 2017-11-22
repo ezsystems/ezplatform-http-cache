@@ -52,6 +52,9 @@ class KernelPassSpec extends ObjectBehavior
             ]
         ])->shouldBeCalled();
 
+        $container->getParameter('ezpublish.http_cache.purge_type')->shouldBeCalled();
+        $container->setParameter('ezplatform.http_cache.purge_type', null)->shouldBeCalled();
+
         $this->process($container);
     }
 }

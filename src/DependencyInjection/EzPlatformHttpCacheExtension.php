@@ -1,7 +1,11 @@
 <?php
-
+/**
+ * @copyright Copyright (C) eZ Systems AS. All rights reserved.
+ * @license For full copyright and license information view LICENSE file distributed with this source code.
+ */
 namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection;
 
+use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ParserInterface;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -12,6 +16,11 @@ use Symfony\Component\Yaml\Yaml;
 
 class EzPlatformHttpCacheExtension extends Extension implements PrependExtensionInterface
 {
+    /**
+     * @var \eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ParserInterface[]
+     */
+    private $extraConfigParsers = [];
+
     public function getAlias()
     {
         return 'ez_platform_http_cache';
@@ -39,5 +48,15 @@ class EzPlatformHttpCacheExtension extends Extension implements PrependExtension
         $config = Yaml::parse(file_get_contents($configFile));
         $container->prependExtensionConfig('fos_http_cache', $config);
         $container->addResource(new FileResource($configFile));
+    }
+
+    public function addExtraConfigParser(ParserInterface $configParser)
+    {
+        $this->extraConfigParsers[] = $configParser;
+    }
+
+    public function getExtraConfigParsers()
+    {
+        return $this->extraConfigParsers;
     }
 }

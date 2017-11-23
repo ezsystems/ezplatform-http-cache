@@ -7,8 +7,8 @@ use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\ResponseTagge
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\KernelPass;
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\DriverPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use EzSystems\PlatformHttpCacheBundle\DependencyInjection\EzPlatformHttpCacheExtension;
 
 class EzSystemsPlatformHttpCacheBundle extends Bundle
 {
@@ -20,10 +20,7 @@ class EzSystemsPlatformHttpCacheBundle extends Bundle
         $container->addCompilerPass(new KernelPass());
         $container->addCompilerPass(new DriverPass());
 
-        /** @var \eZ\Bundle\EzPublishCoreBundle\DependencyInjection\EzPublishCoreExtension $eZExtension */
-        $eZExtension = $container->getExtension('ezpublish');
-        $eZExtension->addConfigParser(new HttpCacheConfigParser());
-        // $eZExtension->addDefaultSettings(__DIR__ . '/Resources/config', ['default_settings.yml']);
+        $this->registerConfigParser($container);
     }
 
     public function getContainerExtensionClass()
@@ -49,5 +46,16 @@ class EzSystemsPlatformHttpCacheBundle extends Bundle
         if ($this->extension) {
             return $this->extension;
         }
+    }
+
+    public function registerConfigParser(ContainerBuilder $container)
+    {
+        /** @var \eZ\Bundle\EzPublishCoreBundle\DependencyInjection\EzPublishCoreExtension $eZExtension */
+        $eZExtension = $container->getExtension('ezpublish');
+        $eZExtension->addConfigParser(
+            new HttpCacheConfigParser(
+                $container->getExtension('ez_platform_http_cache')
+            )
+        );
     }
 }

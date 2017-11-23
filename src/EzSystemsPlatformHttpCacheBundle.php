@@ -2,6 +2,7 @@
 
 namespace EzSystems\PlatformHttpCacheBundle;
 
+use EzSystems\PlatformHttpCacheBundle\DependencyInjection\ConfigResolver\HttpCacheConfigParser;
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\ResponseTaggersPass;
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\KernelPass;
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\DriverPass;
@@ -18,6 +19,11 @@ class EzSystemsPlatformHttpCacheBundle extends Bundle
         $container->addCompilerPass(new ResponseTaggersPass());
         $container->addCompilerPass(new KernelPass());
         $container->addCompilerPass(new DriverPass());
+
+        /** @var \eZ\Bundle\EzPublishCoreBundle\DependencyInjection\EzPublishCoreExtension $eZExtension */
+        $eZExtension = $container->getExtension('ezpublish');
+        $eZExtension->addConfigParser(new HttpCacheConfigParser());
+        // $eZExtension->addDefaultSettings(__DIR__ . '/Resources/config', ['default_settings.yml']);
     }
 
     public function getContainerExtensionClass()

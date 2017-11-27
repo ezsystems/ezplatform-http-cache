@@ -5,6 +5,7 @@ namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface;
 
 /**
  * We support http cache drivers to be provided by 3rd party bundles.
@@ -19,7 +20,16 @@ class DriverPass implements CompilerPassInterface
         $purgeType = $container->getParameter('ezpublish.http_cache.purge_type');
         $configuredPurgeClientServiceId = static::getTaggedService($container, 'ezplatform.http_cache.purge_client');
         if ($configuredPurgeClientServiceId === null) {
-            throw new \InvalidArgumentException("No driver found being able to handle purge_type '$purgeType'.");
+            // BC Check. purge_type may also be a service name implementing PurgeClientInterface
+            $purgeType = $container->getParameter('ezpublish.http_cache.purge_type');
+            if ($container->has($purgeType)) {
+                if (!$container->get($purgeType) instanceof PurgeClientInterface) {
+                    throw new \InvalidArgumentException('Invalid ezpublish.http_cache.purge_type, it needs to implement PurgeClientInterface.');
+                }
+                $configuredPurgeClientServiceId = $purgeType;
+            } else {
+                throw new \InvalidArgumentException("No driver found being able to handle purge_type '$purgeType'.");
+            }
         }
         $container->setAlias('ezplatform.http_cache.purge_client', $configuredPurgeClientServiceId);
 

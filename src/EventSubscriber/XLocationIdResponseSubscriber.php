@@ -5,6 +5,8 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -22,14 +24,16 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
 {
     const LOCATION_ID_HEADER = 'X-Location-Id';
 
-    /**
-     * @var EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface
-     */
+    /** @var \EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface */
     private $tagHandler;
 
-    public function __construct(TagHandlerInterface $tagHandler)
+    /** @var \eZ\Publish\API\Repository\Repository */
+    private $repository;
+
+    public function __construct(TagHandlerInterface $tagHandler, Repository $repository)
     {
         $this->tagHandler = $tagHandler;
+        $this->repository = $repository;
     }
 
     public static function getSubscribedEvents()
@@ -53,8 +57,30 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
         $tags = [];
         foreach (explode(',', $response->headers->get(static::LOCATION_ID_HEADER)) as $id) {
             $id = trim($id);
-            $tags[] = "location-$id";
-            $tags[] = "path-$id";
+            try {
+                /** @var $location \eZ\Publish\API\Repository\Values\Content\Location */
+                $location = $this->repository->sudo(function (Repository $repository) use ($id) {
+                    return $repository->getLocationService()->loadLocation($id);
+                });
+
+                $tags[] = 'location-' . $location->id;
+                $tags[] = 'parent-' . $location->parentLocationId;
+
+                foreach ($location->path as $pathItem) {
+                    $tags[] = 'path-' . $pathItem;
+                }
+
+                $contentInfo = $location->getContentInfo();
+                $tags[] = 'content-' . $contentInfo->id;
+                $tags[] = 'content-type-' . $contentInfo->contentTypeId;
+
+                if ($contentInfo->mainLocationId !== $location->id) {
+                    $tags[] = 'location-' . $contentInfo->mainLocationId;
+                }
+            } catch (NotFoundException $e) {
+                $tags[] = "location-$id";
+                $tags[] = "path-$id";
+            }
         }
 
         $this->tagHandler->addTagHeaders($response, array_unique($tags));

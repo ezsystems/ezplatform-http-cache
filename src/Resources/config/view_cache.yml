@@ -9,7 +9,7 @@ services:
 
     ezplatform.x_location_id.response_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\XLocationIdResponseSubscriber
-        arguments: ['@ezplatform.http_cache.tag_handler']
+        arguments: ['@ezplatform.http_cache.tag_handler', '@ezpublish.api.repository']
         tags:
             - { name: kernel.event_subscriber }
 

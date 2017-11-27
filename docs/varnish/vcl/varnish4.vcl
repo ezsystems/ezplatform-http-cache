@@ -1,6 +1,6 @@
 // Varnish VCL for:
 // - Varnish 4.1 or higher with xkey vmod (via varnish-modules package, or via Varnish Plus)
-// - eZ Platform 1.8 or higher (configured for Varnish, incl with Symfony HttpCache Proxy disabled)
+// - eZ Platform 1.8 or higher with ezplatform-http-cache bundle
 //
 // Complete VCL example, further reading on:
 // - https://symfony.com/doc/current/http_cache/varnish.html
@@ -8,32 +8,14 @@
 // - https://github.com/varnish/varnish-modules/blob/master/docs/vmod_xkey.rst
 // - https://www.varnish-cache.org/docs/trunk/users-guide/vcl.html
 //
-// Make sure to at least adjust default domain/ip values on backend, invalidators & debuggers, current values are set
-// for default bundled docker containers for testing use and needs to reflect your setup instead.
+// Make sure to at least adjust default parameters.yml, defaults there reflect our testing needs with docker.
 
 vcl 4.0;
 import std;
 import xkey;
 
-// Our Backend - Assuming that web server is listening on port 80
-// Replace the host to fit your setup
-backend ezplatform {
-    .host = "web";
-    .port = "80";
-}
-
-// ACL for invalidators IP
-acl invalidators {
-    "127.0.0.1";
-    "172.16.0.0"/20;
-    "app";
-}
-
-// ACL for debuggers IP
-acl debuggers {
-    "127.0.0.1";
-    "172.16.0.0"/20;
-}
+// For customizing your backend and acl rules see parameters.yml
+include "parameters.vcl";
 
 // Called at the beginning of a request, after the complete request has been received
 sub vcl_recv {
@@ -64,11 +46,28 @@ sub vcl_recv {
         return (hash);
     }
 
+    // Remove all cookies besides Session ID, as JS tracker cookies and so will make the responses effectively un-cached
+    if (req.http.cookie) {
+        set req.http.cookie = ";" + req.http.cookie;
+        set req.http.cookie = regsuball(req.http.cookie, "; +", ";");
+        set req.http.cookie = regsuball(req.http.cookie, ";(eZSESSID[^=]*)=", "; \1=");
+        set req.http.cookie = regsuball(req.http.cookie, ";[^ ][^;]*", "");
+        set req.http.cookie = regsuball(req.http.cookie, "^[; ]+|[; ]+$", "");
+
+        if (req.http.cookie == "") {
+            // If there are no more cookies, remove the header to get page cached.
+            unset req.http.cookie;
+        }
+    }
+
     // Do a standard lookup on assets (these don't vary by user context hash)
     // Note that file extension list below is not extensive, so consider completing it to fit your needs.
     if (req.url ~ "\.(css|js|gif|jpe?g|bmp|png|tiff?|ico|img|tga|wmf|svg|swf|ico|mp3|mp4|m4a|ogg|mov|avi|wmv|zip|gz|pdf|ttf|eot|wof)$") {
         return (hash);
     }
+
+    // Sort the query string for cache normalization.
+    set req.url = std.querysort(req.url);
 
     // Retrieve client user context hash and add it to the forwarded request.
     call ez_user_context_hash;
@@ -80,18 +79,18 @@ sub vcl_recv {
 // Called when a cache lookup is successful. The object being hit may be stale: It can have a zero or negative ttl with only grace or keep time left.
 sub vcl_hit {
    if (obj.ttl >= 0s) {
-       // A pure unadultered hit, deliver it
+       // A pure unadulterated hit, deliver it
        return (deliver);
    }
 
    if (obj.ttl + obj.grace > 0s) {
        // Object is in grace, logic below in this block is what differs from default:
-       // https://varnish-cache.org/docs/5.0/users-guide/vcl-grace.html#grace-mode
+       // https://varnish-cache.org/docs/5.2/users-guide/vcl-grace.html#grace-mode
        if (!std.healthy(req.backend_hint)) {
            // Service is unhealthy, deliver from cache
            return (deliver);
-       } else if (req.url ~ "^/api/ezp/v2" && req.http.referer ~ "/ez$") {
-           // Request is for Platform UI for REST API, fetch it
+       } else if (req.http.cookie) {
+           // Request it by a user with session, refresh the cache to avoid issues for editors and forum users
            return (miss);
        }
 
@@ -127,7 +126,7 @@ sub vcl_backend_response {
 // See http://foshttpcache.readthedocs.org/en/latest/varnish-configuration.html#id4
 sub ez_purge {
 
-    # Support how purging was done in earlier versions, this is deprecated and here just for BC
+    # Support how purging was done in earlier versions, this is deprecated and here just for BC for code still using it
     if (req.method == "BAN") {
         if (!client.ip ~ invalidators) {
             return (synth(405, "Method not allowed"));
@@ -180,21 +179,6 @@ sub ez_user_context_hash {
         }
         set req.http.accept = "application/vnd.fos.user-context-hash";
 
-        // Backup cookie heder if set and only forward session ID to hash lookup, as hash cache will vary on cookie.
-        if (req.http.cookie) {
-            set req.http.x-fos-original-cookie = req.http.cookie;
-            set req.http.cookie = ";" + req.http.cookie;
-            set req.http.cookie = regsuball(req.http.cookie, "; +", ";");
-            set req.http.cookie = regsuball(req.http.cookie, ";(eZSESSID[^=]*)=", "; \1=");
-            set req.http.cookie = regsuball(req.http.cookie, ";[^ ][^;]*", "");
-            set req.http.cookie = regsuball(req.http.cookie, "^[; ]+|[; ]+$", "");
-
-            if (req.http.cookie == "") {
-                // If there are no more cookies, remove the header to get page cached.
-                unset req.http.cookie;
-            }
-        }
-
         // Backup original URL
         set req.http.x-fos-original-url = req.url;
         set req.url = "/_fos_user_context_hash";
@@ -216,11 +200,6 @@ sub ez_user_context_hash {
         } else {
             // If accept header was not set in original request, remove the header here.
             unset req.http.accept;
-        }
-
-        if (req.http.x-fos-original-cookie) {
-            set req.http.cookie = req.http.x-fos-original-cookie;
-            unset req.http.x-fos-original-cookie;
         }
 
         // Force the lookup, the backend must tell not to cache or vary on the
@@ -245,14 +224,25 @@ sub vcl_deliver {
 
     // Remove the vary on user context hash, this is nothing public. Keep all
     // other vary headers.
-    set resp.http.Vary = regsub(resp.http.Vary, "(?i),? *X-User-Hash *", "");
-    set resp.http.Vary = regsub(resp.http.Vary, "^, *", "");
-    if (resp.http.Vary == "") {
-        unset resp.http.Vary;
-    }
+    if (resp.http.Vary ~ "X-User-Hash") {
+        set resp.http.Vary = regsub(resp.http.Vary, "(?i),? *X-User-Hash *", "");
+        set resp.http.Vary = regsub(resp.http.Vary, "^, *", "");
+        if (resp.http.Vary == "") {
+            unset resp.http.Vary;
+        }
 
-    // Sanity check to prevent ever exposing the hash to a client.
-    unset resp.http.x-user-hash;
+        // If we vary by user hash, we'll also adjust the cache control headers going out by default to avoid sending
+        // large ttl meant for Varnish to shared proxies and such. We assume only session cookie is left after vcl_recv.
+        if (req.http.cookie) {
+            // When in session where we vary by user hash we by default avoid caching this in shared proxies & browsers
+            // For browser cache with it revalidating against varnish, use for instance "private, no-cache" instead
+            set resp.http.cache-control = "private, no-cache, no-store, must-revalidate";
+        } else if (resp.http.cache-control ~ "public") {
+            // For non logged in users we allow caching on shared proxies (mobile network accelerators, planes, ...)
+            // But only for a short while, as there is no way to purge them
+            set resp.http.cache-control = "public, s-maxage=600, stale-while-revalidate=300, stale-if-error=300";
+        }
+    }
 
     if (client.ip ~ debuggers) {
         if (resp.http.X-Varnish ~ " ") {
@@ -263,5 +253,7 @@ sub vcl_deliver {
     } else {
         // Remove tag headers when delivering to non debug client
         unset resp.http.xkey;
+        // Sanity check to prevent ever exposing the hash to a non debug client.
+        unset resp.http.x-user-hash;
     }
 }

@@ -12,9 +12,12 @@ use eZ\Publish\Core\SignalSlot\Signal\LocationService\CreateLocationSignal;
 
 class CreateLocationSlotTest extends AbstractContentSlotTest
 {
+    protected $locationId = 45;
+    protected $parentLocationId = 43;
+
     public function createSignal()
     {
-        return new CreateLocationSignal(['contentId' => $this->contentId]);
+        return new CreateLocationSignal(['contentId' => $this->contentId, 'locationId' => $this->locationId, 'parentLocationId' => $this->parentLocationId]);
     }
 
     public function getSlotClass()
@@ -24,6 +27,6 @@ class CreateLocationSlotTest extends AbstractContentSlotTest
 
     public function getReceivedSignalClasses()
     {
-        return ['eZ\Publish\Core\SignalSlot\Signal\LocationService\CreateLocationSignal'];
+        return [CreateLocationSignal::class];
     }
 }

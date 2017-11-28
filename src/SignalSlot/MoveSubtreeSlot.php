@@ -20,9 +20,10 @@ class MoveSubtreeSlot extends AbstractContentSlot
      */
     protected function generateTags(Signal $signal)
     {
-        // @todo Missing info to clear sibling and parent cache of old parent!
         return [
             'path-' . $signal->locationId,
+            'location-' . $signal->oldParentLocationId,
+            'parent-' . $signal->oldParentLocationId,
             'location-' . $signal->newParentLocationId,
             'parent-' . $signal->newParentLocationId,
         ];

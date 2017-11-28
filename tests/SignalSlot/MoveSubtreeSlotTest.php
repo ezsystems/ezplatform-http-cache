@@ -14,6 +14,7 @@ class MoveSubtreeSlotTest extends AbstractContentSlotTest
 {
     protected $locationId = 45;
     protected $parentLocationId = 43;
+    protected $oldParentLocationId = 2;
 
     public function createSignal()
     {
@@ -21,13 +22,14 @@ class MoveSubtreeSlotTest extends AbstractContentSlotTest
             [
                 'locationId' => $this->locationId,
                 'newParentLocationId' => $this->parentLocationId,
+                'oldParentLocationId' => $this->oldParentLocationId,
             ]
         );
     }
 
     public function generateTags()
     {
-        return ['path-' . $this->locationId, 'location-' . $this->parentLocationId, 'parent-' . $this->parentLocationId];
+        return ['path-' . $this->locationId, 'location-' . $this->oldParentLocationId, 'parent-' . $this->oldParentLocationId, 'location-' . $this->parentLocationId, 'parent-' . $this->parentLocationId];
     }
 
     public function getSlotClass()
@@ -37,6 +39,6 @@ class MoveSubtreeSlotTest extends AbstractContentSlotTest
 
     public function getReceivedSignalClasses()
     {
-        return ['eZ\Publish\Core\SignalSlot\Signal\LocationService\MoveSubtreeSignal'];
+        return [MoveSubtreeSignal::class];
     }
 }

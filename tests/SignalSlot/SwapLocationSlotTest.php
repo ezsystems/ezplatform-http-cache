@@ -12,23 +12,46 @@ use eZ\Publish\Core\SignalSlot\Signal\LocationService\SwapLocationSignal;
 
 class SwapLocationSlotTest extends AbstractContentSlotTest
 {
-    public function setUp()
-    {
-        $this->markTestIncomplete('fixme');
-    }
+    protected $locationId = 45;
+    protected $parentLocationId = 43;
+
+    protected $swapContentId = 62;
+    protected $swapLocationId = 65;
+    protected $swapParentLocationId = 63;
 
     public function createSignal()
     {
-        return new SwapLocationSignal(['content1Id' => $this->contentId]);
+        return new SwapLocationSignal([
+            'content1Id' => $this->contentId,
+            'location1Id' => $this->locationId,
+            'parentLocation1Id' => $this->parentLocationId,
+            'content2Id' => $this->swapContentId,
+            'location2Id' => $this->swapLocationId,
+            'parentLocation2Id' => $this->swapParentLocationId,
+        ]);
+    }
+
+    public function generateTags()
+    {
+        return [
+            'content-' . $this->contentId,
+            'path-' . $this->locationId,
+            'location-' . $this->parentLocationId,
+            'parent-' . $this->parentLocationId,
+            'content-' . $this->swapContentId,
+            'path-' . $this->swapLocationId,
+            'location-' . $this->swapParentLocationId,
+            'parent-' . $this->swapParentLocationId,
+        ];
     }
 
     public function getSlotClass()
     {
-        return 'EzSystems\PlatformHttpCacheBundle\SignalSlot\SetContentStateSlot';
+        return 'EzSystems\PlatformHttpCacheBundle\SignalSlot\SwapLocationSlot';
     }
 
     public function getReceivedSignalClasses()
     {
-        return ['eZ\Publish\Core\SignalSlot\Signal\ObjectStateService\SetContentStateSignal'];
+        return [SwapLocationSignal::class];
     }
 }

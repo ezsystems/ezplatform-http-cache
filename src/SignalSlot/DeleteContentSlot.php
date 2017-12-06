@@ -17,6 +17,9 @@ class DeleteContentSlot extends AbstractContentSlot
 {
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\ContentService\DeleteContentSignal $signal
+     *
+     * @todo Missing parent, however it would be clener if kernel emmited cascading Delete Location signals on affected
+     *       locations instead.
      */
     protected function generateTags(Signal $signal)
     {

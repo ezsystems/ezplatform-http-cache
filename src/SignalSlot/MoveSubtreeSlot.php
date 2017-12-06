@@ -21,10 +21,15 @@ class MoveSubtreeSlot extends AbstractContentSlot
     protected function generateTags(Signal $signal)
     {
         return [
+            // The tree being moved
             'path-' . $signal->locationId,
+            // old parent
             'location-' . $signal->oldParentLocationId,
+            // old siblings
             'parent-' . $signal->oldParentLocationId,
+            // new parent
             'location-' . $signal->newParentLocationId,
+            // new siblings
             'parent-' . $signal->newParentLocationId,
         ];
     }

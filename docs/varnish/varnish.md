@@ -4,7 +4,7 @@ eZ Platform Varnish configuration
 Prerequisites
 -------------
 * A working Varnish 4.1 and higher setup with xkey module installed
-  * Varnish Plus comes with xkey out of the box and can also be used. 
+* Varnish Plus comes with xkey out of the box and can also be used.
 
 Recommended VCL base files
 --------------------------
@@ -12,9 +12,9 @@ For Varnish to work properly with eZ, you'll need to use the provided configurat
 
 * [eZ Platform optimized Varnish VCL](vcl/varnish4.vcl)
 
-> **Note:** Http cache management is done with the help of [FOSHttpCacheBundle](http://foshttpcachebundle.readthedocs.org/).
-  One may need to tweak their VCL further on according to [FOSHttpCache documentation](http://foshttpcache.readthedocs.org/en/latest/varnish-configuration.html)
-  in order to use features supported by it.
+For tuning the VCL further to you needs, see the following relevant examples:
+- [FOSHttpCache documentation](http://foshttpcache.readthedocs.io/en/1.4/varnish-configuration.html)
+- [Symfony documentation](http://symfony.com/doc/2.8/http_cache/varnish.html)
 
 
 Example installation on Debian/Ubuntu:

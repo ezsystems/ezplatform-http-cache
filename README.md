@@ -84,13 +84,13 @@ parameters:
     purge_type: varnish
 ```
 
-For further reading on drivers see [doc/drivers.md](doc/drivers.md).
+For further reading on drivers see [docs/drivers.md](docs/drivers.md).
 
 
 ### Tags
 
 
-For further reading on tags see [doc/using_tags.md](doc/using_tags.md).
+For further reading on tags see [docs/using_tags.md](docs/using_tags.md).
 
 
 [ezplatform]: http://github.com/ezsystems/ezplatform

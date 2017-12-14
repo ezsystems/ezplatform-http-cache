@@ -20,7 +20,8 @@ class KernelPass implements CompilerPassInterface
             if ($this->isSignalSlot($id) ||
                 $this->isSmartCacheListener($id) ||
                 $this->isResponseCacheListener($id) ||
-                $this->isCachePurger($id)
+                $this->isCachePurger($id) ||
+                $id === 'ezpublish.user.identity_definer.role_id'
             ) {
                 $container->removeDefinition($id);
             }

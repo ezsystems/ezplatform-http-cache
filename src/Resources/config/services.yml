@@ -40,3 +40,8 @@ services:
          - '%ezplatform.http_cache.tags.header%'
          - '@ezplatform.http_cache.purge_client'
 
+    ezplatform.http_cache.user_context_provider.role_identify:
+        class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify
+        arguments: ["@ezpublish.api.repository"]
+        tags:
+            - { name: fos_http_cache.user_context_provider }

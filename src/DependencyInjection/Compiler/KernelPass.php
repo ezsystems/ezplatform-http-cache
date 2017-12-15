@@ -20,14 +20,18 @@ class KernelPass implements CompilerPassInterface
             if ($this->isSignalSlot($id) ||
                 $this->isSmartCacheListener($id) ||
                 $this->isResponseCacheListener($id) ||
-                $this->isCachePurger($id) ||
-                $id === 'ezpublish.user.identity_definer.role_id'
+                $this->isCachePurger($id)
             ) {
                 $container->removeDefinition($id);
             }
         }
-        $container->removeAlias('ezpublish.http_cache.purger');
+
+        if ($container->hasAlias('ezpublish.http_cache.purger')) {
+            $container->removeAlias('ezpublish.http_cache.purger');
+        }
+
         $this->symfonyPre34BC($container);
+        $this->removeKernelRoleIdContextProvider($container);
 
         // Let's re-export purge_type setting so that driver's don't have to depend on kernel in order to acquire it
         $container->setParameter('ezplatform.http_cache.purge_type', $container->getParameter('ezpublish.http_cache.purge_type'));
@@ -53,6 +57,29 @@ class KernelPass implements CompilerPassInterface
             return true;
         }));
         $container->getDefinition('cache_clearer')->setArguments($arguments);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    protected function removeKernelRoleIdContextProvider(ContainerBuilder $container)
+    {
+        if (!$container->hasDefinition('ezpublish.user.identity_definer.role_id')) {
+            return;
+        }
+
+        $container->removeDefinition('ezpublish.user.identity_definer.role_id');
+
+        // Also remove from arguments already passed to FOSHttpCache via compiler pass there.
+        $arguments = $container->getDefinition('fos_http_cache.user_context.hash_generator')->getArguments();
+        $arguments[0] = array_values(array_filter($arguments[0], function ($argument) {
+            if ($argument === 'ezpublish.user.identity_definer.role_id') {
+                return false;
+            }
+
+            return true;
+        }));
+        $container->getDefinition('fos_http_cache.user_context.hash_generator')->setArguments($arguments);
     }
 
     /**

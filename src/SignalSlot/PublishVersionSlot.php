@@ -8,7 +8,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\SignalSlot;
 
-use eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface;
+use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use eZ\Publish\Core\SignalSlot\Signal;
 use eZ\Publish\SPI\Persistence\Content\Location\Handler;
 
@@ -23,7 +23,7 @@ class PublishVersionSlot extends AbstractContentSlot
     private $locationHandler;
 
     /**
-     * @param \eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface $purgeClient
+     * @param \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface $purgeClient
      * @param \eZ\Publish\SPI\Persistence\Content\Location\Handler $spiLocationHandler
      */
     public function __construct(PurgeClientInterface $purgeClient, Handler $spiLocationHandler)

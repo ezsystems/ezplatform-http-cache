@@ -8,7 +8,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\SignalSlot;
 
-use eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface;
+use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use eZ\Publish\Core\SignalSlot\Signal;
 use eZ\Publish\Core\SignalSlot\Slot;
 
@@ -18,12 +18,12 @@ use eZ\Publish\Core\SignalSlot\Slot;
 abstract class AbstractSlot extends Slot
 {
     /**
-     * @var \eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface
+     * @var \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface
      */
     protected $purgeClient;
 
     /**
-     * @param \eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface $purgeClient
+     * @param \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface $purgeClient
      */
     public function __construct(PurgeClientInterface $purgeClient)
     {

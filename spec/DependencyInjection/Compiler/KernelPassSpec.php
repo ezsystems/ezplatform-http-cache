@@ -6,6 +6,7 @@ use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\KernelPass;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class KernelPassSpec extends ObjectBehavior
 {
@@ -14,9 +15,10 @@ class KernelPassSpec extends ObjectBehavior
         $this->shouldHaveType(KernelPass::class);
     }
 
-    function it_disables_the_kernels_httpcache_services(ContainerBuilder $container, Definition $cacheClearer)
+    function it_disables_the_kernels_httpcache_services(ContainerBuilder $container, Definition $cacheClearer, Definition $hashGenerator)
     {
         $container->getAlias('ezpublish.http_cache.purge_client')->willReturn('some_random_id');
+        $container->hasAlias('ezpublish.http_cache.purger')->willReturn(true);
         $container->getAlias('ezpublish.http_cache.purger')->willReturn('some_random_id');
         $container->getDefinitions()->willReturn([
             'ezpublish.http_cache.witness_service' => new Definition(),
@@ -49,6 +51,23 @@ class KernelPassSpec extends ObjectBehavior
             [
                 'ezpublish.http_cache.witness_service',
                 'witness_service'
+            ]
+        ])->shouldBeCalled();
+
+        $container->hasDefinition('ezpublish.user.identity_definer.role_id')->willReturn(true);
+        $container->removeDefinition('ezpublish.user.identity_definer.role_id')->willReturn(true);
+        $container->getDefinition('fos_http_cache.user_context.hash_generator')->willReturn($hashGenerator);
+        $hashGenerator->getArguments()->willReturn([
+            [
+                $ref1 = new Reference('ezplatform.http_cache.user_context_provider.role_identify'),
+                $ref2 = new Reference('ezpublish.user.hash_generator'),
+                new Reference('ezpublish.user.identity_definer.role_id'),
+            ]
+        ]);
+        $hashGenerator->setArguments([
+            [
+                $ref1,
+                $ref2,
             ]
         ])->shouldBeCalled();
 

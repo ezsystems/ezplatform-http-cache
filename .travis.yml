@@ -1,11 +1,31 @@
+dist: trusty
+sudo: required
+
 language: php
 
+cache:
+    directories:
+        - $HOME/.composer/cache/files
+
+
+env:
+  global:
+    # For functional tests
+    - COMPOSE_FILE="doc/docker-compose/base-dev.yml:doc/docker-compose/selenium.yml"
+
 matrix:
+    fast_finish: true
     include:
         - php: 5.6
         - php: 7.0
         - php: 7.1
           env: CHECK_CS=true
+        - php: 7.2
+        # Functional
+        - php: 7.1
+          env: BEHAT_OPTS="--profile=rest --tags=~@broken --suite=fullJson" EZPLATFORM_BRANCH=6.13 SYMFONY_ENV=behat SYMFONY_HTTP_CACHE=1
+        - php: 7.1
+          env: BEHAT_OPTS="--profile=rest --tags=~@broken --suite=fullJson" EZPLATFORM_BRANCH=master SYMFONY_ENV=behat SYMFONY_HTTP_CACHE=1
 
 # test only master (+ Pull requests)
 branches:
@@ -13,12 +33,13 @@ branches:
         - master
 
 before_script:
-    - travis_retry composer selfupdate
     - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-    - travis_retry composer install --prefer-dist --no-interaction
+    - if [ "$BEHAT_OPTS" == "" ] ; then travis_retry composer selfupdate && travis_retry composer install --prefer-dist --no-interaction ; fi
+    - if [ "$BEHAT_OPTS" != "" ] ; then ./tests/.travis/prepare_behat.sh ; fi
 
 script:
-    - php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty
+    - if [ "$BEHAT_OPTS" == "" ] ; then php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty ; fi
+    - if [ "$BEHAT_OPTS" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user www-data app sh -c "bin/behat $BEHAT_OPTS" ; fi
     - if [ "$CHECK_CS" == "true" ]; then phpenv config-rm xdebug.ini && ./vendor/bin/php-cs-fixer fix -v --dry-run --diff --show-progress=estimating; fi
 
 notifications:

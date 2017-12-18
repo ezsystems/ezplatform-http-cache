@@ -1,19 +1,15 @@
 <?php
 
 /**
- * File containing the Cache PurgeClientInterface class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
 namespace EzSystems\PlatformHttpCacheBundle\PurgeClient;
 
-use eZ\Publish\Core\MVC\Symfony\Cache\PurgeClientInterface as KernelPurgeClientInterface;
-
 /**
- * KernelPurgeClientInterface is deprecated, and will be removed in a later version when compatibility with ezpublish-kernel 6.x is dropped.
+ * Interface for Purge Clients.
  */
-interface PurgeClientInterface extends KernelPurgeClientInterface
+interface PurgeClientInterface
 {
     /**
      * Triggers the cache purge of $tags.

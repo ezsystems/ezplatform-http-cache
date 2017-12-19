@@ -57,9 +57,30 @@ abstract class AbstractSlotTest extends TestCase
     }
 
     /**
+     * Create signal instance.
+     *
+     * @return mixed
+     */
+    abstract public function createSignal();
+
+    /**
      * @return array
      */
     abstract public function generateTags();
+
+    /**
+     * Returns signal classes handled by tested slot.
+     *
+     * @return array
+     */
+    abstract public function getReceivedSignalClasses();
+
+    /**
+     * Returns tested slot class.
+     *
+     * @return string
+     */
+    abstract public function getSlotClass();
 
     protected function receive($signal)
     {
@@ -79,7 +100,6 @@ abstract class AbstractSlotTest extends TestCase
         $arguments = [];
 
         $signals = $this->getAllSignals();
-
         foreach ($signals as $signalClass) {
             if (in_array($signalClass, $this->getReceivedSignalClasses())) {
                 continue;

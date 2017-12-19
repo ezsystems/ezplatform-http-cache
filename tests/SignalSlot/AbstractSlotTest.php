@@ -78,15 +78,13 @@ abstract class AbstractSlotTest extends TestCase
     {
         $arguments = [];
 
-        if (empty($arguments)) {
-            $signals = $this->getAllSignals();
+        $signals = $this->getAllSignals();
 
-            foreach ($signals as $signalClass) {
-                if (in_array($signalClass, $this->getReceivedSignalClasses())) {
-                    continue;
-                }
-                $arguments[] = [new $signalClass()];
+        foreach ($signals as $signalClass) {
+            if (in_array($signalClass, $this->getReceivedSignalClasses())) {
+                continue;
             }
+            $arguments[] = [new $signalClass()];
         }
 
         return $arguments;

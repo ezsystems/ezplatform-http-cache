@@ -92,7 +92,7 @@ class AppCache extends EventDispatchingHttpCache
     }
 
     /**
-     * Perform cleanup of reponse
+     * Perform cleanup of reponse.
      *
      * @param Response $response
      */

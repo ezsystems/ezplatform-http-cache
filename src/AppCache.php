@@ -5,8 +5,9 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle;
 
-use eZ\Bundle\EzPublishCoreBundle\HttpCache;
+use FOS\HttpCacheBundle\SymfonyCache\EventDispatchingHttpCache;
 use EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore;
+use EzSystems\PlatformHttpCacheBundle\Proxy\UserContextSubscriber;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,13 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Custom AppCache.
  *
- * Enable by setting SYMFONY_HTTP_CACHE_CLASS to 'EzSystems\PlatformHttpCacheBundle\AppCache'
+ * "deprecated" This and classes used here will be removed once this package moves to FosHttpCache 2.x.
  */
-class AppCache extends HttpCache
+class AppCache extends EventDispatchingHttpCache
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function createStore()
     {
         return new TagAwareStore($this->cacheDir ?: $this->kernel->getCacheDir() . '/http_cache');
@@ -37,6 +41,61 @@ class AppCache extends HttpCache
         return $response;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultSubscribers()
+    {
+        // Currently we don't reuse purge/refresh subscribers from FosHttpCache as we need custom invalidation logic
+        return [new UserContextSubscriber(['user_hash_header' => 'X-User-Hash', 'session_name_prefix' => 'eZSESSID'])];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function invalidate(Request $request, $catch = false)
+    {
+        if ($request->getMethod() !== 'PURGE' && $request->getMethod() !== 'BAN') {
+            return parent::invalidate($request, $catch);
+        }
+
+        // Reject all non-authorized clients
+        if (!in_array($request->getClientIp(), $this->getInternalAllowedIPs())) {
+            return new Response('', 405);
+        }
+
+        $response = new Response();
+        $store = $this->getStore();
+        if ($store instanceof RequestAwarePurger) {
+            $result = $store->purgeByRequest($request);
+        } else {
+            $result = $store->purge($request->getUri());
+        }
+
+        if ($result === true) {
+            $response->setStatusCode(200, 'Purged');
+        } else {
+            $response->setStatusCode(404, 'Not purged');
+        }
+
+        return $response;
+    }
+
+    /**
+     * Returns an array of allowed IPs for Http PURGE requests.
+     *
+     * @return array
+     */
+    protected function getInternalAllowedIPs()
+    {
+        return ['127.0.0.1', '::1'];
+    }
+
+    /**
+     * Perform cleanup of reponse
+     *
+     * @param Response $response
+     */
     protected function cleanupHeadersForProd(Response $response)
     {
         // remove headers that identify the content or internal digest info

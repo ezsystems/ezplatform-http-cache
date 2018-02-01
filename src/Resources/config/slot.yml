@@ -4,6 +4,10 @@ services:
         abstract: true
         arguments: ["@ezplatform.http_cache.purge_client"]
 
+    ezplatform.http_cache.signalslot.abstract_publish:
+        abstract: true
+        arguments: ["@ezplatform.http_cache.purge_client", "@ezpublish.spi.persistence.cache.locationHandler"]
+
     ezplatform.http_cache.signalslot.assign_section:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\AssignSectionSlot
         parent: ezplatform.http_cache.signalslot.abstract_content
@@ -60,7 +64,7 @@ services:
 
     ezplatform.http_cache.signalslot.publish_version:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\PublishVersionSlot
-        arguments: ["@ezplatform.http_cache.purge_client", "@ezpublish.spi.persistence.cache.locationHandler"]
+        parent: ezplatform.http_cache.signalslot.abstract_publish
         tags:
             - { name: ezpublish.api.slot, signal: ContentService\PublishVersionSignal }
 
@@ -88,11 +92,29 @@ services:
         tags:
             - { name: ezpublish.api.slot, signal: LocationService\UpdateLocationSignal }
 
+    ezplatform.http_cache.signalslot.create_user:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\CreateUserSlot
+        parent: ezplatform.http_cache.signalslot.abstract_publish
+        tags:
+            - { name: ezpublish.api.slot, signal: UserService\CreateUserSignal }
+
     ezplatform.http_cache.signalslot.update_user:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\UpdateUserSlot
-        parent: ezplatform.http_cache.signalslot.abstract_content
+        parent: ezplatform.http_cache.signalslot.abstract_publish
         tags:
             - { name: ezpublish.api.slot, signal: UserService\UpdateUserSignal }
+
+    ezplatform.http_cache.signalslot.create_user_group:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\CreateUserGroupSlot
+        parent: ezplatform.http_cache.signalslot.abstract_publish
+        tags:
+            - { name: ezpublish.api.slot, signal: UserService\CreateUserGroupSignal }
+
+    ezplatform.http_cache.signalslot.update_user_group:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\UpdateUserGroupSlot
+        parent: ezplatform.http_cache.signalslot.abstract_publish
+        tags:
+            - { name: ezpublish.api.slot, signal: UserService\UpdateUserGroupSignal }
 
     ezplatform.http_cache.signalslot.assign_user_to_user_group:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\AssignUserToUserGroupSlot

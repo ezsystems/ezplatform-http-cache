@@ -9,17 +9,9 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use eZ\Publish\Core\SignalSlot\Signal\ContentService\PublishVersionSignal;
-use eZ\Publish\SPI\Persistence\Content\Location;
-use eZ\Publish\SPI\Persistence\Content\Location\Handler;
 
-class PublishVersionSlotTest extends AbstractContentSlotTest
+class PublishVersionSlotTest extends AbstractPublishSlotTest
 {
-    protected $locationId = 45;
-    protected $parentLocationId = 32;
-
-    /** @var \eZ\Publish\SPI\Persistence\Content\Location\Handler|\PHPUnit_Framework_MockObject_MockObject */
-    protected $spiLocationHandlerMock;
-
     public function getSlotClass()
     {
         return 'EzSystems\PlatformHttpCacheBundle\SignalSlot\PublishVersionSlot';
@@ -27,54 +19,13 @@ class PublishVersionSlotTest extends AbstractContentSlotTest
 
     public function createSignal()
     {
-        return new PublishVersionSignal(['contentId' => $this->contentId]);
+        return new PublishVersionSignal([
+            'contentId' => $this->contentId,
+        ]);
     }
 
     public function getReceivedSignalClasses()
     {
         return ['eZ\Publish\Core\SignalSlot\Signal\ContentService\PublishVersionSignal'];
-    }
-
-    protected function createSlot()
-    {
-        $class = $this->getSlotClass();
-        if ($this->spiLocationHandlerMock === null) {
-            $this->spiLocationHandlerMock = $this->createMock(Handler::class);
-        }
-
-        return new $class($this->purgeClientMock, $this->spiLocationHandlerMock);
-    }
-
-    /**
-     * @dataProvider getUnreceivedSignals
-     */
-    public function testDoesNotReceiveOtherSignals($signal)
-    {
-        $this->purgeClientMock->expects($this->never())->method('purge');
-        $this->purgeClientMock->expects($this->never())->method('purgeAll');
-
-        $this->spiLocationHandlerMock->expects($this->never())->method('loadLocationsByContent');
-
-        $this->slot->receive($signal);
-    }
-
-    /**
-     * @dataProvider getReceivedSignals
-     */
-    public function testReceivePurgesCacheForTags($signal)
-    {
-        $this->spiLocationHandlerMock
-            ->expects($this->once())
-            ->method('loadLocationsByContent')
-            ->with($this->contentId)
-            ->willReturn(
-                [
-                    new Location(['id' => $this->locationId, 'parentId' => $this->parentLocationId]),
-                ]
-            );
-
-        $this->purgeClientMock->expects($this->once())->method('purge')->with($this->generateTags());
-        $this->purgeClientMock->expects($this->never())->method('purgeAll');
-        parent::receive($signal);
     }
 }

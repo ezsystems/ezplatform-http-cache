@@ -1,7 +1,7 @@
 [![Build Status](https://img.shields.io/travis/ezsystems/ezplatform-http-cache.svg?style=flat-square&branch=master)](https://travis-ci.org/ezsystems/ezplatform-http-cache)
 [![Downloads](https://img.shields.io/packagist/dt/ezsystems/ezplatform-http-cache.svg?style=flat-square)](https://packagist.org/packages/ezsystems/ezplatform-http-cache)
 [![Latest release](https://img.shields.io/github/release/ezsystems/ezplatform-http-cache.svg?style=flat-square)](https://github.com/ezsystems/ezplatform-http-cache/releases)
-[![License](https://img.shields.io/packagist/l/ezsystems/ezplatform-http-cache.svg?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/github/license/ezsystems/ezplatform-http-cache.svg?style=flat-square)](LICENSE)
 
 # platform-http-cache
 

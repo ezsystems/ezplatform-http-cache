@@ -8,23 +8,25 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
-use eZ\Publish\Core\SignalSlot\Signal\UserService\UpdateUserSignal;
-use EzSystems\PlatformHttpCacheBundle\SignalSlot\UpdateUserSlot;
+use eZ\Publish\Core\SignalSlot\Signal\UserService\UpdateUserGroupSignal;
+use EzSystems\PlatformHttpCacheBundle\SignalSlot\UpdateUserGroupSlot;
 
-class UpdateUserSlotTest extends AbstractPublishSlotTest
+class UpdateUserGroupSlotTest extends AbstractPublishSlotTest
 {
     public function createSignal()
     {
-        return new UpdateUserSignal(['userId' => $this->contentId]);
+        return new UpdateUserGroupSignal([
+            'userGroupId' => $this->contentId,
+        ]);
     }
 
     public function getSlotClass()
     {
-        return UpdateUserSlot::class;
+        return UpdateUserGroupSlot::class;
     }
 
     public function getReceivedSignalClasses()
     {
-        return [UpdateUserSignal::class];
+        return [UpdateUserGroupSignal::class];
     }
 }

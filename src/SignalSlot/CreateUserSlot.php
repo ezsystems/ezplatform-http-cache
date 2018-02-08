@@ -11,13 +11,13 @@ namespace EzSystems\PlatformHttpCacheBundle\SignalSlot;
 use eZ\Publish\Core\SignalSlot\Signal;
 
 /**
- * A slot handling UpdateUserSignal.
+ * A slot handling CreateUserSlot.
  */
-class UpdateUserSlot extends AbstractPublishSlot
+class CreateUserSlot extends AbstractPublishSlot
 {
     protected function supports(Signal $signal)
     {
-        return $signal instanceof Signal\UserService\UpdateUserSignal;
+        return $signal instanceof Signal\UserService\CreateUserSignal;
     }
 
     protected function getContentId(Signal $signal)

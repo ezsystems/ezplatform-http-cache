@@ -51,11 +51,37 @@ above. These can be found in `src/ResponseTagger`.
 
 For custom or eZ controllers _(like REST at the time of writing)_ still using `X-Location-Id`, a dedicated response
 listener `XLocationIdResponseSubscriber` handles translating this to tags so the cache can be properly invalidated by
-this bundle.
+this bundle. It supports comma separated location id values which was only partially supported in earlier versions.
 
-*This is currently marked as Deprecated, and for rendering content it is thus advice to refactor to use Content View.
-For other needs there is an internal tag handler in this bundle that can be used, however be aware it will probably
-change once we move to FOSHttpCache 2.x, so in this case staying with `X-Location-Id` for the time being is ok.*
+*NOTE: This is currently marked as Deprecated, and for rendering eZ content it is thus advice to refactor to use Content
+View. For other needs there is an FOS tag handler for Twig and PHP that can be used, see below for further info.*
+
+
+### For custom needs using FOSHttpCache (tagging relations and more)
+
+For custom needs, including template logic for eZ content relations which is here used for examples, there are two ways
+to tag your responses.
+
+##### Twig usage
+
+For twig usage, you can make sure response is tagged correctly by using the following twig operator in your template:
+```twig
+    {{ fos_httpcache_tag('relation-33') }}
+
+    {# Or using array for several values #}
+    {{ fos_httpcache_tag(['relation-33', 'relation-44']) }}
+```
+
+##### PHP Usage
+
+Fo PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service which lets you add tags to a response:
+```php
+    /** @var \FOS\HttpCache\Handler\TagHandler $tagHandler */
+    $tagHandler->addTags(['relation-33', 'relation-44']);
+```
+
+*WARNING: Be aware service name and type hint will somewhat change once we move to FOSHttpCache 2.x, so in this case
+you can alternatively consider to add tag in twig template or stay with usage of `X-Location-Id` for the time being.*
 
 ## How purge tagging is done
 

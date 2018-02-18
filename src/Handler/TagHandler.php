@@ -39,6 +39,10 @@ class TagHandler extends FOSTagHandler implements TagHandlerInterface
 
     public function tagResponse(Response $response, $replace = false)
     {
+        if ($this->hasTags()) {
+            $this->addTagHeaders($response, explode(',', $this->getTagsHeaderValue()));
+        }
+
         return $this;
     }
 

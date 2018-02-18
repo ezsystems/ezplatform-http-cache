@@ -44,6 +44,15 @@ class TagHandler extends FOSTagHandler implements TagHandlerInterface
 
     public function addTagHeaders(Response $response, array $tags)
     {
-        $response->headers->set($this->tagsHeader, $tags, false);
+        if ($response->headers->has($this->tagsHeader)) {
+            // Get as array and handle both array based and string based values
+            $headerValue = $response->headers->get($this->tagsHeader, null, false);
+            $tags = array_merge(
+                $tags,
+                count($headerValue) === 1 ? explode(' ', $headerValue[0]) : $headerValue
+            );
+        }
+
+        $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
     }
 }

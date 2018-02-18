@@ -69,11 +69,12 @@ class TagAwareStore extends Store implements RequestAwarePurger
     {
         $key = parent::write($request, $response);
 
-        // Now save tags
+        // Get tags in order to save them
         $digest = $response->headers->get('X-Content-Digest');
         $tags = $response->headers->get('xkey', null, false);
 
-        foreach (array_unique($tags) as $tag) {
+        // Handle both array based and string based header (her gotten as single item array with space separated string)
+        foreach (array_unique(count($tags) === 1 ? explode(' ', $tags[0]) : $tags) as $tag) {
             if (false === $this->saveTag($tag, $digest)) {
                 throw new \RuntimeException('Unable to store the cache tag meta information.');
             }

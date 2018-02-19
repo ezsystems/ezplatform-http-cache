@@ -20,6 +20,7 @@ matrix:
         - php: 7.0
         - php: 7.1
           env: CHECK_CS=true
+        - php: 7.2
         # Functional
         - php: 5.6
           env: BEHAT_OPTS="--profile=rest --tags=~@broken --suite=fullJson" EZPLATFORM_BRANCH=1.13 SYMFONY_ENV=behat PHP_IMAGE=ezsystems/php:5.6-v1
@@ -30,6 +31,7 @@ matrix:
 branches:
     only:
         - master
+        - /^\d.\d+$/
 
 before_script:
     - travis_retry composer selfupdate

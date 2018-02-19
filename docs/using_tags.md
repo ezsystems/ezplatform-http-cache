@@ -62,7 +62,7 @@ View. For other needs there is an FOS tag handler for Twig and PHP that can be u
 For custom needs, including template logic for eZ content relations which is here used for examples, there are two ways
 to tag your responses.
 
-##### Twig usage
+##### Twig use
 
 For twig usage, you can make sure response is tagged correctly by using the following twig operator in your template:
 ```twig
@@ -72,13 +72,17 @@ For twig usage, you can make sure response is tagged correctly by using the foll
     {{ fos_httpcache_tag(['relation-33', 'relation-44']) }}
 ```
 
-##### PHP Usage
+See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#tagging-from-twig-templates
+
+##### PHP use
 
 Fo PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service which lets you add tags to a response:
 ```php
     /** @var \FOS\HttpCache\Handler\TagHandler $tagHandler */
     $tagHandler->addTags(['relation-33', 'relation-44']);
 ```
+
+See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#tagging-from-code
 
 *WARNING: Be aware service name and type hint will somewhat change once we move to FOSHttpCache 2.x, so in this case
 you can alternatively consider to add tag in twig template or stay with usage of `X-Location-Id` for the time being.*

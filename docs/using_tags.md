@@ -54,7 +54,15 @@ above. These can be found in `src/ResponseTagger`.
 
 For custom or eZ controllers _(like REST at the time of writing)_ still using `X-Location-Id`, a dedicated response
 listener `XLocationIdResponseSubscriber` handles translating this to tags so the cache can be properly invalidated by
-this bundle. It supports comma separated location id values which was only partially supported in earlier versions.
+this bundle. It supports comma separated location id values which was only partially supported in earlier versions:
+
+```php
+    /** @var \Symfony\Component\HttpFoundation\Response $response */
+    $response->headers->set('X-Location-Id', 123);
+    
+    // Alternatively using several location id values, requires ezplatform-http-cache to work across all supported proxies
+    $response->headers->set('X-Location-Id', '123,212,42');
+```
 
 *NOTE: This is currently marked as Deprecated, and for rendering eZ content it is thus advice to refactor to use Content
 View. For other needs there is an FOS tag handler for Twig and PHP that can be used, see below for further info.*

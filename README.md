@@ -49,15 +49,11 @@ Host: localhost:8000
 Connection: close
 Cache-Control: public, s-maxage=60
 Content-Type: text/html; charset=UTF-8
-Vary: Cookie
-Vary: Authorization
-xkey: content-1
-xkey: content-type-1
-xkey: location-2
-xkey: parent-1
-xkey: path-1
-xkey: path-2
+Vary: X-User-Hash
+xkey: content-1 content-type-1 location-2 parent-1 path-1 path-2 ez-all
 ```
+
+For further reading on tags see [docs/using_tags.md](docs/using_tags.md).
 
 ### Toggling of cache on ContentView responses
 Responses from `/content/view` will be made cachable, and the shared max age will be set if it is enabled.

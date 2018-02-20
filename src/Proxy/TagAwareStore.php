@@ -69,9 +69,14 @@ class TagAwareStore extends Store implements RequestAwarePurger
     {
         $key = parent::write($request, $response);
 
-        // Now save tags
+        // Get tags in order to save them
         $digest = $response->headers->get('X-Content-Digest');
         $tags = $response->headers->get('xkey', null, false);
+
+        if (count($tags) === 1) {
+            // Handle string based header (her gotten as single item array with space separated string)
+            $tags = explode(' ', $tags[0]);
+        }
 
         foreach (array_unique($tags) as $tag) {
             if (false === $this->saveTag($tag, $digest)) {

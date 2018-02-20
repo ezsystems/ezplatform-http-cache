@@ -25,6 +25,7 @@ class TagHandler extends FOSTagHandler implements TagHandlerInterface
         $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
+        $this->addTags(['ez-all']);
     }
 
     public function invalidateTags(array $tags)
@@ -39,11 +40,24 @@ class TagHandler extends FOSTagHandler implements TagHandlerInterface
 
     public function tagResponse(Response $response, $replace = false)
     {
+        if ($this->hasTags()) {
+            $this->addTagHeaders($response, explode(',', $this->getTagsHeaderValue()));
+        }
+
         return $this;
     }
 
     public function addTagHeaders(Response $response, array $tags)
     {
-        $response->headers->set($this->tagsHeader, $tags, false);
+        if ($response->headers->has($this->tagsHeader)) {
+            // Get as array and handle both array based and string based values
+            $headerValue = $response->headers->get($this->tagsHeader, null, false);
+            $tags = array_merge(
+                $tags,
+                count($headerValue) === 1 ? explode(' ', $headerValue[0]) : $headerValue
+            );
+        }
+
+        $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
     }
 }

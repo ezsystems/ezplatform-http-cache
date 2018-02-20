@@ -25,6 +25,7 @@ class TagHandler extends FOSTagHandler implements TagHandlerInterface
         $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
+        $this->addTags(['ez-all']);
     }
 
     public function invalidateTags(array $tags)

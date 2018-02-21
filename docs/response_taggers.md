@@ -6,12 +6,14 @@ ResponseTaggers will take a `Response`, a `ResponseConfigurator` and any value o
 based on the value.
 
 ## Example
-This will add the 'content-<contentId>`, 'location-<mainLocationId>` and `content-type-<contentTypeId>` tags to the
+This value tagger will add the `content-<contentId>`, `location-<mainLocationId>` and `content-type-<contentTypeId>` tags to the
 Response:
 
 ```php
 $contentInfoResponseTagger->tag($response, $configurator, $contentInfo);
 ```
+
+In this example ContentInfo is gotten by a "delegator" which takes `ContentView` as input and passes the relevant value object from it to value taggers like the one above. _Keep on reading below for further info._
 
 ## The ResponseConfigurator
 A `ResponseCacheConfigurator` configures an HTTP Response object: make the response public, add tags, set the shared max

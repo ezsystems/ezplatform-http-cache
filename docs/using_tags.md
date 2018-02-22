@@ -45,9 +45,9 @@ the background once someone requests them. Same goes for other operations by the
 
 ### For Content View
 
-For Content View there is a dedicated response listener `HttpCacheResponseSubscriber` that triggers a set of Response
-taggers responsible for translating info from the objects involved in generating the view to corresponding tags as listed
-above. These can be found in `src/ResponseTagger`.
+For Content View there is a dedicated response listener `HttpCacheResponseSubscriber` that triggers a set of [Response
+taggers](docs/response_taggers.md) responsible for translating info from the objects involved in generating the view to
+corresponding tags as listed above. These can be found in `src/ResponseTagger`.
 
 
 ### For responses with X-Location-Id

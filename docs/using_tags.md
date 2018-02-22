@@ -73,7 +73,7 @@ View. For other needs there is an FOS tag handler for Twig and PHP that can be u
 For custom needs, including template logic for eZ content relations which is here used for examples, there are two ways
 to tag your responses.
 
-##### Twig use
+#### Twig use
 
 For twig usage, you can make sure response is tagged correctly by using the following twig operator in your template:
 ```twig
@@ -85,7 +85,7 @@ For twig usage, you can make sure response is tagged correctly by using the foll
 
 See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#tagging-from-twig-templates
 
-##### PHP use
+#### PHP use
 
 Fo PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service which lets you add tags to a response:
 ```php

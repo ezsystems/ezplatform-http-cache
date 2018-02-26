@@ -9,8 +9,9 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use eZ\Publish\Core\SignalSlot\Signal\SectionService\AssignSectionSignal;
+use EzSystems\PlatformHttpCacheBundle\SignalSlot\AssignSectionSlot;
 
-class AssignSectionSlotTest extends AbstractContentSlotTest
+class AssignSectionSlotTest extends AbstractPublishSlotTest
 {
     public function createSignal()
     {
@@ -19,11 +20,11 @@ class AssignSectionSlotTest extends AbstractContentSlotTest
 
     public function getSlotClass()
     {
-        return 'EzSystems\PlatformHttpCacheBundle\SignalSlot\AssignSectionSlot';
+        return AssignSectionSlot::class;
     }
 
     public function getReceivedSignalClasses()
     {
-        return ['eZ\Publish\Core\SignalSlot\Signal\SectionService\AssignSectionSignal'];
+        return [AssignSectionSignal::class];
     }
 }

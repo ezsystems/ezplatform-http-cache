@@ -13,10 +13,15 @@ use eZ\Publish\Core\SignalSlot\Signal;
 /**
  * A slot handling SetContentStateSignal.
  */
-class SetContentStateSlot extends AbstractContentSlot
+class SetContentStateSlot extends AbstractPublishSlot
 {
     protected function supports(Signal $signal)
     {
         return $signal instanceof Signal\ObjectStateService\SetContentStateSignal;
+    }
+
+    protected function getContentId(Signal $signal)
+    {
+        return $signal->contentId;
     }
 }

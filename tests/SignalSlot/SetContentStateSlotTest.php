@@ -9,8 +9,9 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use eZ\Publish\Core\SignalSlot\Signal\ObjectStateService\SetContentStateSignal;
+use EzSystems\PlatformHttpCacheBundle\SignalSlot\SetContentStateSlot;
 
-class SetContentStateSlotTest extends AbstractContentSlotTest
+class SetContentStateSlotTest extends AbstractPublishSlotTest
 {
     public function createSignal()
     {
@@ -19,11 +20,11 @@ class SetContentStateSlotTest extends AbstractContentSlotTest
 
     public function getSlotClass()
     {
-        return 'EzSystems\PlatformHttpCacheBundle\SignalSlot\SetContentStateSlot';
+        return SetContentStateSlot::class;
     }
 
     public function getReceivedSignalClasses()
     {
-        return ['eZ\Publish\Core\SignalSlot\Signal\ObjectStateService\SetContentStateSignal'];
+        return [SetContentStateSignal::class];
     }
 }

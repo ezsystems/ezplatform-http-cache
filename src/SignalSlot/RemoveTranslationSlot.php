@@ -6,9 +6,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\SignalSlot;
 
-use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use eZ\Publish\Core\SignalSlot\Signal;
-use eZ\Publish\SPI\Persistence\Content\Location\Handler as SPILocationHandler;
 
 class RemoveTranslationSlot extends AbstractPublishSlot
 {

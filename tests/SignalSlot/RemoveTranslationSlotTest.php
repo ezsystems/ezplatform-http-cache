@@ -8,8 +8,6 @@ namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use EzSystems\PlatformHttpCacheBundle\SignalSlot\RemoveTranslationSlot;
 use eZ\Publish\Core\SignalSlot\Signal\ContentService\RemoveTranslationSignal;
-use eZ\Publish\SPI\Persistence\Content\Location;
-use eZ\Publish\SPI\Persistence\Content\Location\Handler as LocationHandler;
 
 /**
  * Test RemoveTranslationSlot for HttpCache.

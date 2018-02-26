@@ -13,10 +13,15 @@ use eZ\Publish\Core\SignalSlot\Signal;
 /**
  * A slot handling AssignSectionSignal.
  */
-class AssignSectionSlot extends AbstractContentSlot
+class AssignSectionSlot extends AbstractPublishSlot
 {
     protected function supports(Signal $signal)
     {
         return $signal instanceof Signal\SectionService\AssignSectionSignal;
+    }
+
+    protected function getContentId(Signal $signal)
+    {
+        return $signal->contentId;
     }
 }

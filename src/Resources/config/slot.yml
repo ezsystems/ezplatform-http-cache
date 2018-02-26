@@ -10,7 +10,7 @@ services:
 
     ezplatform.http_cache.signalslot.assign_section:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\AssignSectionSlot
-        parent: ezplatform.http_cache.signalslot.abstract_content
+        parent: ezplatform.http_cache.signalslot.abstract_publish
         tags:
             - { name: ezpublish.api.slot, signal: SectionService\AssignSectionSignal }
 
@@ -70,7 +70,7 @@ services:
 
     ezplatform.http_cache.signalslot.set_content_state:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\SetContentStateSlot
-        parent: ezplatform.http_cache.signalslot.abstract_content
+        parent: ezplatform.http_cache.signalslot.abstract_publish
         tags:
             - { name: ezpublish.api.slot, signal: ObjectStateService\SetContentStateSignal }
 
@@ -142,9 +142,7 @@ services:
 
     ezplatform.http_cache.signalslot.remove_translation:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RemoveTranslationSlot
-        parent: ezplatform.http_cache.signalslot.abstract_content
-        arguments:
-            - "@ezpublish.spi.persistence.cache.locationHandler"
+        parent: ezplatform.http_cache.signalslot.abstract_publish
         tags:
             - { name: ezpublish.api.slot, signal: ContentService\RemoveTranslationSignal }
 

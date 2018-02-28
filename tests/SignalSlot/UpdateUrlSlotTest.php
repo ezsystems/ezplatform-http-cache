@@ -23,6 +23,16 @@ class UpdateUrlSlotTest extends AbstractSlotTest
     /** @var \eZ\Publish\SPI\Persistence\URL\Handler|\PHPUnit_Framework_MockObject_MockObject */
     private $spiUrlHandlerMock = null;
 
+    /**
+     * Check if required signal exists due to BC.
+     */
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists(UpdateUrlSignal::class)) {
+            self::markTestSkipped('UpdateUrlSignal does not exist');
+        }
+    }
+
     protected function createSlot()
     {
         $class = $this->getSlotClass();

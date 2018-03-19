@@ -4,7 +4,6 @@ namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * We support http cache drivers to be provided by 3rd party bundles.

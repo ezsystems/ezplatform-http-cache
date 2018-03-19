@@ -60,7 +60,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
             ])
         );
 
-        $tagHandler->addTagHeaders($response, [
+        $tagHandler->addTags([
             'location-123',
             'parent-2',
             'path-1',
@@ -87,7 +87,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
 
         $repository->sudo(new AnyValueToken())->willThrow(new NotFoundException('id', 123));
 
-        $tagHandler->addTagHeaders($response, ['location-123', 'path-123'])->shouldBecalled();
+        $tagHandler->addTags(['location-123', 'path-123'])->shouldBecalled();
         $responseHeaders->remove('X-Location-Id')->shouldBecalled();
 
         $this->rewriteCacheHeader($event);
@@ -105,7 +105,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
 
         $repository->sudo(new AnyValueToken())->willThrow(new NotFoundException('id', 123));
 
-        $tagHandler->addTagHeaders($response, ['location-123', 'path-123', 'location-34', 'path-34'])->shouldBecalled();
+        $tagHandler->addTags(['location-123', 'path-123', 'location-34', 'path-34'])->shouldBecalled();
         $responseHeaders->remove('X-Location-Id')->shouldBecalled();
 
         $this->rewriteCacheHeader($event);

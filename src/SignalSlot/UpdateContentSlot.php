@@ -9,17 +9,17 @@ namespace EzSystems\PlatformHttpCacheBundle\SignalSlot;
 use eZ\Publish\Core\SignalSlot\Signal;
 
 /**
- * A slot handling DeleteVersionSignal.
+ * A slot handling UpdateContentSignal.
  */
-class DeleteVersionSlot extends AbstractSlot
+class UpdateContentSlot extends AbstractSlot
 {
     protected function supports(Signal $signal)
     {
-        return $signal instanceof Signal\ContentService\DeleteVersionSignal;
+        return $signal instanceof Signal\ContentService\UpdateContentSignal;
     }
 
     /**
-     * @param Signal\ContentService\DeleteVersionSignal $signal
+     * @param Signal\ContentService\UpdateContentSignal $signal
      */
     protected function generateTags(Signal $signal)
     {

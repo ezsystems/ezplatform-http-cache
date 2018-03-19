@@ -36,10 +36,9 @@ class DriverPass implements CompilerPassInterface
             // on to the purge client
             $configuredFosTagHandlerServiceId = 'ezplatform.http_cache.tag_handler.xkey';
         }
-        $fosTagHandlerDefinition = $container->getDefinition($configuredFosTagHandlerServiceId);
-        $definition = $container->getDefinition('fos_http_cache.handler.tag_handler');
-        $definition->setClass($fosTagHandlerDefinition->getClass());
-        $definition->addArgument(new Reference('ezplatform.http_cache.purge_client'));
+
+        // Re-define fos tag handler to our own so we can make sure tag handling is consitent using same instance
+        $container->setAlias('fos_http_cache.handler.tag_handler', $configuredFosTagHandlerServiceId);
     }
 
     public static function getTaggedService(ContainerBuilder $container, $tag)

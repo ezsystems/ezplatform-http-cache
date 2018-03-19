@@ -38,7 +38,7 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return [KernelEvents::RESPONSE => ['rewriteCacheHeader', -5]];
+        return [KernelEvents::RESPONSE => ['rewriteCacheHeader', 10]];
     }
 
     public function rewriteCacheHeader(FilterResponseEvent $event)
@@ -83,7 +83,7 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
             }
         }
 
-        $this->tagHandler->addTagHeaders($response, array_unique($tags));
+        $this->tagHandler->addTags($tags);
         $response->headers->remove(static::LOCATION_ID_HEADER);
     }
 }

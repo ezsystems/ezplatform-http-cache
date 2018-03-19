@@ -34,7 +34,7 @@ class HttpCacheResponseSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return [KernelEvents::RESPONSE => 'configureCache'];
+        return [KernelEvents::RESPONSE => ['configureCache', 10]];
     }
 
     public function configureCache(FilterResponseEvent $event)
@@ -48,5 +48,7 @@ class HttpCacheResponseSubscriber implements EventSubscriberInterface
         $this->responseConfigurator->enableCache($response);
         $this->responseConfigurator->setSharedMaxAge($response);
         $this->dispatcherTagger->tag($this->responseConfigurator, $response, $view);
+
+        // NB!: FOSHTTPCacheBundle is taking care about writing the tags in own tag handler happening with priority 0
     }
 }

@@ -67,7 +67,7 @@ class ConfigurableResponseCacheConfigurator implements ResponseCacheConfigurator
     public function addTags(Response $response, $tags)
     {
         if ($this->enableViewCache) {
-            $this->tagHandler->addTagHeaders($response, $tags);
+            $this->tagHandler->addTags((array)$tags);
         }
 
         return $this;

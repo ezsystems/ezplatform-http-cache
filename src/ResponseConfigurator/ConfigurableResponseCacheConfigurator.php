@@ -6,7 +6,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\ResponseConfigurator;
 
 use Symfony\Component\HttpFoundation\Response;
-use EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface;
+use EzSystems\PlatformHttpCacheBundle\Handler\ResponseTaggerInterface;
 
 /**
  * A ResponseCacheConfigurator configurable by constructor arguments.
@@ -34,11 +34,11 @@ class ConfigurableResponseCacheConfigurator implements ResponseCacheConfigurator
     private $defaultTtl;
 
     /**
-     * @var TagHandlerInterface
+     * @var ResponseTaggerInterface
      */
     private $tagHandler;
 
-    public function __construct($enableViewCache, $enableTtlCache, $defaultTtl, TagHandlerInterface  $tagHandler)
+    public function __construct($enableViewCache, $enableTtlCache, $defaultTtl, ResponseTaggerInterface $tagHandler)
     {
         $this->enableViewCache = $enableViewCache;
         $this->enableTtlCache = $enableTtlCache;

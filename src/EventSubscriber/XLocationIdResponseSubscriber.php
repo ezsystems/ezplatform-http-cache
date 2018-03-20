@@ -10,7 +10,7 @@ use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface;
+use EzSystems\PlatformHttpCacheBundle\Handler\ResponseTaggerInterface;
 
 /**
  * Rewrites the X-Location-Id HTTP header.
@@ -24,13 +24,13 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
 {
     const LOCATION_ID_HEADER = 'X-Location-Id';
 
-    /** @var \EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface */
+    /** @var \EzSystems\PlatformHttpCacheBundle\Handler\ResponseTaggerInterface */
     private $tagHandler;
 
     /** @var \eZ\Publish\API\Repository\Repository */
     private $repository;
 
-    public function __construct(TagHandlerInterface $tagHandler, Repository $repository)
+    public function __construct(ResponseTaggerInterface $tagHandler, Repository $repository)
     {
         $this->tagHandler = $tagHandler;
         $this->repository = $repository;

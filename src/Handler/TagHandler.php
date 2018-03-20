@@ -1,7 +1,12 @@
 <?php
 
+/**
+ * @copyright Copyright (C) eZ Systems AS. All rights reserved.
+ * @license For full copyright and license information view LICENSE file distributed with this source code.
+ */
 namespace EzSystems\PlatformHttpCacheBundle\Handler;
 
+use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\HttpCacheBundle\CacheManager;
@@ -14,13 +19,13 @@ use FOS\HttpCacheBundle\CacheManager;
  * It implements tagResponse() to make sure TagSubscriber( a FOS event listener ) do not try to tag the response.
  * as we use ConfigurableResponseCacheConfigurator for that purpose instead.
  */
-class TagHandler extends FOSTagHandler implements TagHandlerInterface
+class TagHandler extends FOSTagHandler implements TagHandlerInterface, ResponseTaggerInterface
 {
     private $cacheManager;
     private $purgeClient;
     private $tagsHeader;
 
-    public function __construct(CacheManager $cacheManager, $tagsHeader, $purgeClient)
+    public function __construct(CacheManager $cacheManager, $tagsHeader, PurgeClientInterface $purgeClient)
     {
         $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;

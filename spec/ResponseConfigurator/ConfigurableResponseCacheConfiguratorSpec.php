@@ -6,11 +6,11 @@ use EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ConfigurableResponseC
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface;
+use EzSystems\PlatformHttpCacheBundle\Handler\ResponseTaggerInterface;
 
 class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
 {
-    public function let(Response $response, ResponseHeaderBag $headers, TagHandlerInterface $tagHandler)
+    public function let(Response $response, ResponseHeaderBag $headers, ResponseTaggerInterface $tagHandler)
     {
         $response->headers = $headers;
         $this->beConstructedWith(true, true, 30, $tagHandler);
@@ -21,7 +21,7 @@ class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
         $this->shouldHaveType(ConfigurableResponseCacheConfigurator::class);
     }
 
-    public function it_sets_cache_control_to_public_if_viewcache_is_enabled(Response $response, TagHandlerInterface $tagHandler)
+    public function it_sets_cache_control_to_public_if_viewcache_is_enabled(Response $response, ResponseTaggerInterface $tagHandler)
     {
         $this->beConstructedWith(true, false, 0, $tagHandler);
         $this->enableCache($response);
@@ -29,7 +29,7 @@ class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
         $response->setPublic()->shouldHaveBeenCalled();
     }
 
-    public function it_does_not_set_cache_control_if_viewcache_is_disabled(Response $response, TagHandlerInterface $tagHandler)
+    public function it_does_not_set_cache_control_if_viewcache_is_disabled(Response $response, ResponseTaggerInterface $tagHandler)
     {
         $this->beConstructedWith(false, false, 0, $tagHandler);
         $this->enableCache($response);
@@ -37,7 +37,7 @@ class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
         $response->setPublic()->shouldNotHaveBeenCalled();
     }
 
-    public function it_does_not_set_shared_maxage_if_ttl_cache_is_disabled(Response $response, TagHandlerInterface $tagHandler)
+    public function it_does_not_set_shared_maxage_if_ttl_cache_is_disabled(Response $response, ResponseTaggerInterface $tagHandler)
     {
         $this->beConstructedWith(true, false, 30, $tagHandler);
         $this->setSharedMaxAge($response);
@@ -45,7 +45,7 @@ class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
         $response->setSharedMaxAge(30)->shouldNotHaveBeenCalled();
     }
 
-    public function it_does_not_set_shared_maxage_if_it_is_already_set_in_the_response(Response $response, ResponseHeaderBag $headers, TagHandlerInterface $tagHandler)
+    public function it_does_not_set_shared_maxage_if_it_is_already_set_in_the_response(Response $response, ResponseHeaderBag $headers, ResponseTaggerInterface $tagHandler)
     {
         $this->beConstructedWith(true, true, 30, $tagHandler);
         $headers->hasCacheControlDirective('s-maxage')->willReturn(true);
@@ -55,7 +55,7 @@ class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
         $response->setSharedMaxAge($response, 30)->shouldNotHaveBeenCalled();
     }
 
-    public function it_sets_shared_maxage(Response $response, ResponseHeaderBag $headers, TagHandlerInterface $tagHandler)
+    public function it_sets_shared_maxage(Response $response, ResponseHeaderBag $headers, ResponseTaggerInterface $tagHandler)
     {
         $this->beConstructedWith(true, true, 30, $tagHandler);
         $headers->hasCacheControlDirective('s-maxage')->willReturn(false);
@@ -65,7 +65,7 @@ class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
         $response->setSharedMaxAge(30)->shouldHaveBeenCalled();
     }
 
-    public function it_does_not_add_tags_if_viewcache_is_disabled(Response $response, ResponseHeaderBag $headers, TagHandlerInterface $tagHandler)
+    public function it_does_not_add_tags_if_viewcache_is_disabled(Response $response, ResponseHeaderBag $headers, ResponseTaggerInterface $tagHandler)
     {
         $this->beConstructedWith(false, false, 0, $tagHandler);
         $this->addTags($response, ['foo-1', 'bar-2']);
@@ -73,7 +73,7 @@ class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
         $headers->set('xkey', ['foo-1', 'bar-2'])->shouldNotHaveBeenCalled();
     }
 
-    public function it_adds_tags_to_the_xkey_header(Response $response, ResponseHeaderBag $headers, TagHandlerInterface $tagHandler)
+    public function it_adds_tags_to_the_xkey_header(Response $response, ResponseHeaderBag $headers, ResponseTaggerInterface $tagHandler)
     {
         $this->beConstructedWith(false, false, 0, $tagHandler);
         $this->addTags($response, ['foo-1', 'bar-2']);

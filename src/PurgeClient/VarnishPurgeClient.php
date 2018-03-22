@@ -50,6 +50,9 @@ class VarnishPurgeClient implements PurgeClientInterface
 
     public function purgeAll()
     {
-        $this->cacheManager->invalidate(['key' => 'ez-all']);
+        $this->cacheManager->invalidatePath(
+            '/',
+            ['key' => 'ez-all', 'Host' => empty($_SERVER['SERVER_NAME']) ? 'localhost' : $_SERVER['SERVER_NAME']]
+        );
     }
 }

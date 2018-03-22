@@ -89,8 +89,8 @@ class VarnishPurgeClientTest extends TestCase
     {
         $this->cacheManager
             ->expects($this->once())
-            ->method('invalidate')
-            ->with(array('key' => 'ez-all'));
+            ->method('invalidatePath')
+            ->with('/', ['key' => 'ez-all', 'Host' => 'localhost']);
 
         $this->purgeClient->purgeAll();
     }

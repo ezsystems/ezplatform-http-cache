@@ -3,6 +3,7 @@
 namespace EzSystems\PlatformHttpCacheBundle;
 
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\ConfigResolver\HttpCacheConfigParser;
+use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\HttpCachePass;
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\ResponseTaggersPass;
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\KernelPass;
 use EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\DriverPass;
@@ -19,6 +20,7 @@ class EzSystemsPlatformHttpCacheBundle extends Bundle
         $container->addCompilerPass(new ResponseTaggersPass());
         $container->addCompilerPass(new KernelPass());
         $container->addCompilerPass(new DriverPass());
+        $container->addCompilerPass(new HttpCachePass());
 
         $this->registerConfigParser($container);
     }

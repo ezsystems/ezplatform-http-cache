@@ -146,6 +146,14 @@ services:
         tags:
             - { name: ezpublish.api.slot, signal: ContentService\RemoveTranslationSignal }
 
+    ezplatform.http_cache.signalslot.update_url:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\UpdateUrlSlot
+        parent: ezplatform.http_cache.signalslot.abstract_content
+        arguments:
+            - "@ezpublish.spi.persistence.cache.urlHandler"
+        tags:
+            - { name: ezpublish.api.slot, signal: URLService\UpdateUrlSignal }
+
     # Content Type
     ezplatform.http_cache.signalslot.publish_content_type:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\PublishContentTypeSlot

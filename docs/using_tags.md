@@ -26,7 +26,10 @@ the background once someone requests them. Same goes for other operations by the
   _Used for clearing all cache relevant for a given location._
 
 - `parent-<parent-location-id>` :
-  _Used for clearing cache of all the children of a location, or for all siblings if subject happens ot be one of the children._
+  _Used for clearing cache of all siblings of an location._
+
+- `parent-<location-id>` :
+  _Used for clearing cache of all the children of a location._
 
 - `path-<location-id>` :
   _For operations that change the tree itself, like move/remove/(..)._

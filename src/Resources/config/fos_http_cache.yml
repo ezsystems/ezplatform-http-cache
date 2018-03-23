@@ -7,6 +7,7 @@ user_context:
     enabled: true
     hash_cache_ttl: 600
     user_hash_header: X-User-Hash
+    session_name_prefix: eZSESSID
 
 tags:
     # Configure tag header for FosHttpCache

@@ -17,7 +17,7 @@ class UpdateUrlSlotTest extends AbstractSlotTest
     const URL_ID = 63;
 
     const CONTENT_IDS = [
-       2, 3, 5, 7, 11
+       2, 3, 5, 7, 11,
     ];
 
     /** @var \eZ\Publish\SPI\Persistence\URL\Handler|\PHPUnit_Framework_MockObject_MockObject */
@@ -52,13 +52,13 @@ class UpdateUrlSlotTest extends AbstractSlotTest
     {
         return new UpdateUrlSignal([
             'urlId' => self::URL_ID,
-            'urlChanged' => true
+            'urlChanged' => true,
         ]);
     }
 
     public function generateTags()
     {
-        return array_map(function($id) {
+        return array_map(function ($id) {
             return 'content-' . $id;
         }, self::CONTENT_IDS);
     }
@@ -66,7 +66,7 @@ class UpdateUrlSlotTest extends AbstractSlotTest
     public function getReceivedSignalClasses()
     {
         return [
-            UpdateUrlSignal::class
+            UpdateUrlSignal::class,
         ];
     }
 

@@ -32,6 +32,7 @@ services:
 
     ezplatform.http_cache.tag_handler:
         alias: ezplatform.http_cache.tag_handler.xkey
+        deprecated: 'The "%service_id%" service is deprecated. Use "fos_http_cache.handler.tag_handler" instead'
 
     ezplatform.http_cache.tag_handler.xkey:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler

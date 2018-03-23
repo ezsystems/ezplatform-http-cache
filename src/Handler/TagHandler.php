@@ -1,7 +1,12 @@
 <?php
 
+/**
+ * @copyright Copyright (C) eZ Systems AS. All rights reserved.
+ * @license For full copyright and license information view LICENSE file distributed with this source code.
+ */
 namespace EzSystems\PlatformHttpCacheBundle\Handler;
 
+use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\HttpCacheBundle\CacheManager;
@@ -20,11 +25,12 @@ class TagHandler extends FOSTagHandler implements TagHandlerInterface
     private $purgeClient;
     private $tagsHeader;
 
-    public function __construct(CacheManager $cacheManager, $tagsHeader, $purgeClient)
+    public function __construct(CacheManager $cacheManager, $tagsHeader, PurgeClientInterface $purgeClient)
     {
         $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
+        parent::__construct($cacheManager, $tagsHeader);
         $this->addTags(['ez-all']);
     }
 

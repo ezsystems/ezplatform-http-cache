@@ -10,7 +10,7 @@ use eZ\Publish\API\Repository\Repository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface;
+use FOS\HttpCache\Handler\TagHandler;
 
 /**
  * Rewrites the X-Location-Id HTTP header.
@@ -24,13 +24,13 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
 {
     const LOCATION_ID_HEADER = 'X-Location-Id';
 
-    /** @var \EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface */
+    /** @var \FOS\HttpCache\Handler\TagHandler */
     private $tagHandler;
 
     /** @var \eZ\Publish\API\Repository\Repository */
     private $repository;
 
-    public function __construct(TagHandlerInterface $tagHandler, Repository $repository)
+    public function __construct(TagHandler $tagHandler, Repository $repository)
     {
         $this->tagHandler = $tagHandler;
         $this->repository = $repository;
@@ -38,7 +38,7 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return [KernelEvents::RESPONSE => ['rewriteCacheHeader', -5]];
+        return [KernelEvents::RESPONSE => ['rewriteCacheHeader', 10]];
     }
 
     public function rewriteCacheHeader(FilterResponseEvent $event)
@@ -83,7 +83,7 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
             }
         }
 
-        $this->tagHandler->addTagHeaders($response, array_unique($tags));
+        $this->tagHandler->addTags($tags);
         $response->headers->remove(static::LOCATION_ID_HEADER);
     }
 }

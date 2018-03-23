@@ -14,14 +14,14 @@ use Prophecy\Argument\Token\AnyValueToken;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use EzSystems\PlatformHttpCacheBundle\Handler\TagHandlerInterface;
+use FOS\HttpCache\Handler\TagHandler;
 
 class XLocationIdResponseSubscriberSpec extends ObjectBehavior
 {
     public function let(
         FilterResponseEvent $event,
         Response $response,
-        TagHandlerInterface $tagHandler,
+        TagHandler $tagHandler,
         Repository $repository,
         ResponseHeaderBag $responseHeaders
     ) {
@@ -44,7 +44,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
     public function it_rewrite_header_with_location_info(
         FilterResponseEvent $event,
         Response $response,
-        TagHandlerInterface $tagHandler,
+        TagHandler $tagHandler,
         Repository $repository,
         ResponseHeaderBag $responseHeaders
     ) {
@@ -60,7 +60,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
             ])
         );
 
-        $tagHandler->addTagHeaders($response, [
+        $tagHandler->addTags([
             'location-123',
             'parent-2',
             'path-1',
@@ -78,7 +78,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
     public function it_rewrite_header_on_not_found_location(
         FilterResponseEvent $event,
         Response $response,
-        TagHandlerInterface $tagHandler,
+        TagHandler $tagHandler,
         Repository $repository,
         ResponseHeaderBag $responseHeaders
     ) {
@@ -87,7 +87,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
 
         $repository->sudo(new AnyValueToken())->willThrow(new NotFoundException('id', 123));
 
-        $tagHandler->addTagHeaders($response, ['location-123', 'path-123'])->shouldBecalled();
+        $tagHandler->addTags(['location-123', 'path-123'])->shouldBecalled();
         $responseHeaders->remove('X-Location-Id')->shouldBecalled();
 
         $this->rewriteCacheHeader($event);
@@ -96,7 +96,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
     public function it_rewrite_header_also_in_unofficial_plural_form_and_merges_exisitng_value(
         FilterResponseEvent $event,
         Response $response,
-        TagHandlerInterface $tagHandler,
+        TagHandler $tagHandler,
         Repository $repository,
         ResponseHeaderBag $responseHeaders
     ) {
@@ -105,7 +105,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
 
         $repository->sudo(new AnyValueToken())->willThrow(new NotFoundException('id', 123));
 
-        $tagHandler->addTagHeaders($response, ['location-123', 'path-123', 'location-34', 'path-34'])->shouldBecalled();
+        $tagHandler->addTags(['location-123', 'path-123', 'location-34', 'path-34'])->shouldBecalled();
         $responseHeaders->remove('X-Location-Id')->shouldBecalled();
 
         $this->rewriteCacheHeader($event);

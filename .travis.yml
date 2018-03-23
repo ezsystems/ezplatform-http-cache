@@ -25,7 +25,7 @@ matrix:
         - php: 7.0
           env: BEHAT_OPTS="--profile=rest --tags=~@broken --suite=fullJson" EZPLATFORM_BRANCH=1.13 SYMFONY_ENV=behat PHP_IMAGE=ezsystems/php:7.0-v1
         - php: 7.1
-          env: BEHAT_OPTS="--profile=rest --tags=~@broken --suite=fullJson" EZPLATFORM_BRANCH=2.0 SYMFONY_ENV=behat
+          env: BEHAT_OPTS="--profile=rest --tags=~@broken --suite=fullJson" EZPLATFORM_BRANCH=master SYMFONY_ENV=behat
 
 # test only master (+ Pull requests)
 branches:

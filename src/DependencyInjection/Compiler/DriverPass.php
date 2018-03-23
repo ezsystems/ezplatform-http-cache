@@ -4,6 +4,7 @@ namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * We support http cache drivers to be provided by 3rd party bundles.
@@ -23,6 +24,7 @@ class DriverPass implements CompilerPassInterface
         $container->setAlias('ezplatform.http_cache.purge_client', $configuredPurgeClientServiceId);
 
         // TagHandler is responsible for setting correct tags (recognized by the http cache) on responses
+        // @deprecated We are using FOS service for tagigng instead now.
         $configuredTagHandlerServiceId = static::getTaggedService($container, 'ezplatform.http_cache.tag_handler');
         if ($configuredTagHandlerServiceId !== null) {
             $container->setAlias('ezplatform.http_cache.tag_handler', $configuredTagHandlerServiceId);
@@ -35,9 +37,10 @@ class DriverPass implements CompilerPassInterface
             // on to the purge client
             $configuredFosTagHandlerServiceId = 'ezplatform.http_cache.tag_handler.xkey';
         }
-
-        // Re-define fos tag handler to our own so we can make sure tag handling is consistent using same instance
-        $container->setAlias('fos_http_cache.handler.tag_handler', $configuredFosTagHandlerServiceId);
+        $fosTagHandlerDefinition = $container->getDefinition($configuredFosTagHandlerServiceId);
+        $definition = $container->getDefinition('fos_http_cache.handler.tag_handler');
+        $definition->setClass($fosTagHandlerDefinition->getClass());
+        $definition->addArgument(new Reference('ezplatform.http_cache.purge_client'));
     }
 
     public static function getTaggedService(ContainerBuilder $container, $tag)

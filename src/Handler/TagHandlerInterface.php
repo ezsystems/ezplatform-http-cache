@@ -9,7 +9,8 @@ namespace EzSystems\PlatformHttpCacheBundle\Handler;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @deprecated Use ResponseTaggerInterface
+ * @deprecated Use Tagger class from FOS: FOS\HttpCache\Handler\TagHandler which we overload
+ *             (note: class name will change once we move to FosHttpCache 2.x)
  */
 interface TagHandlerInterface
 {

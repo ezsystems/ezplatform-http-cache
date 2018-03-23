@@ -19,7 +19,7 @@ use FOS\HttpCacheBundle\CacheManager;
  * It implements tagResponse() to make sure TagSubscriber( a FOS event listener ) do not try to tag the response.
  * as we use ConfigurableResponseCacheConfigurator for that purpose instead.
  */
-class TagHandler extends FOSTagHandler implements TagHandlerInterface, ResponseTaggerInterface
+class TagHandler extends FOSTagHandler implements TagHandlerInterface
 {
     private $cacheManager;
     private $purgeClient;
@@ -30,6 +30,7 @@ class TagHandler extends FOSTagHandler implements TagHandlerInterface, ResponseT
         $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
+        parent::__construct($cacheManager, $tagsHeader);
         $this->addTags(['ez-all']);
     }
 

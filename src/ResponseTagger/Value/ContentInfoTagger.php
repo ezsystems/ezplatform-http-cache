@@ -23,5 +23,7 @@ class ContentInfoTagger implements ResponseTagger
         if ($value->mainLocationId) {
             $configurator->addTags($response, ['location-' . $value->mainLocationId]);
         }
+
+        return $this;
     }
 }

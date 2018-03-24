@@ -26,5 +26,7 @@ class DispatcherTagger implements ResponseTagger
         foreach ($this->taggers as $tagger) {
             $tagger->tag($configurator, $response, $value);
         }
+
+        return $this;
     }
 }

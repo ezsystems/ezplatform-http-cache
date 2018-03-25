@@ -16,8 +16,13 @@ the background once someone requests them. Same goes for other operations by the
 
 ## Tags in use in this bundle
 
+### Tags for Content responses
+
 - `content-<content-id>` :
   _Used on anything that is affected by changes to content, on content itself as well as location and so on._
+
+- `content-versions-<content-id>` :
+  _Used for clearing cache for content version list views, when not affecting the published content._
 
 - `content-type-<content-type-id>` :
   _For use when content type changes affecting content of its type._
@@ -40,6 +45,22 @@ the background once someone requests them. Same goes for other operations by the
    automatically, just purges on it if present, response tagging with this is currently done inline in template logic / views
    where relation is actually used for rendering (when using ESI, if inline it's own tags will be added to response).
    ezpublish-kernel add these as of v6.13.2/v7.1.0 on default relation templates)_
+
+### Tags for Section responses
+
+- `section-<section-id>` :
+  _For use when section changes affecting section reponses (i.e. REST)._
+
+
+### Tags for ContenType responses
+
+- `type-<content-type-id>` :
+  _For use when cotnent type changes affecting content type reponses (i.e. REST)._
+
+- `type-group-<content-type-id>` :
+  _For use when cotnent type group changes affecting content type group reponses (i.e. REST)._
+
+### Misc
 
 - `ez-all`:
    _Internal tag used for being able to clear all cache. Main use case is being able to expire (soft purge) all cache on

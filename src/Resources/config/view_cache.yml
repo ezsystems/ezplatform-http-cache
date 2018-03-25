@@ -1,4 +1,5 @@
 services:
+    # EventSubscriber
     ezplatform.view_cache.response_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\HttpCacheResponseSubscriber
         arguments:
@@ -13,6 +14,13 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    ezplatform.rest_cache_tagging.view_subscriber:
+        class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\RestKernelViewSubscriber
+        arguments: ['@fos_http_cache.handler.tag_handler']
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # ResponseConfigurator
     ezplatform.view_cache.response_configurator:
         class: EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ConfigurableResponseCacheConfigurator
         arguments:
@@ -21,6 +29,7 @@ services:
             - '$content.default_ttl$'
             - '@fos_http_cache.handler.tag_handler'
 
+    # ResponseTagger
     ezplatform.view_cache.response_tagger.dispatcher:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Delegator\DispatcherTagger
         # Taggers are added by a compiler pass

@@ -12,6 +12,7 @@ use eZ\Publish\Core\REST\Server\Values\ContentTypeGroupList;
 use eZ\Publish\Core\REST\Server\Values\ContentTypeGroupRefList;
 use eZ\Publish\Core\REST\Server\Values\RestContentType;
 use eZ\Publish\Core\REST\Server\Values\VersionList;
+use EzSystems\MultiFileUpload\API\Repository\Values\PermissionReport;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -95,6 +96,24 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
                     return [];
                 }
                 $tags[] = 'type-' . $value->id;
+                break;
+
+                // @deprecated The following logic is 1.x specific, and should be removed before a 1.0 version
+            case $value instanceof PermissionReport:
+                // We requrie v0.1.5 with added location property to be able to add tags
+                if (!isset($value->parentLocation)) {
+                    return [];
+                }
+
+                // In case of for instance location swap where content type might change affecting allowed content types
+                $tags[] = 'content-' . $value->parentLocation->contentId;
+                $tags[] = 'content-type-' . $value->parentLocation->contentInfo->contentTypeId;
+                $tags[] = 'location-' . $value->parentLocation->id;
+
+                // In case of permissions assigned by subtree, so if path changes affecting this (move subtree operation)
+                foreach ($value->parentLocation->path as $pathItem) {
+                    $tags[] = 'path-' . $pathItem;
+                }
                 break;
         }
 

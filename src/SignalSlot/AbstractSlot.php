@@ -13,7 +13,7 @@ use eZ\Publish\Core\SignalSlot\Signal;
 use eZ\Publish\Core\SignalSlot\Slot;
 
 /**
- * A abstract legacy slot covering common functions needed for legacy slots.
+ * A abstract slot covering common functions needed for tag based http cahe slots.
  */
 abstract class AbstractSlot extends Slot
 {

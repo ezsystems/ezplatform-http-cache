@@ -198,6 +198,36 @@ services:
         parent: ezplatform.http_cache.signalslot.abstract
         tags: [{ name: ezpublish.api.slot, signal: ContentTypeService\UpdateContentTypeGroupSignal }]
 
+    # Role
+    ezplatform.http_cache.signalslot.assign_role:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\AssignSlot
+        parent: ezplatform.http_cache.signalslot.abstract
+        tags:
+            - { name: ezpublish.api.slot, signal: RoleService\AssignRoleToUserGroupSignal }
+            - { name: ezpublish.api.slot, signal: RoleService\AssignRoleToUserSignal }
+
+    ezplatform.http_cache.signalslot.delete_role:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\DeleteRoleSlot
+        parent: ezplatform.http_cache.signalslot.abstract
+        tags: [{ name: ezpublish.api.slot, signal: RoleService\DeleteRoleSignal }]
+
+    ezplatform.http_cache.signalslot.publish_role:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\PublishRoleDraftSlot
+        parent: ezplatform.http_cache.signalslot.abstract
+        tags: [{ name: ezpublish.api.slot, signal: RoleService\PublishRoleDraftSignal }]
+
+    ezplatform.http_cache.signalslot.remove_role_assignment:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\RemoveRoleAssignmentSlot
+        parent: ezplatform.http_cache.signalslot.abstract
+        tags: [{ name: ezpublish.api.slot, signal: RoleService\RemoveRoleAssignmentSignal }]
+
+    ezplatform.http_cache.signalslot.unassign_role:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\UnassignSlot
+        parent: ezplatform.http_cache.signalslot.abstract
+        tags:
+            - { name: ezpublish.api.slot, signal: RoleService\UnassignRoleFromUserGroupSignal }
+            - { name: ezpublish.api.slot, signal: RoleService\UnassignRoleFromUserSignal }
+
     # Section
     ezplatform.http_cache.signalslot.assign_section:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\SectionService\AssignSectionSlot

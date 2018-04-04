@@ -20,6 +20,12 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    ezplatform.user_context_tagger.response_subscriber:
+        class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\UserContextSubscriber
+        arguments: ['@fos_http_cache.handler.tag_handler']
+        tags:
+            - { name: kernel.event_subscriber }
+
     # ResponseConfigurator
     ezplatform.view_cache.response_configurator:
         class: EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ConfigurableResponseCacheConfigurator

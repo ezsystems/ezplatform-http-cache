@@ -62,6 +62,9 @@ the background once someone requests them. Same goes for other operations by the
 
 ### Misc
 
+- `ez-user-context-hash`
+   _Internal tag used for tagging /_fos_user_context_hash to expire it on role & role assigment changes._
+
 - `ez-all`:
    _Internal tag used for being able to clear all cache. Main use case is being able to expire (soft purge) all cache on
    deployment of new versions of your installation which for instance changes representation / design dramatically._

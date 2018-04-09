@@ -35,9 +35,11 @@ the background once someone requests them. Same goes for other operations by the
   _For operations that change the tree itself, like move/remove/(..)._
 
 - `relation-<content-id>` :
-   _For use when updates affect all their reverse relations (NOTE: System does not add this tag to responses itself yet,
-   just purges on it if present, response tagging with this is currently meant to be done inline in template logic / views
-   where author knows if this should really happen or not)_
+- `relation-location-<location-id>` :
+   _For use when updates affect all their reverse relations. ezplatform-http-cache does not add this tag to responses
+   automatically, just purges on it if present, response tagging with this is currently done inline in template logic / views
+   where relation is actually used for rendering (when using ESI, if inline it's own tags will be added to response).
+   ezpublish-kernel add these as of v6.13.2/v7.1.0 on default relation templates)_
 
 - `ez-all`:
    _Internal tag used for being able to clear all cache. Main use case is being able to expire (soft purge) all cache on

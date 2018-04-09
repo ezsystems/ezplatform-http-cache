@@ -55,6 +55,8 @@ abstract class AbstractContentSlot extends AbstractSlot
             $tags[] = 'location-' . $signal->locationId;
             // direct children
             $tags[] = 'parent-' . $signal->locationId;
+            // reverse location relations
+            $tags[] = 'relation-location-' . $signal->locationId;
         }
 
         if (isset($signal->parentLocationId)) {

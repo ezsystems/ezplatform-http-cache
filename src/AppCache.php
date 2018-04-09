@@ -118,7 +118,7 @@ class AppCache extends EventDispatchingHttpCache
         if (empty($varyValues)) {
             $response->headers->remove('Vary');
         } else {
-            $response->headers->set('Vary', implode(', ', $varyValues));
+            $response->setVary(implode(', ', $varyValues));
         }
 
         // If cache varies by user hash, then make sure other proxies don't cache this

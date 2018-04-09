@@ -57,6 +57,8 @@ abstract class AbstractPublishSlot extends AbstractContentSlot
             $tags[] = 'location-' . $location->parentId;
             // siblings
             $tags[] = 'parent-' . $location->parentId;
+            // reverse location relations
+            $tags[] = 'relation-location-' . $location->id;
         }
 
         return $tags;

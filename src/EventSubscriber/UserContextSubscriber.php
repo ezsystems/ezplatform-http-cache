@@ -48,6 +48,9 @@ class UserContextSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Improvement potential (mainly relevant if we plan to increase hash ttl notably):
+        // - Get user id to also add tag by id, so user (un)assign don't need to clear all hashes
+        // - If done in layer generating this, we could also tag role id so changes to roles only expire affected hashes
         $this->tagHandler->addTags(['ez-user-context-hash']);
     }
 }

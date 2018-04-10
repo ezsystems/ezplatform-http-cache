@@ -29,6 +29,8 @@ abstract class AbstractContentSlotTest extends AbstractSlotTest
             $tags[] = 'location-' . $this->locationId;
             // children
             $tags[] = 'parent-' . $this->locationId;
+            // reverse location relations
+            $tags[] = 'relation-location-' . $this->locationId;
         }
 
         if ($this->parentLocationId) {

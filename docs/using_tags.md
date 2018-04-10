@@ -55,10 +55,10 @@ the background once someone requests them. Same goes for other operations by the
 ### Tags for ContenType responses
 
 - `type-<content-type-id>` :
-  _For use when cotnent type changes affecting content type reponses (i.e. REST)._
+  _For use when content type changes affecting content type reponses (i.e. REST)._
 
 - `type-group-<content-type-id>` :
-  _For use when cotnent type group changes affecting content type group reponses (i.e. REST)._
+  _For use when content type group changes affecting content type group reponses (i.e. REST)._
 
 ### Misc
 

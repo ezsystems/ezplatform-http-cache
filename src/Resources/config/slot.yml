@@ -200,7 +200,7 @@ services:
 
     # Role
     ezplatform.http_cache.signalslot.assign_role:
-        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\AssignSlot
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\AssignRoleSlot
         parent: ezplatform.http_cache.signalslot.abstract
         tags:
             - { name: ezpublish.api.slot, signal: RoleService\AssignRoleToUserGroupSignal }
@@ -222,7 +222,7 @@ services:
         tags: [{ name: ezpublish.api.slot, signal: RoleService\RemoveRoleAssignmentSignal }]
 
     ezplatform.http_cache.signalslot.unassign_role:
-        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\UnassignSlot
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\UnassignRoleSlot
         parent: ezplatform.http_cache.signalslot.abstract
         tags:
             - { name: ezpublish.api.slot, signal: RoleService\UnassignRoleFromUserGroupSignal }

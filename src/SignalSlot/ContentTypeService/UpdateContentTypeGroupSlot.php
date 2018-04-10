@@ -24,7 +24,6 @@ class UpdateContentTypeGroupSlot extends AbstractSlot
      */
     protected function generateTags(Signal $signal)
     {
-        // @todo Do we need to purge type? (aka: do we need to tag group on type)
         return ['type-group-' . $signal->contentTypeGroupId];
     }
 }

@@ -26,7 +26,6 @@ class DeleteContentTypeSlot extends AbstractSlot
      */
     protected function generateTags(Signal $signal)
     {
-        // @todo Do we need to purge group?
         return ['content-type-' . $signal->contentTypeId, 'type-' . $signal->contentTypeId];
     }
 }

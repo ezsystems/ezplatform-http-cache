@@ -24,7 +24,6 @@ class UnassignContentTypeGroupSlot extends AbstractSlot
      */
     protected function generateTags(Signal $signal)
     {
-        // @todo Do we need to purge type?
         return ['type-group-' . $signal->contentTypeGroupId];
     }
 }

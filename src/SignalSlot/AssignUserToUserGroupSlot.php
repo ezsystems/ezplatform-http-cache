@@ -12,8 +12,6 @@ use eZ\Publish\Core\SignalSlot\Signal;
 
 /**
  * A slot handling AssignUserToUserGroupSignal.
- *
- * @todo This might be incomplete: what about the user's own http cache (user hash) ?
  */
 class AssignUserToUserGroupSlot extends AbstractContentSlot
 {
@@ -22,7 +20,7 @@ class AssignUserToUserGroupSlot extends AbstractContentSlot
      */
     protected function generateTags(Signal $signal)
     {
-        return ['content-' . $signal->userId, 'content-' . $signal->userGroupId];
+        return ['content-' . $signal->userId, 'content-' . $signal->userGroupId, 'ez-user-context-hash'];
     }
 
     protected function supports(Signal $signal)

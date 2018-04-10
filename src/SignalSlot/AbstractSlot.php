@@ -13,7 +13,7 @@ use eZ\Publish\Core\SignalSlot\Signal;
 use eZ\Publish\Core\SignalSlot\Slot;
 
 /**
- * A abstract legacy slot covering common functions needed for legacy slots.
+ * A abstract slot covering common functions needed for tag based http cahe slots.
  */
 abstract class AbstractSlot extends Slot
 {
@@ -30,13 +30,15 @@ abstract class AbstractSlot extends Slot
         $this->purgeClient = $purgeClient;
     }
 
-    public function receive(Signal $signal)
+    final public function receive(Signal $signal)
     {
         if (!$this->supports($signal)) {
             return;
         }
 
-        $this->purgeHttpCache($signal);
+        $this->purgeClient->purge(
+            $this->generateTags($signal)
+        );
     }
 
     /**
@@ -49,11 +51,11 @@ abstract class AbstractSlot extends Slot
     abstract protected function supports(Signal $signal);
 
     /**
-     * Purges relevant HTTP cache for $signal.
+     * Return list of tags to be clered.
      *
      * @param \eZ\Publish\Core\SignalSlot\Signal $signal
      *
-     * @return mixed
+     * @return array
      */
-    abstract protected function purgeHttpCache(Signal $signal);
+    abstract protected function generateTags(Signal $signal);
 }

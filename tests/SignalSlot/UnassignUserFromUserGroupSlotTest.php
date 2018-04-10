@@ -9,6 +9,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use eZ\Publish\Core\SignalSlot\Signal\UserService\UnAssignUserFromUserGroupSignal;
+use EzSystems\PlatformHttpCacheBundle\SignalSlot\UnassignUserFromUserGroupSlot;
 
 class UnassignUserFromUserGroupSlotTest extends AbstractContentSlotTest
 {
@@ -19,16 +20,16 @@ class UnassignUserFromUserGroupSlotTest extends AbstractContentSlotTest
 
     public function generateTags()
     {
-        return ['content-' . $this->contentId, 'content-99'];
+        return ['content-' . $this->contentId, 'content-99', 'ez-user-context-hash'];
     }
 
     public function getSlotClass()
     {
-        return 'EzSystems\PlatformHttpCacheBundle\SignalSlot\UnassignUserFromUserGroupSlot';
+        return UnassignUserFromUserGroupSlot::class;
     }
 
     public function getReceivedSignalClasses()
     {
-        return ['eZ\Publish\Core\SignalSlot\Signal\UserService\UnAssignUserFromUserGroupSignal'];
+        return [UnAssignUserFromUserGroupSignal::class];
     }
 }

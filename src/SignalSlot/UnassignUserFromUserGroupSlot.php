@@ -12,11 +12,6 @@ use eZ\Publish\Core\SignalSlot\Signal;
 
 /**
  * A slot handling UnAssignUserFromUserGroupSignal.
- *
- * @todo
- * Is this right ? Does it require a full wipe of the cache ? Very unlikely.
- * The User's Content's HTTP cache must be cleared, yes.
- * And the user must be logged out, or its user hash cleared (not sure we can without clearing for all users)
  */
 class UnassignUserFromUserGroupSlot extends AbstractContentSlot
 {
@@ -25,7 +20,7 @@ class UnassignUserFromUserGroupSlot extends AbstractContentSlot
      */
     protected function generateTags(Signal $signal)
     {
-        return ['content-' . $signal->userId, 'content-' . $signal->userGroupId];
+        return ['content-' . $signal->userId, 'content-' . $signal->userGroupId, 'ez-user-context-hash'];
     }
 
     protected function supports(Signal $signal)

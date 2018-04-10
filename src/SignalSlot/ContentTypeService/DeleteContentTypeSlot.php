@@ -6,9 +6,10 @@
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
-namespace EzSystems\PlatformHttpCacheBundle\SignalSlot;
+namespace EzSystems\PlatformHttpCacheBundle\SignalSlot\ContentTypeService;
 
 use eZ\Publish\Core\SignalSlot\Signal;
+use EzSystems\PlatformHttpCacheBundle\SignalSlot\AbstractSlot;
 
 /**
  * A slot handling DeleteContentTypeSlot.
@@ -22,11 +23,9 @@ class DeleteContentTypeSlot extends AbstractSlot
 
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\ContentTypeService\DeleteContentTypeSignal $signal
-     *
-     * @return mixed
      */
-    protected function purgeHttpCache(Signal $signal)
+    protected function generateTags(Signal $signal)
     {
-        return $this->purgeClient->purge(['content-type-' . $signal->contentTypeId]);
+        return ['content-type-' . $signal->contentTypeId, 'type-' . $signal->contentTypeId];
     }
 }

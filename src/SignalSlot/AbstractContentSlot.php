@@ -19,21 +19,9 @@ use eZ\Publish\Core\SignalSlot\Signal;
 abstract class AbstractContentSlot extends AbstractSlot
 {
     /**
-     * Purges relevant HTTP cache for $signal.
-     *
-     * @param \eZ\Publish\Core\SignalSlot\Signal $signal
-     *
-     * @return mixed
-     */
-    protected function purgeHttpCache(Signal $signal)
-    {
-        return $this->purgeClient->purge($this->generateTags($signal));
-    }
-
-    /**
      * Default provides tags to clear content, relation, location, parent and sibling cache.
      *
-     * Overload for tree operations where you also need to clear whole path.
+     * Overload and call parent for tree operations where you also need to clear whole path.
      *
      * @param \eZ\Publish\Core\SignalSlot\Signal $signal
      *

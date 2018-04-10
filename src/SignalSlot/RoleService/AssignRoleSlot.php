@@ -11,7 +11,7 @@ namespace EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService;
 use eZ\Publish\Core\SignalSlot\Signal;
 
 /**
- * A slot handling Assig role signals.
+ * A slot handling AssignRoleToUserGroupSignal & AssignRoleToUserSignal.
  */
 class AssignRoleSlot extends AbstractPermissionSlot
 {

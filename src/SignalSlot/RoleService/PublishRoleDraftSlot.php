@@ -11,7 +11,7 @@ namespace EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService;
 use eZ\Publish\Core\SignalSlot\Signal;
 
 /**
- * A slot handling publish role signals.
+ * A slot handling PublishRoleDraftSignal.
  */
 class PublishRoleDraftSlot extends AbstractPermissionSlot
 {

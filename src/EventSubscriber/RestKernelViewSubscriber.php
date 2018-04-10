@@ -22,7 +22,7 @@ use FOS\HttpCache\Handler\TagHandler;
  * Set cache tags on a few REST responses used by UI in order to be able to cache them.
  *
  * @deprecated This is a temprary approach to caching certain parts of REST used by UI, it is deprecated in favour of
- *             nativly using taggs and CachedValue in kernel's REST server itself once we switch to FOSHttpCache 2.x
+ *             nativly using tags and CachedValue in kernel's REST server itself once we switch to FOSHttpCache 2.x
  *             where tagger service can be used directly.
  */
 class RestKernelViewSubscriber implements EventSubscriberInterface

@@ -11,7 +11,7 @@ namespace EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService;
 use eZ\Publish\Core\SignalSlot\Signal;
 
 /**
- * A slot handling RemoveRoleAssignment role signals.
+ * A slot handling RemoveRoleAssignmentSignal.
  */
 class RemoveRoleAssignmentSlot extends AbstractPermissionSlot
 {

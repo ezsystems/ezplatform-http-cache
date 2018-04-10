@@ -8,9 +8,9 @@ namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot\RoleService;
 
 use eZ\Publish\Core\SignalSlot\Signal\RoleService\AssignRoleToUserGroupSignal;
 use eZ\Publish\Core\SignalSlot\Signal\RoleService\AssignRoleToUserSignal;
-use EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\AssignSlot;
+use EzSystems\PlatformHttpCacheBundle\SignalSlot\RoleService\AssignRoleSlot;
 
-class AssignSlotTest extends AbstractPermissionSlotTest
+class AssignRoleSlotTest extends AbstractPermissionSlotTest
 {
     public function createSignal()
     {
@@ -29,6 +29,6 @@ class AssignSlotTest extends AbstractPermissionSlotTest
 
     public function getSlotClass()
     {
-        return AssignSlot::class;
+        return AssignRoleSlot::class;
     }
 }

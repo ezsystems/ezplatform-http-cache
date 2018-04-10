@@ -8,7 +8,7 @@ They work in a similar way as [persistence cache tags in eZ Platform v2](https:/
 - Used for cache invalidation
 
 There are also other aspects to this bundle, like the fact that by using Varnish xkey over BAN we can now do soft purge,
-but more on that in [varnish/varnish.md](varnish/varnish.md) and the corresponding VCL file.
+but more on that in [varnish/README.md](varnish/README.md) and the corresponding VCL file.
 
 For a bit less abstract way of saying this; It allows us to do things like tagging every article response, and when
 article content type gets an update we can tell Varnish all articles should be considered stale so they are updated in

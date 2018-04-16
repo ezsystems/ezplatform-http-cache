@@ -7,6 +7,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
 use eZ\Publish\API\Repository\Values\Content\Section;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
+use eZ\Publish\Core\REST\Common\Values\Root;
 use eZ\Publish\Core\REST\Server\Values\CachedValue;
 use eZ\Publish\Core\REST\Server\Values\ContentTypeGroupList;
 use eZ\Publish\Core\REST\Server\Values\ContentTypeGroupRefList;
@@ -96,6 +97,10 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
                     return [];
                 }
                 $tags[] = 'type-' . $value->id;
+                break;
+
+            case $value instanceof Root:
+                $tags[] = 'ez-all';
                 break;
 
                 // @deprecated The following logic is 1.x specific, and should be removed before a 1.0 version

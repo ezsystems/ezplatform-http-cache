@@ -8,7 +8,6 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use FOS\HttpCache\Handler\TagHandler;
 
 /**
  * Tag /_fos_user_context_hash responses, so we can expire/clear it by tag.

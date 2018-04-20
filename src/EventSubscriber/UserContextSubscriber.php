@@ -15,12 +15,12 @@ use FOS\HttpCache\Handler\TagHandler;
  */
 class UserContextSubscriber implements EventSubscriberInterface
 {
-    /** @var \FOS\HttpCache\Handler\TagHandler */
-    private $tagHandler;
+    /** @var string */
+    private $tagHeader = 'xkey';
 
-    public function __construct(TagHandler $tagHandler)
+    public function __construct($tagHeader)
     {
-        $this->tagHandler = $tagHandler;
+        $this->tagHeader = $tagHeader;
     }
 
     public static function getSubscribedEvents()
@@ -48,9 +48,8 @@ class UserContextSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Improvement potential (mainly relevant if we plan to increase hash ttl notably):
-        // - Get user id to also add tag by id, so user (un)assign don't need to clear all hashes
-        // - If done in layer generating this, we could also tag role id so changes to roles only expire affected hashes
-        $this->tagHandler->addTags(['ez-user-context-hash']);
+        // We need to set tag directly on repsonse here to make sure this does not also get applied to the main request
+        // when using Symfony Proxy, as tag hander does not clear tags between requests.
+        $response->headers->set($this->tagHeader, 'ez-user-context-hash');
     }
 }

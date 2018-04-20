@@ -22,7 +22,7 @@ services:
 
     ezplatform.user_context_tagger.response_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\UserContextSubscriber
-        arguments: ['@fos_http_cache.handler.tag_handler']
+        arguments: ['%ezplatform.http_cache.tags.header%']
         tags:
             - { name: kernel.event_subscriber }
 

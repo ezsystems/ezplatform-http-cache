@@ -48,7 +48,7 @@ class UserContextSubscriber implements EventSubscriberInterface
         }
 
         // We need to set tag directly on repsonse here to make sure this does not also get applied to the main request
-        // when using Symfony Proxy, as tag hander does not clear tags between requests.
+        // when using Symfony Proxy, as tag handler does not clear tags between requests.
         $response->headers->set($this->tagHeader, 'ez-user-context-hash');
     }
 }

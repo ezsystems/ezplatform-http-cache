@@ -7,12 +7,13 @@ They work in a similar way as [persistence cache tags in eZ Platform v2](https:/
 - Like an index in a database it is typically used for anything relevant that represent the given cache item
 - Used for cache invalidation
 
-There are also other aspects to this bundle, like the fact that by using Varnish xkey over BAN we can now do soft purge,
-but more on that in [varnish/README.md](varnish/README.md) and the corresponding VCL file.
+It works across all supported proxies _(see ["drivers"](drivers.md))_ by eZ Platform:
+- Symfony Proxy _(PHP based for single server usage, primarly for smaller web sites)_
+- [Varnish](https://varnish-cache.org/) with [xkey module](https://github.com/varnish/varnish-modules) _or_ [Varnish Plus](https://www.varnish-software.com/products/varnish-plus/) _(High performance reverse proxy)_
+- [Fastly](https://www.fastly.com/) _(High performance reverse proxy, orignally based on Varnish, worldwide as a CDN, available in eZ Platform Enterprise)_
 
-For a bit less abstract way of saying this; It allows us to do things like tagging every article response, and when
-article content type gets an update we can tell Varnish all articles should be considered stale so they are updated in
-the background once someone requests them. Same goes for other operations by the repository.
+Varnish and Faslty is highly recommended for medium to large traffic needs. Besides being able to handle much more traffic, they
+both support soft purge _(by tags)_, meaning they are able to serve stale content while it's refreshed in the background on-demand, leading to more stable load on your backend.
 
 ## Tags in use in this bundle
 

@@ -12,8 +12,7 @@ It works across all supported proxies _(see ["drivers"](drivers.md))_ by eZ Plat
 - [Varnish](https://varnish-cache.org/) with [xkey module](https://github.com/varnish/varnish-modules) _or_ [Varnish Plus](https://www.varnish-software.com/products/varnish-plus/) _(High performance reverse proxy)_
 - [Fastly](https://www.fastly.com/) _(High performance reverse proxy, orignally based on Varnish, worldwide as a CDN, available in eZ Platform Enterprise)_
 
-Varnish and Fastly is highly recommended for medium to large traffic needs. Besides being able to handle much more traffic, they
-both support soft purge _(by tags)_, meaning they are able to serve stale content while it's refreshed in the background on-demand, leading to more stable load on your backend.
+Varnish and Fastly is highly recommended for medium to large traffic needs. Besides being able to handle much more traffic, supported for use in cluster setup, they also both support soft purge _(by tags)_, meaning they are able to serve stale content while it's refreshed in the background on-demand, leading to more stable load on your backend.
 
 ## Tags in use in this bundle
 

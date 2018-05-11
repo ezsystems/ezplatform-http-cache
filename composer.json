@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "ezsystems/ezpublish-kernel": "^6.13.2@dev || ^7.1@dev",
+        "ezsystems/ezpublish-kernel": "^6.13.2 || ^7.1",
         "friendsofsymfony/http-cache-bundle": "^1.3.13",
         "symfony/symfony": "^2.7 | ^3.1"
     },

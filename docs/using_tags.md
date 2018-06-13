@@ -12,6 +12,9 @@ It works across all supported proxies _(see ["drivers"](drivers.md))_ by eZ Plat
 - [Varnish](https://varnish-cache.org/) with [xkey module](https://github.com/varnish/varnish-modules) _or_ [Varnish Plus](https://www.varnish-software.com/products/varnish-plus/) _(High performance reverse proxy)_
 - [Fastly](https://www.fastly.com/) _(High performance reverse proxy, originally based on Varnish, worldwide as a CDN, driver available in eZ Platform Enterprise)_
 
+_In order to support several repositories on one installation, tags will be prefixed by
+repository name on non default repositories. E.g. "intranet_path-1"._
+
 Varnish or Fastly are highly recommended for medium to large traffic needs. Besides being able to handle much more traffic, supported for use in cluster setup, they also both support soft purge _(by tags)_, meaning they are able to serve stale content while it's refreshed in the background on-demand, leading to more stable load on your backend.
 
 ## Tags in use in this bundle
@@ -93,7 +96,7 @@ this bundle. It supports comma separated location id values which was only parti
     $response->headers->set('X-Location-Id', '123,212,42');
 ```
 
-*NOTE: This is currently marked as Deprecated, and for rendering eZ content it is thus advice to refactor to use Content
+*NOTE: This is currently marked as Deprecated, and for rendering eZ content it is thus adviced to refactor to use Content
 View. For other needs there is an FOS tag handler for Twig and PHP that can be used, see below for further info.*
 
 

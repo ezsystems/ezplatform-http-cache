@@ -9,27 +9,6 @@ Provides HTTP cache handling for [eZ Platform][ezplatform], by default since ver
 it adds support for mult-tagging for Symfony Proxy, Varnish _(using [xkey][Varnish-xkey])_. Support for Fastly is part of the
 eZ Platform Cloud Enterprise offer as of 1.13 LTS.
 
-## Enabling the package on versions prior to 1.12
-1. Add the package to `app/AppKernel.php`, *before* `EzPublishCoreBundle`, but after `FOSHttpCacheBundle`:
-
-```php
-    public function registerBundles()
-    {
-        $bundles = array(
-            // ...
-            new FOS\HttpCacheBundle\FOSHttpCacheBundle(),
-            new EzSystems\PlatformHttpCacheBundle\EzSystemsPlatformHttpCacheBundle(),
-            new eZ\Bundle\EzPublishCoreBundle\EzPublishCoreBundle(),
-            // ...
-        );
-```
-
-The package will replace several services from the kernel, thus enabling the new features, such as multi-tagging.
-
-2. The application cache class needs to be customized. This is done by modifying `AppCache` class, you will have to make
-it extend `EzSystems\PlatformHttpCacheBundle\AppCache`.
-
-Do not forget to restart your web server.
 
 ## Usage with Varnish
 
@@ -52,6 +31,9 @@ Content-Type: text/html; charset=UTF-8
 Vary: X-User-Hash
 xkey: content-1 content-type-1 location-2 parent-1 path-1 path-2 ez-all
 ```
+
+_As of v0.7, if you have several repositories configured, the tags will be prefixed by
+repository name on non default repository. E.g. "intranet_path-1"._
 
 For further reading on tags see [docs/using_tags.md](docs/using_tags.md).
 

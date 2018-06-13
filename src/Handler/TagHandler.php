@@ -19,7 +19,7 @@ use FOS\HttpCacheBundle\CacheManager;
  * It implements tagResponse() to make sure TagSubscriber (a FOS event listener) sends tags using the header
  * we have configured, and to be able to prefix tags with respository id in order to support multi repo setups.
  */
-class TagHandler extends FOSTagHandler implements TagHandlerInterface
+class TagHandler extends FOSTagHandler
 {
     private $cacheManager;
     private $purgeClient;
@@ -52,35 +52,30 @@ class TagHandler extends FOSTagHandler implements TagHandlerInterface
 
     public function tagResponse(Response $response, $replace = false)
     {
+        if (!$replace && $response->headers->has($this->tagsHeader)) {
+            $header = $response->headers->get($this->tagsHeader);
+            if (!empty($header)) {
+                // handle both both comma (FOS) and space (this bundle/xkey/fastly) seperated strings
+                $this->addTags(preg_split("/[\s,]+/", $header));
+            }
+        }
+
         if ($this->hasTags()) {
-            $this->addTagHeaders($response, explode(',', $this->getTagsHeaderValue()));
+            $tags = explode(',', $this->getTagsHeaderValue());
+
+            // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
+            if ($this->repoPrefix) {
+                $tags = array_map(
+                    function ($tag) {
+                        return $this->repoPrefix . $tag;
+                    },
+                    $tags
+                );
+            }
+
+            $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
         }
 
         return $this;
-    }
-
-    public function addTagHeaders(Response $response, array $tags)
-    {
-        if ($response->headers->has($this->tagsHeader)) {
-            // Get as array and handle both array based and string based values
-            $headerValue = $response->headers->get($this->tagsHeader, null, false);
-            $tags = array_merge(
-                $tags,
-                count($headerValue) === 1 ? explode(' ', $headerValue[0]) : $headerValue
-            );
-        }
-
-        // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
-        // But only if repo prefix is set (when not "default", see ctor), & if not already applied to tags
-        if ($this->repoPrefix && strpos($tags[0], $this->repoPrefix) !== 0) {
-            $tags = array_map(
-                function ($tag) {
-                    return $this->repoPrefix . $tag;
-                },
-                $tags
-            );
-        }
-
-        $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
     }
 }

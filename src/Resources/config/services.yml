@@ -8,6 +8,13 @@ services:
         arguments: ['@ezpublish.config.resolver', '@ezpublish.config.dynamic_setting.parser', '%fos_http_cache.proxy_client.varnish.class%']
 
     ezplatform.http_cache.purge_client:
+        alias: ezplatform.http_cache.purge_client_decorator
+
+    ezplatform.http_cache.purge_client_decorator:
+        class: EzSystems\PlatformHttpCacheBundle\PurgeClient\RepositoryPrefixDecorator
+        arguments: ['@ezplatform.http_cache.purge_client_internal', $repository$]
+
+    ezplatform.http_cache.purge_client_internal:
         alias: ezplatform.http_cache.purge_client.local
 
     ezplatform.http_cache.purge_client.varnish:
@@ -40,6 +47,7 @@ services:
          - '@ezplatform.http_cache.cache_manager'
          - '%ezplatform.http_cache.tags.header%'
          - '@ezplatform.http_cache.purge_client'
+         - $repository$
 
     ezplatform.http_cache.user_context_provider.role_identify:
         class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify

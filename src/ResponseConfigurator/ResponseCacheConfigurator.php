@@ -29,16 +29,4 @@ interface ResponseCacheConfigurator
      * @return ResponseCacheConfigurator
      */
     public function setSharedMaxAge(Response $response);
-
-    /**
-     * Adds $tags to the response's cache tags header.
-     *
-     * @deprecated Start to use FOSHttpCache's TagHandler->addTags() instead, which we overload when needed here.
-     *
-     * @param \Symfony\Component\HttpFoundation\Response $response
-     * @param string|array $tags Single tag, or array of tags
-     *
-     * @return ResponseCacheConfigurator
-     */
-    public function addTags(Response $response, $tags);
 }

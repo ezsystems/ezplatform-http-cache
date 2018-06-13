@@ -5,7 +5,6 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\ResponseTagger;
 
-use EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ResponseCacheConfigurator;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -14,13 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 interface ResponseTagger
 {
     /**
-     * Extracts tags from a value, and adds them using the Configurator.
+     * Extracts tags from a value.
      *
-     * @param ResponseCacheConfigurator $configurator
-     * @param \Symfony\Component\HttpFoundation\Response $response
      * @param mixed $value
-     *
-     * @return \EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger
      */
-    public function tag(ResponseCacheConfigurator $configurator, Response $response, $value);
+    public function tag($value);
 }

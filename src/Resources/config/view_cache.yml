@@ -26,6 +26,12 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    ezplatform.hidden_location.exception_subscriber:
+        class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\HiddenLocationExceptionSubscriber
+        arguments: ['@ezplatform.view_cache.response_configurator', '@ezplatform.view_cache.response_tagger.location', '@twig.controller.exception']
+        tags:
+            - { name: kernel.event_subscriber }
+
     # ResponseConfigurator
     ezplatform.view_cache.response_configurator:
         class: EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ConfigurableResponseCacheConfigurator

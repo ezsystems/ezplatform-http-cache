@@ -7,10 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
 use eZ\Publish\Core\MVC\Exception\HiddenLocationException;
-use EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ResponseCacheConfigurator;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\LocationTagger;
-use Symfony\Bundle\TwigBundle\Controller\ExceptionController;
-use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -20,23 +17,11 @@ class HiddenLocationExceptionSubscriber implements EventSubscriberInterface
     /**
      * @var \EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\LocationTagger;
      */
-    private $responseTagger;
+    private $locationTagger;
 
-    /**
-     * @var \EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ResponseCacheConfigurator
-     */
-    private $responseConfigurator;
-
-    /**
-     * @var \Symfony\Bundle\TwigBundle\Controller\ExceptionController
-     */
-    private $exceptionController;
-
-    public function __construct(ResponseCacheConfigurator $responseConfigurator, LocationTagger $responseTagger, ExceptionController $exceptionController)
+    public function __construct(LocationTagger $locationTagger)
     {
-        $this->responseTagger = $responseTagger;
-        $this->responseConfigurator = $responseConfigurator;
-        $this->exceptionController = $exceptionController;
+        $this->locationTagger = $locationTagger;
     }
 
     public static function getSubscribedEvents()
@@ -52,10 +37,6 @@ class HiddenLocationExceptionSubscriber implements EventSubscriberInterface
 
         /** @var HiddenLocationException $exception */
         $exception = $event->getException();
-
-        $response = $this->exceptionController->showAction($event->getRequest(), FlattenException::create($exception));
-        $this->responseTagger->tag($this->responseConfigurator, $response, $exception->getLocation());
-
-        $event->setResponse($response);
+        $this->locationTagger->tag($exception->getLocation());
     }
 }

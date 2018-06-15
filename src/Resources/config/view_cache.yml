@@ -28,7 +28,7 @@ services:
 
     ezplatform.hidden_location.exception_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\HiddenLocationExceptionSubscriber
-        arguments: ['@ezplatform.view_cache.response_tagger.location']
+        arguments: ['@ezplatform.view_cache.response_tagger.location', '@ezplatform.view_cache.response_tagger.content_info']
         tags:
             - { name: kernel.event_subscriber }
 

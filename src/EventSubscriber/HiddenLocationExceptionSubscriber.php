@@ -7,6 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
 use eZ\Publish\Core\MVC\Exception\HiddenLocationException;
+use EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\ContentInfoTagger;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\LocationTagger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -19,9 +20,15 @@ class HiddenLocationExceptionSubscriber implements EventSubscriberInterface
      */
     private $locationTagger;
 
-    public function __construct(LocationTagger $locationTagger)
+    /**
+     * @var \EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\ContentInfoTagger
+     */
+    private $contentInfoTagger;
+
+    public function __construct(LocationTagger $locationTagger, ContentInfoTagger $contentInfoTagger)
     {
         $this->locationTagger = $locationTagger;
+        $this->contentInfoTagger = $contentInfoTagger;
     }
 
     public static function getSubscribedEvents()
@@ -35,8 +42,9 @@ class HiddenLocationExceptionSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var HiddenLocationException $exception */
-        $exception = $event->getException();
-        $this->locationTagger->tag($exception->getLocation());
+        /** @var \eZ\Publish\API\Repository\Values\Content\Location $location */
+        $location = $event->getException()->getLocation();
+        $this->locationTagger->tag($location);
+        $this->contentInfoTagger->tag($location->getContentInfo());
     }
 }

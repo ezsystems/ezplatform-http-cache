@@ -37,17 +37,15 @@ services:
         class: EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore
         arguments: ['%ezplatform.http_cache.store.root%']
 
-    ezplatform.http_cache.tag_handler:
-        alias: ezplatform.http_cache.tag_handler.xkey
-        deprecated: 'The "%service_id%" service is deprecated. Use "fos_http_cache.handler.tag_handler" instead'
-
-    ezplatform.http_cache.tag_handler.xkey:
+    ezplatform.http_cache.fos_tag_handler.xkey:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
         arguments:
          - '@ezplatform.http_cache.cache_manager'
          - '%ezplatform.http_cache.tags.header%'
          - '@ezplatform.http_cache.purge_client'
-         - $repository$
+        # To avoid SiteAccess system creating two instances of handler before and after siteaccess is set, use setter for SA settings
+        calls:
+            - [setRepositoryId, [$repository$]]
 
     ezplatform.http_cache.user_context_provider.role_identify:
         class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify

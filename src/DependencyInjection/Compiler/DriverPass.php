@@ -22,20 +22,14 @@ class DriverPass implements CompilerPassInterface
         }
         $container->setAlias('ezplatform.http_cache.purge_client_internal', $configuredPurgeClientServiceId);
 
-        // TagHandler is responsible for setting correct tags (recognized by the http cache) on responses
-        // @deprecated We are using FOS service for tagging instead now.
-        $configuredTagHandlerServiceId = static::getTaggedService($container, 'ezplatform.http_cache.tag_handler');
-        if ($configuredTagHandlerServiceId !== null) {
-            $container->setAlias('ezplatform.http_cache.tag_handler', $configuredTagHandlerServiceId);
-        }
-
         // FOS TagHandler is making sure running "php app/console fos:httpcache:invalidate:tag <tag>" works
         $configuredFosTagHandlerServiceId = static::getTaggedService($container, 'ezplatform.http_cache.fos_tag_handler');
         if ($configuredFosTagHandlerServiceId === null) {
             // We default to xkey handler. This one should anyway work for most drivers as it just passes a purge request
             // on to the purge client
-            $configuredFosTagHandlerServiceId = 'ezplatform.http_cache.tag_handler.xkey';
+            $configuredFosTagHandlerServiceId = 'ezplatform.http_cache.fos_tag_handler.xkey';
         }
+
         $container->setAlias('fos_http_cache.handler.tag_handler', $configuredFosTagHandlerServiceId);
     }
 

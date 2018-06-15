@@ -24,18 +24,17 @@ class TagHandler extends FOSTagHandler
     private $cacheManager;
     private $purgeClient;
     private $tagsHeader;
-    private $repoPrefix;
+    private $repositoryId;
 
     public function __construct(
         CacheManager $cacheManager,
         $tagsHeader,
-        PurgeClientInterface $purgeClient,
-        $repositoryId
+        PurgeClientInterface $purgeClient
     ) {
         $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
-        $this->repoPrefix = empty($repositoryId) ? '' : $repositoryId . '_';
+
         parent::__construct($cacheManager, $tagsHeader);
         $this->addTags(['ez-all']);
     }
@@ -48,6 +47,11 @@ class TagHandler extends FOSTagHandler
     public function purge($tags)
     {
         $this->purgeClient->purge($tags);
+    }
+
+    public function setRepositoryId($repositoryId)
+    {
+        $this->repositoryId = $repositoryId;
     }
 
     public function tagResponse(Response $response, $replace = false)
@@ -66,10 +70,10 @@ class TagHandler extends FOSTagHandler
             $tags = array_merge($tags, explode(',', $this->getTagsHeaderValue()));
 
             // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
-            if ($this->repoPrefix) {
+            if (!empty($this->repositoryId)) {
                 $tags = array_map(
                     function ($tag) {
-                        return $this->repoPrefix . $tag;
+                        return $this->repositoryId . '_' . $tag;
                     },
                     $tags
                 );

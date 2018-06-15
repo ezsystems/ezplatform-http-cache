@@ -52,16 +52,18 @@ class TagHandler extends FOSTagHandler
 
     public function tagResponse(Response $response, $replace = false)
     {
+        $tags = [];
         if (!$replace && $response->headers->has($this->tagsHeader)) {
-            $header = $response->headers->get($this->tagsHeader);
-            if (!empty($header)) {
+            $headers = $response->headers->get($this->tagsHeader, null, false);
+            if (!empty($headers)) {
                 // handle both both comma (FOS) and space (this bundle/xkey/fastly) seperated strings
-                $this->addTags(preg_split("/[\s,]+/", $header));
+                // As there can be more requests going on, we don't add these to tag handler (ez-user-context-hash)
+                $tags = preg_split("/[\s,]+/", implode(' ', $headers));
             }
         }
 
         if ($this->hasTags()) {
-            $tags = explode(',', $this->getTagsHeaderValue());
+            $tags = array_merge($tags, explode(',', $this->getTagsHeaderValue()));
 
             // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
             if ($this->repoPrefix) {

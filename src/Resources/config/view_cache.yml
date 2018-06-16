@@ -35,13 +35,14 @@ services:
             - '$content.default_ttl$'
             - '@fos_http_cache.handler.tag_handler'
 
-    # ResponseTagger
+    # ResponseTagger dispatcher
     ezplatform.view_cache.response_tagger.dispatcher:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Delegator\DispatcherTagger
         # Taggers are added by a compiler pass
         arguments:
             - []
 
+    # ResponseTagger proxy/extract
     ezplatform.view_cache.response_tagger.content_value_view:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Delegator\ContentValueViewTagger
         arguments: ['@ezplatform.view_cache.response_tagger.content_info']
@@ -54,12 +55,19 @@ services:
         tags:
             - {name: ezplatform.cache_response_tagger}
 
+    # ResponseTagger value handlers
+    ezplatform.view_cache.response_tagger.abstract_value:
+        abstract: true
+        arguments: ['@fos_http_cache.handler.tag_handler']
+
     ezplatform.view_cache.response_tagger.content_info:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\ContentInfoTagger
+        parent: ezplatform.view_cache.response_tagger.abstract_value
         tags:
             - {name: ezplatform.cache_response_tagger}
 
     ezplatform.view_cache.response_tagger.location:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\LocationTagger
+        parent: ezplatform.view_cache.response_tagger.abstract_value
         tags:
             - {name: ezplatform.cache_response_tagger}

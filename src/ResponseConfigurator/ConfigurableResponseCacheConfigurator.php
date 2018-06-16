@@ -6,7 +6,6 @@
 namespace EzSystems\PlatformHttpCacheBundle\ResponseConfigurator;
 
 use Symfony\Component\HttpFoundation\Response;
-use FOS\HttpCache\Handler\TagHandler;
 
 /**
  * A ResponseCacheConfigurator configurable by constructor arguments.
@@ -33,17 +32,11 @@ class ConfigurableResponseCacheConfigurator implements ResponseCacheConfigurator
      */
     private $defaultTtl;
 
-    /**
-     * @var TagHandler
-     */
-    private $tagHandler;
-
-    public function __construct($enableViewCache, $enableTtlCache, $defaultTtl, TagHandler $tagHandler)
+    public function __construct($enableViewCache, $enableTtlCache, $defaultTtl)
     {
         $this->enableViewCache = $enableViewCache;
         $this->enableTtlCache = $enableTtlCache;
         $this->defaultTtl = $defaultTtl;
-        $this->tagHandler = $tagHandler;
     }
 
     public function enableCache(Response $response)
@@ -59,15 +52,6 @@ class ConfigurableResponseCacheConfigurator implements ResponseCacheConfigurator
     {
         if ($this->enableViewCache && $this->enableTtlCache && !$response->headers->hasCacheControlDirective('s-maxage')) {
             $response->setSharedMaxAge($this->defaultTtl);
-        }
-
-        return $this;
-    }
-
-    public function addTags(Response $response, $tags)
-    {
-        if ($this->enableViewCache) {
-            $this->tagHandler->addTags((array)$tags);
         }
 
         return $this;

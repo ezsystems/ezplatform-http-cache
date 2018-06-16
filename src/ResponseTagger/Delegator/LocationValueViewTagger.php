@@ -6,10 +6,8 @@
 namespace EzSystems\PlatformHttpCacheBundle\ResponseTagger\Delegator;
 
 use eZ\Publish\API\Repository\Values\Content\Location;
-use EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ResponseCacheConfigurator;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger;
 use eZ\Publish\Core\MVC\Symfony\View\LocationValueView;
-use Symfony\Component\HttpFoundation\Response;
 
 class LocationValueViewTagger implements ResponseTagger
 {
@@ -23,14 +21,12 @@ class LocationValueViewTagger implements ResponseTagger
         $this->locationTagger = $locationTagger;
     }
 
-    public function tag(ResponseCacheConfigurator $configurator, Response $response, $view)
+    public function tag($view)
     {
         if (!$view instanceof LocationValueView || !($location = $view->getLocation()) instanceof Location) {
             return $this;
         }
 
-        $this->locationTagger->tag($configurator, $response, $location);
-
-        return $this;
+        $this->locationTagger->tag($location);
     }
 }

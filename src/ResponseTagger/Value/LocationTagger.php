@@ -2,26 +2,22 @@
 
 namespace EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value;
 
-use EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ResponseCacheConfigurator;
-use EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger;
-use Symfony\Component\HttpFoundation\Response;
 use eZ\Publish\API\Repository\Values\Content\Location;
 
-class LocationTagger implements ResponseTagger
+class LocationTagger extends AbstractValueTagger
 {
-    public function tag(ResponseCacheConfigurator $configurator, Response $response, $value)
+    public function tag($value)
     {
         if (!$value instanceof Location) {
             return $this;
         }
 
         if ($value->id !== $value->contentInfo->mainLocationId) {
-            $configurator->addTags($response, ['location-' . $value->id]);
+            $this->tagHandler->addTags(['location-' . $value->id]);
         }
 
-        $configurator->addTags($response, ['parent-' . $value->parentLocationId]);
-        $configurator->addTags(
-            $response,
+        $this->tagHandler->addTags(['parent-' . $value->parentLocationId]);
+        $this->tagHandler->addTags(
             array_map(
                 function ($pathItem) {
                     return 'path-' . $pathItem;
@@ -29,7 +25,5 @@ class LocationTagger implements ResponseTagger
                 $value->path
             )
         );
-
-        return $this;
     }
 }

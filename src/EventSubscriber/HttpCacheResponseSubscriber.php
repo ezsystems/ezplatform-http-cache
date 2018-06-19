@@ -47,7 +47,7 @@ class HttpCacheResponseSubscriber implements EventSubscriberInterface
         $response = $event->getResponse();
         $this->responseConfigurator->enableCache($response);
         $this->responseConfigurator->setSharedMaxAge($response);
-        $this->dispatcherTagger->tag($this->responseConfigurator, $response, $view);
+        $this->dispatcherTagger->tag($view);
 
         // NB!: FOSHTTPCacheBundle is taking care about writing the tags in own tag handler happening with priority 0
     }

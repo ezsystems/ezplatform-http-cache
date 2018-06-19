@@ -72,6 +72,6 @@ class HttpCacheResponseSubscriberSpec extends ObjectBehavior
 
         $configurator->enableCache(Argument::type(Response::class))->shouldHaveBeenCalled();
         $configurator->setSharedMaxAge(Argument::type(Response::class))->shouldHaveBeenCalled();
-        $dispatcherTagger->tag($configurator, Argument::type(Response::class), $view)->shouldHaveBeenCalled();
+        $dispatcherTagger->tag($view)->shouldHaveBeenCalled();
     }
 }

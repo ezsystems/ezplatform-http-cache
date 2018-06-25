@@ -77,3 +77,10 @@ services:
         parent: ezplatform.view_cache.response_tagger.abstract_value
         tags:
             - {name: ezplatform.cache_response_tagger}
+
+    # Twig
+    ezplatform.view_cache.twig_extension:
+        class: EzSystems\PlatformHttpCacheBundle\Twig\ContentTaggingExtension
+        arguments: ['@ezplatform.view_cache.response_tagger.dispatcher']
+        tags:
+            - {name: twig.extension}

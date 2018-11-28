@@ -33,6 +33,14 @@ class HttpCacheConfigParser implements ParserInterface
                         ->example(array('http://localhost/', 'http://another.server/'))
                         ->requiresAtLeastOneElement()
                         ->prototype('scalar')->end()
+                    ->end()
+                    ->scalarNode('purge_auth_header')
+                        ->info('Header name for authenticated purge')
+                        ->defaultValue('X-PURGE-AUTH')
+                    ->end()
+                    ->scalarNode('purge_auth_key')
+                        ->info('Purge authentication key')
+                        ->defaultNull()
                     ->end();
 
         foreach ($this->getExtraConfigParsers() as $extraConfigParser) {
@@ -50,6 +58,14 @@ class HttpCacheConfigParser implements ParserInterface
 
         if (isset($scopeSettings['http_cache']['purge_servers'])) {
             $contextualizer->setContextualParameter('http_cache.purge_servers', $currentScope, $scopeSettings['http_cache']['purge_servers']);
+        }
+
+        if (isset($scopeSettings['http_cache']['purge_auth_header'])) {
+            $contextualizer->setContextualParameter('http_cache.purge_auth_header', $currentScope, $scopeSettings['http_cache']['purge_auth_header']);
+        }
+
+        if (isset($scopeSettings['http_cache']['purge_auth_key'])) {
+            $contextualizer->setContextualParameter('http_cache.purge_auth_key', $currentScope, $scopeSettings['http_cache']['purge_auth_key']);
         }
 
         foreach ($this->getExtraConfigParsers() as $extraConfigParser) {

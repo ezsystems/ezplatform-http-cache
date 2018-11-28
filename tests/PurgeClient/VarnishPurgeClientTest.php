@@ -9,6 +9,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\PurgeClient;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient;
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use FOS\HttpCache\ProxyClient\ProxyClientInterface;
 use FOS\HttpCacheBundle\CacheManager;
 use PHPUnit\Framework\TestCase;
@@ -26,6 +27,11 @@ class VarnishPurgeClientTest extends TestCase
      */
     private $purgeClient;
 
+    /**
+     * @var ConfigResolverInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $configResolver;
+
     protected function setUp()
     {
         parent::setUp();
@@ -39,7 +45,11 @@ class VarnishPurgeClientTest extends TestCase
                 )
             )
             ->getMock();
-        $this->purgeClient = new VarnishPurgeClient($this->cacheManager);
+        $this->configResolver = $this->createMock(ConfigResolverInterface::class);
+        $this->purgeClient = new VarnishPurgeClient(
+            $this->cacheManager,
+            $this->configResolver
+        );
     }
 
     public function testPurgeNoLocationIds()
@@ -47,6 +57,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->never())
             ->method('invalidate');
+
         $this->purgeClient->purge(array());
     }
 
@@ -61,6 +72,32 @@ class VarnishPurgeClientTest extends TestCase
         $this->purgeClient->purge($locationId);
     }
 
+    public function testPurgeOneLocationIdWithAuthHeaderAndKey()
+    {
+        $locationId = 123;
+        $authHeader = 'AUTH-HEADER-NAME';
+        $authKey = 'secret-auth-key';
+
+        $this->cacheManager
+            ->expects($this->once())
+            ->method('invalidatePath')
+            ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $authHeader => $authKey]);
+
+        $this->configResolver
+            ->expects($this->exactly(2))
+            ->method('hasParameter')
+            ->withAnyParameters()
+            ->willReturn(true);
+
+        $this->configResolver
+            ->expects($this->exactly(2))
+            ->method('getParameter')
+            ->withAnyParameters()
+            ->willReturn($authHeader, $authKey);
+
+        $this->purgeClient->purge($locationId);
+    }
+
     /**
      * @dataProvider purgeTestProvider
      */
@@ -71,6 +108,48 @@ class VarnishPurgeClientTest extends TestCase
                 ->expects($this->at($key))
                 ->method('invalidatePath')
                 ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost']);
+        }
+
+        $this->purgeClient->purge($locationIds);
+    }
+
+    /**
+     * @dataProvider purgeTestProvider
+     */
+    public function testPurgeWithAuthHeaderAndKey(array $locationIds = [])
+    {
+        $authHeader = 'AUTH-HEADER-NAME';
+        $authKey = 'secret-auth-key';
+
+        foreach ($locationIds as $key => $locationId) {
+            $this->configResolver
+                ->expects($this->at($key * 4))
+                ->method('hasParameter')
+                ->with(VarnishPurgeClient::PURGE_AUTH_HEADER_PARAM)
+                ->willReturn($authHeader);
+
+            $this->configResolver
+                ->expects($this->at($key * 4 + 1))
+                ->method('hasParameter')
+                ->with(VarnishPurgeClient::PURGE_AUTH_KEY_PARAM)
+                ->willReturn($authKey);
+
+            $this->configResolver
+                ->expects($this->at($key * 4 + 2))
+                ->method('getParameter')
+                ->with(VarnishPurgeClient::PURGE_AUTH_HEADER_PARAM)
+                ->willReturn($authHeader);
+
+            $this->configResolver
+                ->expects($this->at($key * 4 + 3))
+                ->method('getParameter')
+                ->with(VarnishPurgeClient::PURGE_AUTH_KEY_PARAM)
+                ->willReturn($authKey);
+
+            $this->cacheManager
+                ->expects($this->at($key))
+                ->method('invalidatePath')
+                ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $authHeader => $authKey]);
         }
 
         $this->purgeClient->purge($locationIds);
@@ -91,6 +170,31 @@ class VarnishPurgeClientTest extends TestCase
             ->expects($this->once())
             ->method('invalidatePath')
             ->with('/', ['key' => 'ez-all', 'Host' => 'localhost']);
+
+        $this->purgeClient->purgeAll();
+    }
+
+    public function testPurgeAllWithAuthHeaderAndKey()
+    {
+        $authHeader = 'AUTH-HEADER-NAME';
+        $authKey = 'secret-auth-key';
+
+        $this->cacheManager
+            ->expects($this->once())
+            ->method('invalidatePath')
+            ->with('/', ['key' => 'ez-all', 'Host' => 'localhost', $authHeader => $authKey]);
+
+        $this->configResolver
+            ->expects($this->exactly(2))
+            ->method('hasParameter')
+            ->withAnyParameters()
+            ->willReturn(true);
+
+        $this->configResolver
+            ->expects($this->exactly(2))
+            ->method('getParameter')
+            ->withAnyParameters()
+            ->willReturn($authHeader, $authKey);
 
         $this->purgeClient->purgeAll();
     }

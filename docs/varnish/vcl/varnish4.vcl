@@ -135,9 +135,7 @@ sub ez_purge {
 
     # Support how purging was done in earlier versions, this is deprecated and here just for BC for code still using it
     if (req.method == "BAN") {
-        if (!client.ip ~ invalidators) {
-            return (synth(405, "Method not allowed"));
-        }
+        call ez_purge_acl;
 
         if (req.http.X-Location-Id) {
             ban("obj.http.X-Location-Id ~ " + req.http.X-Location-Id);
@@ -149,9 +147,7 @@ sub ez_purge {
     }
 
     if (req.method == "PURGE") {
-        if (!client.ip ~ invalidators) {
-            return (synth(405, "Method not allowed"));
-        }
+        call ez_purge_acl;
 
         # If http header "key" is set, we assume purge is on key and you have Varnish xkey installed
         if (req.http.key) {
@@ -164,6 +160,19 @@ sub ez_purge {
 
         # if not, then this is a normal purge by url
         return (purge);
+    }
+}
+
+sub ez_purge_acl {
+    if (req.http.x-purge-token) {
+        # Use the line above instead of  line with 'std.getenv' if your Varnish version is lower than 6.2 and doesn't support std.getenv,
+        # change the token "_YOUR_TOKEN_HERE_" before enabling it.
+        # if (req.http.x-purge-token != "_YOUR_TOKEN_HERE_") {
+        if (req.http.x-purge-token != std.getenv("ACL_INVALIDATE_TOKEN")) {
+            return (synth(405, "Method not allowed"));
+        }
+    } else if  (!client.ip ~ invalidators) {
+        return (synth(405, "Method not allowed"));
     }
 }
 

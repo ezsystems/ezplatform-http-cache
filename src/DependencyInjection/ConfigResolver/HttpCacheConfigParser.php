@@ -34,12 +34,12 @@ class HttpCacheConfigParser implements ParserInterface
                         ->requiresAtLeastOneElement()
                         ->prototype('scalar')->end()
                     ->end()
-                    ->scalarNode('purge_auth_header')
-                        ->info('Header name for authenticated purge')
-                        ->defaultValue('X-PURGE-AUTH')
+                    ->scalarNode('varnish_invalidate_token_name')
+                        ->info('Optional: Varnish Invalidation token name for purge')
+                        ->defaultValue('x-purge-token')
                     ->end()
-                    ->scalarNode('purge_auth_key')
-                        ->info('Purge authentication key')
+                    ->scalarNode('varnish_invalidate_token')
+                        ->info('Optional: Varnish Invalidation token for purge')
                         ->defaultNull()
                     ->end();
 
@@ -60,12 +60,12 @@ class HttpCacheConfigParser implements ParserInterface
             $contextualizer->setContextualParameter('http_cache.purge_servers', $currentScope, $scopeSettings['http_cache']['purge_servers']);
         }
 
-        if (isset($scopeSettings['http_cache']['purge_auth_header'])) {
-            $contextualizer->setContextualParameter('http_cache.purge_auth_header', $currentScope, $scopeSettings['http_cache']['purge_auth_header']);
+        if (isset($scopeSettings['http_cache']['varnish_invalidate_token_name'])) {
+            $contextualizer->setContextualParameter('http_cache.varnish_invalidate_token_name', $currentScope, $scopeSettings['http_cache']['varnish_invalidate_token_name']);
         }
 
-        if (isset($scopeSettings['http_cache']['purge_auth_key'])) {
-            $contextualizer->setContextualParameter('http_cache.purge_auth_key', $currentScope, $scopeSettings['http_cache']['purge_auth_key']);
+        if (isset($scopeSettings['http_cache']['varnish_invalidate_token'])) {
+            $contextualizer->setContextualParameter('http_cache.varnish_invalidate_token', $currentScope, $scopeSettings['http_cache']['varnish_invalidate_token']);
         }
 
         foreach ($this->getExtraConfigParsers() as $extraConfigParser) {

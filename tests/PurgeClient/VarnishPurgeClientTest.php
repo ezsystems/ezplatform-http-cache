@@ -75,13 +75,13 @@ class VarnishPurgeClientTest extends TestCase
     public function testPurgeOneLocationIdWithAuthHeaderAndKey()
     {
         $locationId = 123;
-        $authHeader = 'AUTH-HEADER-NAME';
-        $authKey = 'secret-auth-key';
+        $tokenName = 'x-purge-token-name';
+        $token = 'secret-token-key';
 
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $authHeader => $authKey]);
+            ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $tokenName => $token]);
 
         $this->configResolver
             ->expects($this->exactly(2))
@@ -93,7 +93,7 @@ class VarnishPurgeClientTest extends TestCase
             ->expects($this->exactly(2))
             ->method('getParameter')
             ->withAnyParameters()
-            ->willReturn($authHeader, $authKey);
+            ->willReturn($tokenName, $token);
 
         $this->purgeClient->purge($locationId);
     }
@@ -118,38 +118,38 @@ class VarnishPurgeClientTest extends TestCase
      */
     public function testPurgeWithAuthHeaderAndKey(array $locationIds = [])
     {
-        $authHeader = 'AUTH-HEADER-NAME';
-        $authKey = 'secret-auth-key';
+        $tokenName = 'x-purge-token-name';
+        $token = 'secret-token-key';
 
         foreach ($locationIds as $key => $locationId) {
             $this->configResolver
                 ->expects($this->at($key * 4))
                 ->method('hasParameter')
-                ->with(VarnishPurgeClient::PURGE_AUTH_HEADER_PARAM)
-                ->willReturn($authHeader);
+                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_NAME_PARAM)
+                ->willReturn($tokenName);
 
             $this->configResolver
                 ->expects($this->at($key * 4 + 1))
                 ->method('hasParameter')
-                ->with(VarnishPurgeClient::PURGE_AUTH_KEY_PARAM)
-                ->willReturn($authKey);
+                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+                ->willReturn($token);
 
             $this->configResolver
                 ->expects($this->at($key * 4 + 2))
                 ->method('getParameter')
-                ->with(VarnishPurgeClient::PURGE_AUTH_HEADER_PARAM)
-                ->willReturn($authHeader);
+                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_NAME_PARAM)
+                ->willReturn($tokenName);
 
             $this->configResolver
                 ->expects($this->at($key * 4 + 3))
                 ->method('getParameter')
-                ->with(VarnishPurgeClient::PURGE_AUTH_KEY_PARAM)
-                ->willReturn($authKey);
+                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+                ->willReturn($token);
 
             $this->cacheManager
                 ->expects($this->at($key))
                 ->method('invalidatePath')
-                ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $authHeader => $authKey]);
+                ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $tokenName => $token]);
         }
 
         $this->purgeClient->purge($locationIds);
@@ -176,13 +176,13 @@ class VarnishPurgeClientTest extends TestCase
 
     public function testPurgeAllWithAuthHeaderAndKey()
     {
-        $authHeader = 'AUTH-HEADER-NAME';
-        $authKey = 'secret-auth-key';
+        $tokenName = 'x-purge-token-name';
+        $token = 'secret-token-key';
 
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => 'ez-all', 'Host' => 'localhost', $authHeader => $authKey]);
+            ->with('/', ['key' => 'ez-all', 'Host' => 'localhost', $tokenName => $token]);
 
         $this->configResolver
             ->expects($this->exactly(2))
@@ -194,7 +194,7 @@ class VarnishPurgeClientTest extends TestCase
             ->expects($this->exactly(2))
             ->method('getParameter')
             ->withAnyParameters()
-            ->willReturn($authHeader, $authKey);
+            ->willReturn($tokenName, $token);
 
         $this->purgeClient->purgeAll();
     }

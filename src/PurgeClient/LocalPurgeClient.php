@@ -46,12 +46,7 @@ class LocalPurgeClient implements PurgeClientInterface
     }
 
     /**
-     * Can we find a way to NOT implement this method ?
-     * PurgeClientInterface is defined in eZ/Publish/Core/MVC/Symfony/Cache/Http, and purgeAll() is defined in it,
-     * but deprecated by the multi-tagging implementation.
-     *
-     * Could we add PurgeClientInterface to HttpCacheBundle, and remove purgeAll from this version ?
-     * How would this work with the current implementation ?
+     * @todo Adapt RequestAwarePurger to add a purgeAll method to avoid special requests like this known by tag storage.
      */
     public function purgeAll()
     {

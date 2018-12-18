@@ -17,9 +17,13 @@ class UserContextSubscriber implements EventSubscriberInterface
     /** @var string */
     private $tagHeader = 'xkey';
 
-    public function __construct($tagHeader)
+    /** @var string */
+    private $repoPrefix;
+
+    public function __construct($tagHeader, $repositoryId)
     {
         $this->tagHeader = $tagHeader;
+        $this->repoPrefix = empty($repositoryId) ? '' : $repositoryId . '_';
     }
 
     public static function getSubscribedEvents()
@@ -49,6 +53,6 @@ class UserContextSubscriber implements EventSubscriberInterface
 
         // We need to set tag directly on repsonse here to make sure this does not also get applied to the main request
         // when using Symfony Proxy, as tag handler does not clear tags between requests.
-        $response->headers->set($this->tagHeader, 'ez-user-context-hash');
+        $response->headers->set($this->tagHeader, $this->repoPrefix . 'ez-user-context-hash');
     }
 }

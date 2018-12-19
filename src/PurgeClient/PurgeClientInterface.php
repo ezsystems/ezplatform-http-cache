@@ -25,5 +25,5 @@ interface PurgeClientInterface
      *
      * @param string|null $allTagName The tag name used for all eZ cache, "ez-all" prefixed for repository name.
      */
-    public function purgeAll(/*string $allTagName = 'ez-all'*/);
+    public function purgeAll(/*$allTagName = 'ez-all'*/);
 }

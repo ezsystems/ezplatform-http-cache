@@ -168,8 +168,8 @@ All slots can be found in `src/SignalSlot`.
 ## Troubleshooting
 
 One common issue to encounter is that the tagging headers exceed limits in Varnish, stopping either caching or invalidation from happening:
-- [http_resp_hdr_len](https://varnish-cache.org/docs/6.1/reference/varnishd.html#http-resp-hdr-len) (e.g. 32k)
-- [http_max_hdr](https://varnish-cache.org/docs/6.1/reference/varnishd.html#http-max-hdr) (e.g. 128)
-- [http_resp_size](https://varnish-cache.org/docs/6.1/reference/varnishd.html#http-resp-size)  (e.g. 64k)
+- [http_resp_hdr_len](https://varnish-cache.org/docs/6.0/reference/varnishd.html#http-resp-hdr-len) (e.g. 32k)
+- [http_max_hdr](https://varnish-cache.org/docs/6.0/reference/varnishd.html#http-max-hdr) (e.g. 128)
+- [http_resp_size](https://varnish-cache.org/docs/6.0/reference/varnishd.html#http-resp-size) (e.g. 64k)
 
 For more up-to-date info see online doc: https://doc.ezplatform.com/en/latest/guide/http_cache/#available-tags

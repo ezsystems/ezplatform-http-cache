@@ -117,6 +117,11 @@ For twig usage, you can make sure response is tagged correctly by using the foll
 
 See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#tagging-from-twig-templates
 
+Alternatively if you have a location(s) that you render inline & want invalidated on any kind of change:
+```twig
+    {{ ez_http_tag_location( location ) }}
+```
+
 #### PHP use
 
 Fo PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service which lets you add tags to a response:
@@ -130,7 +135,7 @@ See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#taggi
 *WARNING: Be aware service name and type hint will somewhat change once we move to FOSHttpCache 2.x, so in this case
 you can alternatively consider to add tag in twig template or stay with usage of `X-Location-Id` for the time being.*
 
-## How purge tagging is done
+## How purge tagging is done (invalidation) 
 
 This bundle uses Repository API Slots to listen to Signals emitted on repository operations, and depending on the
 operation triggers expiry on a specific tag or set of tags.
@@ -158,3 +163,13 @@ E.g. on Move Location signal the following tags will be purged:
 ```
 
 All slots can be found in `src/SignalSlot`.
+
+
+## Troubleshooting
+
+One common issue to encounter is that the tagging headers exceed limits in Varnish, stopping either caching or invalidation from happening:
+- [http_resp_hdr_len](https://varnish-cache.org/docs/6.1/reference/varnishd.html#http-resp-hdr-len) (e.g. 32k)
+- [http_max_hdr](https://varnish-cache.org/docs/6.1/reference/varnishd.html#http-max-hdr) (e.g. 128)
+- [http_resp_size](https://varnish-cache.org/docs/6.1/reference/varnishd.html#http-resp-size)  (e.g. 64k)
+
+For more up-to-date info see online doc: https://doc.ezplatform.com/en/latest/guide/http_cache/#available-tags

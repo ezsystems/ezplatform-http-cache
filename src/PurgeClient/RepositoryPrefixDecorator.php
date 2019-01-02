@@ -47,8 +47,8 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
         $this->purgeClient->purge($tags);
     }
 
-    public function purgeAll()
+    public function purgeAll($allTagName = 'ez-all')
     {
-        $this->purgeClient->purgeAll($this->repoPrefix . 'ez-all');
+        $this->purgeClient->purgeAll($this->repoPrefix . $allTagName);
     }
 }

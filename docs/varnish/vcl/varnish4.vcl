@@ -164,33 +164,16 @@ sub ez_purge {
 }
 
 sub ez_purge_acl {
+//    if (req.http.x-purge-token) {
+//        #  Won't work on Varnish <= 5.1, if needed you can hardcode a secret token here instead of std.getenv() usage
+//        if (req.http.x-purge-token != std.getenv("ACL_INVALIDATE_TOKEN")) {
+//            return (synth(405, "Method not allowed"));
+//        }
+//    } else if  (!client.ip ~ invalidators) {
     if  (!client.ip ~ invalidators) {
         return (synth(405, "Method not allowed"));
     }
 }
-
-## Alternative 1: ez_purge_acl for purging by Token (Varnish >= 5.1, std.getenv support)
-#sub ez_purge_acl {
-#    if (req.http.x-purge-token) {
-#        if (req.http.x-purge-token != std.getenv("ACL_INVALIDATE_TOKEN")) {
-#            return (synth(405, "Method not allowed"));
-#        }
-#    } else if  (!client.ip ~ invalidators) {
-#        return (synth(405, "Method not allowed"));
-#    }
-#}
-
-## Alternative 2: ez_purge_acl for purging by Token (Varnish <= 5.1, token value in vcl)
-#sub ez_purge_acl {
-#    if (req.http.x-purge-token) {
-#        # change the token "_YOUR_TOKEN_HERE_" before enabling it.
-#        if (req.http.x-purge-token != "_YOUR_TOKEN_HERE_") {
-#            return (synth(405, "Method not allowed"));
-#        }
-#    } else if  (!client.ip ~ invalidators) {
-#        return (synth(405, "Method not allowed"));
-#    }
-#}
 
 // Sub-routine to get client user context hash, used to for being able to vary page cache on user rights.
 sub ez_user_context_hash {

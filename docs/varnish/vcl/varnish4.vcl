@@ -166,7 +166,7 @@ sub ez_purge {
 sub ez_purge_acl {
 //    if (req.http.x-purge-token) {
 //        #  Won't work on Varnish <= 5.1, if needed in 4.1 you can hardcode a secret token here instead of std.getenv() usage
-//        if (req.http.x-purge-token != std.getenv("ACL_INVALIDATE_TOKEN")) {
+//        if (req.http.x-purge-token != std.getenv("HTTPCACHE_VARNISH_INVALIDATE_TOKEN")) {
 //            return (synth(405, "Method not allowed"));
 //        }
 //    } else if  (!client.ip ~ invalidators) {

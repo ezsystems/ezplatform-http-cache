@@ -75,7 +75,7 @@ class VarnishPurgeClientTest extends TestCase
     public function testPurgeOneLocationIdWithAuthHeaderAndKey()
     {
         $locationId = 123;
-        $tokenName = 'x-purge-token-name';
+        $tokenName = 'x-purge-token';
         $token = 'secret-token-key';
 
         $this->cacheManager
@@ -84,16 +84,16 @@ class VarnishPurgeClientTest extends TestCase
             ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $tokenName => $token]);
 
         $this->configResolver
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(1))
             ->method('hasParameter')
             ->withAnyParameters()
             ->willReturn(true);
 
         $this->configResolver
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(1))
             ->method('getParameter')
             ->withAnyParameters()
-            ->willReturn($tokenName, $token);
+            ->willReturn($token);
 
         $this->purgeClient->purge($locationId);
     }
@@ -118,30 +118,18 @@ class VarnishPurgeClientTest extends TestCase
      */
     public function testPurgeWithAuthHeaderAndKey(array $locationIds = [])
     {
-        $tokenName = 'x-purge-token-name';
+        $tokenName = 'x-purge-token';
         $token = 'secret-token-key';
 
         foreach ($locationIds as $key => $locationId) {
             $this->configResolver
-                ->expects($this->at($key * 4))
-                ->method('hasParameter')
-                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_NAME_PARAM)
-                ->willReturn($tokenName);
-
-            $this->configResolver
-                ->expects($this->at($key * 4 + 1))
+                ->expects($this->at($key * 2))
                 ->method('hasParameter')
                 ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
                 ->willReturn($token);
 
             $this->configResolver
-                ->expects($this->at($key * 4 + 2))
-                ->method('getParameter')
-                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_NAME_PARAM)
-                ->willReturn($tokenName);
-
-            $this->configResolver
-                ->expects($this->at($key * 4 + 3))
+                ->expects($this->at($key * 2 + 1))
                 ->method('getParameter')
                 ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
                 ->willReturn($token);
@@ -176,7 +164,7 @@ class VarnishPurgeClientTest extends TestCase
 
     public function testPurgeAllWithAuthHeaderAndKey()
     {
-        $tokenName = 'x-purge-token-name';
+        $tokenName = 'x-purge-token';
         $token = 'secret-token-key';
 
         $this->cacheManager
@@ -185,16 +173,16 @@ class VarnishPurgeClientTest extends TestCase
             ->with('/', ['key' => 'ez-all', 'Host' => 'localhost', $tokenName => $token]);
 
         $this->configResolver
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(1))
             ->method('hasParameter')
             ->withAnyParameters()
             ->willReturn(true);
 
         $this->configResolver
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(1))
             ->method('getParameter')
             ->withAnyParameters()
-            ->willReturn($tokenName, $token);
+            ->willReturn($token);
 
         $this->purgeClient->purgeAll();
     }

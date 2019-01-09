@@ -34,10 +34,6 @@ class HttpCacheConfigParser implements ParserInterface
                         ->requiresAtLeastOneElement()
                         ->prototype('scalar')->end()
                     ->end()
-                    ->scalarNode('varnish_invalidate_token_name')
-                        ->info('Optional: Varnish Invalidation token name for purge')
-                        ->defaultValue('x-purge-token')
-                    ->end()
                     ->scalarNode('varnish_invalidate_token')
                         ->info('Optional: Varnish Invalidation token for purge')
                         ->defaultNull()
@@ -58,10 +54,6 @@ class HttpCacheConfigParser implements ParserInterface
 
         if (isset($scopeSettings['http_cache']['purge_servers'])) {
             $contextualizer->setContextualParameter('http_cache.purge_servers', $currentScope, $scopeSettings['http_cache']['purge_servers']);
-        }
-
-        if (isset($scopeSettings['http_cache']['varnish_invalidate_token_name'])) {
-            $contextualizer->setContextualParameter('http_cache.varnish_invalidate_token_name', $currentScope, $scopeSettings['http_cache']['varnish_invalidate_token_name']);
         }
 
         if (isset($scopeSettings['http_cache']['varnish_invalidate_token'])) {

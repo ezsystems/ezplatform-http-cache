@@ -14,7 +14,6 @@ use eZ\Publish\Core\MVC\ConfigResolverInterface;
  */
 class VarnishPurgeClient implements PurgeClientInterface
 {
-    const INVALIDATE_TOKEN_NAME_PARAM = 'http_cache.varnish_invalidate_token_name';
     const INVALIDATE_TOKEN_PARAM = 'http_cache.varnish_invalidate_token';
 
     /**
@@ -88,12 +87,10 @@ class VarnishPurgeClient implements PurgeClientInterface
      */
     private function addPurgeAuthHeader(array $headers)
     {
-        if ($this->configResolver->hasParameter(self::INVALIDATE_TOKEN_NAME_PARAM)
-            && $this->configResolver->hasParameter(self::INVALIDATE_TOKEN_PARAM)
-            && null !== ($tokenName = $this->configResolver->getParameter(self::INVALIDATE_TOKEN_NAME_PARAM))
+        if ($this->configResolver->hasParameter(self::INVALIDATE_TOKEN_PARAM)
             && null !== ($token = $this->configResolver->getParameter(self::INVALIDATE_TOKEN_PARAM))
         ) {
-            $headers[$tokenName] = $token;
+            $headers['x-purge-token'] = $token;
         }
 
         return $headers;

@@ -23,7 +23,7 @@ interface PurgeClientInterface
     /**
      * Purge the whole http cache.
      *
-     * @param string|null $allTagName The tag name used for all eZ cache, "ez-all" prefixed for repository name.
+     * This will purge cache for all repositories, to purge for only current repository call ::purge(['ez-all']).
      */
-    public function purgeAll(/*$allTagName = 'ez-all'*/);
+    public function purgeAll();
 }

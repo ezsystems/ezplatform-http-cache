@@ -95,7 +95,7 @@ class TagHandlerSpec extends ObjectBehavior
 
     public function it_tags_all_tags_we_add_and_prefix_with_repo_id(Response $response, ResponseHeaderBag $responseHeaderBag)
     {
-        $responseHeaderBag->set('xkey', Argument::exact('intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2'))->shouldBeCalled();
+        $responseHeaderBag->set('xkey', Argument::exact('intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2 ez-all'))->shouldBeCalled();
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
@@ -107,7 +107,7 @@ class TagHandlerSpec extends ObjectBehavior
     {
         $responseHeaderBag->has('xkey')->willReturn(true);
         $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1']);
-        $responseHeaderBag->set('xkey', Argument::exact('intranet_tag1 intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2'))->shouldBeCalled();
+        $responseHeaderBag->set('xkey', Argument::exact('intranet_tag1 intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2 ez-all'))->shouldBeCalled();
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);

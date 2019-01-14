@@ -22,7 +22,7 @@ class RepositoryPrefixDecoratorTest extends TestCase
             ->method('purge')
             ->with($this->equalTo(['location-123', 'content-44', 'ez-all']));
 
-        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient, '');
+        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient);
         $prefixDecorator->purge([123, 'content-44', 'ez-all']);
     }
 
@@ -34,7 +34,8 @@ class RepositoryPrefixDecoratorTest extends TestCase
             ->method('purge')
             ->with($this->equalTo(['intranet_location-123', 'intranet_content-44', 'intranet_ez-all']));
 
-        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient, 'intranet');
+        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient);
+        $prefixDecorator->setRepositoryId('intranet');
         $prefixDecorator->purge([123, 'content-44', 'ez-all']);
     }
 
@@ -43,10 +44,9 @@ class RepositoryPrefixDecoratorTest extends TestCase
         $purgeClient = $this->createMock(PurgeClientInterface::class);
         $purgeClient
             ->expects($this->once())
-            ->method('purgeAll')
-            ->with($this->equalTo('ez-all'));
+            ->method('purgeAll');
 
-        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient, '');
+        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient);
         $prefixDecorator->purgeAll();
     }
 
@@ -55,10 +55,10 @@ class RepositoryPrefixDecoratorTest extends TestCase
         $purgeClient = $this->createMock(PurgeClientInterface::class);
         $purgeClient
             ->expects($this->once())
-            ->method('purgeAll')
-            ->with($this->equalTo('intranet_ez-all'));
+            ->method('purgeAll');
 
-        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient, 'intranet');
+        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient);
+        $prefixDecorator->setRepositoryId('intranet');
         $prefixDecorator->purgeAll();
     }
 }

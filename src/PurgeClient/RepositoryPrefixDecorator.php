@@ -19,11 +19,15 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
     private $purgeClient;
 
     /** @var string */
-    private $repoPrefix;
+    private $repoPrefix = '';
 
-    public function __construct(PurgeClientInterface $purgeClient, $repositoryId)
+    public function __construct(PurgeClientInterface $purgeClient)
     {
         $this->purgeClient = $purgeClient;
+    }
+
+    public function setRepositoryId($repositoryId)
+    {
         $this->repoPrefix = empty($repositoryId) ? '' : $repositoryId . '_';
     }
 
@@ -47,8 +51,8 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
         $this->purgeClient->purge($tags);
     }
 
-    public function purgeAll($allTagName = 'ez-all')
+    public function purgeAll()
     {
-        $this->purgeClient->purgeAll($this->repoPrefix . $allTagName);
+        $this->purgeClient->purgeAll();
     }
 }

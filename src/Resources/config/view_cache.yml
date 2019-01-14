@@ -22,7 +22,10 @@ services:
 
     ezplatform.user_context_tagger.response_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\UserContextSubscriber
-        arguments: ['%ezplatform.http_cache.tags.header%', $repository$]
+        arguments: ['%ezplatform.http_cache.tags.header%']
+        # Use setter to avoid SiteAccess system creating two instances of handler before and after SiteAccess is set
+        calls:
+            - [setRepositoryId, [$repository$]]
         tags:
             - { name: kernel.event_subscriber }
 

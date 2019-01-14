@@ -18,11 +18,15 @@ class UserContextSubscriber implements EventSubscriberInterface
     private $tagHeader = 'xkey';
 
     /** @var string */
-    private $repoPrefix;
+    private $repoPrefix = '';
 
-    public function __construct($tagHeader, $repositoryId)
+    public function __construct($tagHeader)
     {
         $this->tagHeader = $tagHeader;
+    }
+
+    public function setRepositoryId($repositoryId)
+    {
         $this->repoPrefix = empty($repositoryId) ? '' : $repositoryId . '_';
     }
 

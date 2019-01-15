@@ -9,6 +9,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\PurgeClient;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient;
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use FOS\HttpCache\ProxyClient\ProxyClientInterface;
 use FOS\HttpCacheBundle\CacheManager;
 use PHPUnit\Framework\TestCase;
@@ -26,6 +27,11 @@ class VarnishPurgeClientTest extends TestCase
      */
     private $purgeClient;
 
+    /**
+     * @var ConfigResolverInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $configResolver;
+
     protected function setUp()
     {
         parent::setUp();
@@ -39,7 +45,11 @@ class VarnishPurgeClientTest extends TestCase
                 )
             )
             ->getMock();
-        $this->purgeClient = new VarnishPurgeClient($this->cacheManager);
+        $this->configResolver = $this->createMock(ConfigResolverInterface::class);
+        $this->purgeClient = new VarnishPurgeClient(
+            $this->cacheManager,
+            $this->configResolver
+        );
     }
 
     public function testPurgeNoLocationIds()
@@ -47,6 +57,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->never())
             ->method('invalidate');
+
         $this->purgeClient->purge(array());
     }
 
@@ -61,6 +72,32 @@ class VarnishPurgeClientTest extends TestCase
         $this->purgeClient->purge($locationId);
     }
 
+    public function testPurgeOneLocationIdWithAuthHeaderAndKey()
+    {
+        $locationId = 123;
+        $tokenName = 'x-purge-token';
+        $token = 'secret-token-key';
+
+        $this->cacheManager
+            ->expects($this->once())
+            ->method('invalidatePath')
+            ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $tokenName => $token]);
+
+        $this->configResolver
+            ->expects($this->exactly(1))
+            ->method('hasParameter')
+            ->withAnyParameters()
+            ->willReturn(true);
+
+        $this->configResolver
+            ->expects($this->exactly(1))
+            ->method('getParameter')
+            ->withAnyParameters()
+            ->willReturn($token);
+
+        $this->purgeClient->purge($locationId);
+    }
+
     /**
      * @dataProvider purgeTestProvider
      */
@@ -71,6 +108,36 @@ class VarnishPurgeClientTest extends TestCase
                 ->expects($this->at($key))
                 ->method('invalidatePath')
                 ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost']);
+        }
+
+        $this->purgeClient->purge($locationIds);
+    }
+
+    /**
+     * @dataProvider purgeTestProvider
+     */
+    public function testPurgeWithAuthHeaderAndKey(array $locationIds = [])
+    {
+        $tokenName = 'x-purge-token';
+        $token = 'secret-token-key';
+
+        foreach ($locationIds as $key => $locationId) {
+            $this->configResolver
+                ->expects($this->at($key * 2))
+                ->method('hasParameter')
+                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+                ->willReturn($token);
+
+            $this->configResolver
+                ->expects($this->at($key * 2 + 1))
+                ->method('getParameter')
+                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+                ->willReturn($token);
+
+            $this->cacheManager
+                ->expects($this->at($key))
+                ->method('invalidatePath')
+                ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $tokenName => $token]);
         }
 
         $this->purgeClient->purge($locationIds);
@@ -91,6 +158,31 @@ class VarnishPurgeClientTest extends TestCase
             ->expects($this->once())
             ->method('invalidatePath')
             ->with('/', ['key' => 'ez-all', 'Host' => 'localhost']);
+
+        $this->purgeClient->purgeAll();
+    }
+
+    public function testPurgeAllWithAuthHeaderAndKey()
+    {
+        $tokenName = 'x-purge-token';
+        $token = 'secret-token-key';
+
+        $this->cacheManager
+            ->expects($this->once())
+            ->method('invalidatePath')
+            ->with('/', ['key' => 'ez-all', 'Host' => 'localhost', $tokenName => $token]);
+
+        $this->configResolver
+            ->expects($this->exactly(1))
+            ->method('hasParameter')
+            ->withAnyParameters()
+            ->willReturn(true);
+
+        $this->configResolver
+            ->expects($this->exactly(1))
+            ->method('getParameter')
+            ->withAnyParameters()
+            ->willReturn($token);
 
         $this->purgeClient->purgeAll();
     }

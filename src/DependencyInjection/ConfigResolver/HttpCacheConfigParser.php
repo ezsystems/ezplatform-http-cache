@@ -33,6 +33,10 @@ class HttpCacheConfigParser implements ParserInterface
                         ->example(array('http://localhost/', 'http://another.server/'))
                         ->requiresAtLeastOneElement()
                         ->prototype('scalar')->end()
+                    ->end()
+                    ->scalarNode('varnish_invalidate_token')
+                        ->info('Optional: Varnish Invalidation token for purge')
+                        ->defaultNull()
                     ->end();
 
         foreach ($this->getExtraConfigParsers() as $extraConfigParser) {
@@ -50,6 +54,10 @@ class HttpCacheConfigParser implements ParserInterface
 
         if (isset($scopeSettings['http_cache']['purge_servers'])) {
             $contextualizer->setContextualParameter('http_cache.purge_servers', $currentScope, $scopeSettings['http_cache']['purge_servers']);
+        }
+
+        if (isset($scopeSettings['http_cache']['varnish_invalidate_token'])) {
+            $contextualizer->setContextualParameter('http_cache.varnish_invalidate_token', $currentScope, $scopeSettings['http_cache']['varnish_invalidate_token']);
         }
 
         foreach ($this->getExtraConfigParsers() as $extraConfigParser) {

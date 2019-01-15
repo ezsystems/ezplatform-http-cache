@@ -16,12 +16,14 @@ interface PurgeClientInterface
      *
      * It's up to the implementor to decide whether to purge tags right away or to delegate to a separate process.
      *
-     * @param array $tags Array of tags to purge
+     * @param array|int $tags Array of tags to purge, int for BC (location-<int>).
      */
     public function purge($tags);
 
     /**
      * Purge the whole http cache.
+     *
+     * This will purge cache for all repositories, to purge for only current repository call ::purge(['ez-all']).
      */
     public function purgeAll();
 }

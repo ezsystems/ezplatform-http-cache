@@ -12,14 +12,19 @@ services:
 
     ezplatform.http_cache.purge_client_decorator:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\RepositoryPrefixDecorator
-        arguments: ['@ezplatform.http_cache.purge_client_internal', $repository$]
+        arguments: ['@ezplatform.http_cache.purge_client_internal']
+        # Use setter to avoid SiteAccess system creating two instances of handler before and after SiteAccess is set
+        calls:
+            - [setRepositoryId, [$repository$]]
 
     ezplatform.http_cache.purge_client_internal:
         alias: ezplatform.http_cache.purge_client.local
 
     ezplatform.http_cache.purge_client.varnish:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient
-        arguments: ['@ezplatform.http_cache.cache_manager']
+        arguments:
+            - '@ezplatform.http_cache.cache_manager'
+            - '@ezpublish.config.resolver'
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: http}
             - {name: ezplatform.http_cache.purge_client, purge_type: varnish}
@@ -43,7 +48,7 @@ services:
          - '@ezplatform.http_cache.cache_manager'
          - '%ezplatform.http_cache.tags.header%'
          - '@ezplatform.http_cache.purge_client'
-        # To avoid SiteAccess system creating two instances of handler before and after siteaccess is set, use setter for SA settings
+        # Use setter to avoid SiteAccess system creating two instances of handler before and after SiteAccess is set
         calls:
             - [setRepositoryId, [$repository$]]
 

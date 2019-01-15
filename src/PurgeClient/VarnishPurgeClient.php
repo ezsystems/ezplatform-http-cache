@@ -7,20 +7,30 @@
 namespace EzSystems\PlatformHttpCacheBundle\PurgeClient;
 
 use FOS\HttpCacheBundle\CacheManager;
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 /**
  * Purge client based on FOSHttpCacheBundle.
  */
 class VarnishPurgeClient implements PurgeClientInterface
 {
+    const INVALIDATE_TOKEN_PARAM = 'http_cache.varnish_invalidate_token';
+    const INVALIDATE_TOKEN_PARAM_NAME = 'x-purge-token';
+
     /**
      * @var \FOS\HttpCacheBundle\CacheManager
      */
     private $cacheManager;
 
-    public function __construct(CacheManager $cacheManager)
+    /**
+     * @var \eZ\Publish\Core\MVC\ConfigResolverInterface
+     */
+    private $configResolver;
+
+    public function __construct(CacheManager $cacheManager, ConfigResolverInterface $configResolver)
     {
         $this->cacheManager = $cacheManager;
+        $this->configResolver = $configResolver;
     }
 
     public function __destruct()
@@ -41,18 +51,49 @@ class VarnishPurgeClient implements PurgeClientInterface
                 $tag = 'location-' . $tag;
             }
 
+            $headers = [
+                'key' => $tag,
+                'Host' => empty($_SERVER['SERVER_NAME']) ? 'localhost' : $_SERVER['SERVER_NAME'],
+            ];
+
+            $headers = $this->addPurgeAuthHeader($headers);
+
             $this->cacheManager->invalidatePath(
                 '/',
-                ['key' => $tag, 'Host' => empty($_SERVER['SERVER_NAME']) ? 'localhost' : $_SERVER['SERVER_NAME']]
+                $headers
             );
         }
     }
 
     public function purgeAll()
     {
+        $headers = [
+            'key' => 'ez-all',
+            'Host' => empty($_SERVER['SERVER_NAME']) ? 'localhost' : $_SERVER['SERVER_NAME'],
+        ];
+
+        $headers = $this->addPurgeAuthHeader($headers);
+
         $this->cacheManager->invalidatePath(
             '/',
-            ['key' => 'ez-all', 'Host' => empty($_SERVER['SERVER_NAME']) ? 'localhost' : $_SERVER['SERVER_NAME']]
+            $headers
         );
+    }
+
+    /**
+     * Adds an Authentication header for Purge.
+     *
+     * @param array $headers
+     * @return array
+     */
+    private function addPurgeAuthHeader(array $headers)
+    {
+        if ($this->configResolver->hasParameter(self::INVALIDATE_TOKEN_PARAM)
+            && null !== ($token = $this->configResolver->getParameter(self::INVALIDATE_TOKEN_PARAM))
+        ) {
+            $headers[self::INVALIDATE_TOKEN_PARAM_NAME] = $token;
+        }
+
+        return $headers;
     }
 }

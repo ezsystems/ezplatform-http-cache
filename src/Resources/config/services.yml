@@ -57,3 +57,9 @@ services:
         arguments: ["@ezpublish.api.repository"]
         tags:
             - { name: fos_http_cache.user_context_provider }
+
+    ezplatform.http_cache.http_cache_clearer:
+        class: EzSystems\PlatformHttpCacheBundle\CacheClearer\HttpCacheClearer
+        arguments: ["@ezplatform.http_cache.purge_client"]
+        tags:
+            - { name: kernel.cache_clearer }

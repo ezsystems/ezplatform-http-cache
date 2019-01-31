@@ -1,5 +1,7 @@
 parameters:
     ezplatform.http_cache.proxy_client.varnish.class: EzSystems\PlatformHttpCacheBundle\ProxyClient\Varnish
+    ezplatform.http_cache.controller.invalidatetoken.class: EzSystems\PlatformHttpCacheBundle\Controller\InvalidateTokenController
+    ezplatform.http_cache.listener.vary_header.class: EzSystems\PlatformHttpCacheBundle\EventListener\ConditionallyRemoveVaryHeaderListener
 
 services:
     ezplatform.http_cache.cache_manager:
@@ -60,3 +62,17 @@ services:
         arguments: ["@ezpublish.api.repository"]
         tags:
             - { name: fos_http_cache.user_context_provider }
+
+    ezplatform.http_cache.controller.invalidatetoken:
+        class: "%ezplatform.http_cache.controller.invalidatetoken.class%"
+        arguments:
+         - '@ezpublish.config.resolver'
+         - "%ezplatform.http_cache.invalidate_token.ttl%"
+         - "@fos_http_cache.handler.tag_handler"
+
+    ezplatform.http_cache.listener.vary_header:
+        class: "%ezplatform.http_cache.listener.vary_header.class%"
+        arguments:
+         - "%ezplatform.http_cache.no_vary.routes%"
+        tags:
+            - { name: kernel.event_subscriber, priority: -100 }

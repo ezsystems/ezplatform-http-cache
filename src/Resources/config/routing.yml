@@ -1,0 +1,5 @@
+
+ezplatform.httpcache.invalidatetoken:
+    path: /_ez_http_invalidatetoken
+    defaults:
+      _controller: ezplatform.http_cache.controller.invalidatetoken:tokenAction

@@ -1,11 +1,11 @@
 // Varnish VCL for:
-// - Varnish 4.1 or higher (4.1LTS or 6.0LTS recommended, and is what we mainly test against)
+// - Varnish 5.1 or higher (6.0LTS recommended, and is what we mainly test against)
 //   - Varnish xkey vmod (via varnish-modules package, or via Varnish Plus)
-// - eZ Platform 1.13 with ezplatform-http-cache bundle
+// - eZ Platform 2.5LTS or higher with ezplatform-http-cache (this) bundle
 //
 // Make sure to at least adjust default parameters.yml, defaults there reflect our testing needs with docker.
 
-vcl 4.0;
+vcl 5.1;
 import std;
 import xkey;
 
@@ -20,9 +20,6 @@ sub vcl_recv {
 
     // Add a Surrogate-Capability header to announce ESI support.
     set req.http.Surrogate-Capability = "abc=ESI/1.0";
-
-    // Symfony 2.x: Varnish by default sends the X-Forwarded-For header but does not filter out Forwarded header
-    unset req.http.Forwarded;
 
     // Ensure that the Symfony Router generates URLs correctly with Varnish
     if (req.http.X-Forwarded-Proto == "https" ) {
@@ -259,6 +256,7 @@ sub vcl_deliver {
         if (obj.hits > 0) {
             set resp.http.X-Cache = "HIT";
             set resp.http.X-Cache-Hits = obj.hits;
+            set resp.http.X-Cache-TTL = obj.ttl;
         } else {
             set resp.http.X-Cache = "MISS";
         }

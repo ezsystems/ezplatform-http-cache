@@ -67,7 +67,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost']);
+            ->with('/', ['key' => "location-$locationId", 'Host' => null]);
 
         $this->purgeClient->purge($locationId);
     }
@@ -81,7 +81,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $tokenName => $token]);
+            ->with('/', ['key' => "location-$locationId", 'Host' => null, $tokenName => $token]);
 
         $this->configResolver
             ->expects($this->exactly(1))
@@ -107,7 +107,7 @@ class VarnishPurgeClientTest extends TestCase
             $this->cacheManager
                 ->expects($this->at($key))
                 ->method('invalidatePath')
-                ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost']);
+                ->with('/', ['key' => "location-$locationId", 'Host' => null]);
         }
 
         $this->purgeClient->purge($locationIds);
@@ -137,7 +137,7 @@ class VarnishPurgeClientTest extends TestCase
             $this->cacheManager
                 ->expects($this->at($key))
                 ->method('invalidatePath')
-                ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $tokenName => $token]);
+                ->with('/', ['key' => "location-$locationId", 'Host' => null, $tokenName => $token]);
         }
 
         $this->purgeClient->purge($locationIds);
@@ -157,7 +157,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => 'ez-all', 'Host' => 'localhost']);
+            ->with('/', ['key' => 'ez-all', 'Host' => null]);
 
         $this->purgeClient->purgeAll();
     }
@@ -170,7 +170,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => 'ez-all', 'Host' => 'localhost', $tokenName => $token]);
+            ->with('/', ['key' => 'ez-all', 'Host' => null, $tokenName => $token]);
 
         $this->configResolver
             ->expects($this->exactly(1))

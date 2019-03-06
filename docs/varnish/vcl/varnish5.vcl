@@ -5,7 +5,7 @@
 //
 // Make sure to at least adjust default parameters.yml, defaults there reflect our testing needs with docker.
 
-vcl 5.1;
+vcl 4.1;
 import std;
 import xkey;
 

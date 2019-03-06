@@ -64,10 +64,23 @@ class VarnishPurgeClientTest extends TestCase
     public function testPurgeOneLocationId()
     {
         $locationId = 123;
+
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost']);
+            ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost']);
+
+        $this->configResolver
+            ->expects($this->exactly(1))
+            ->method('hasParameter')
+            ->withAnyParameters()
+            ->willReturn(true);
+
+        $this->configResolver
+            ->expects($this->exactly(2))
+            ->method('getParameter')
+            ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
+            ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], null);
 
         $this->purgeClient->purge($locationId);
     }
@@ -81,7 +94,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $tokenName => $token]);
+            ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost', $tokenName => $token]);
 
         $this->configResolver
             ->expects($this->exactly(1))
@@ -90,10 +103,10 @@ class VarnishPurgeClientTest extends TestCase
             ->willReturn(true);
 
         $this->configResolver
-            ->expects($this->exactly(1))
+            ->expects($this->exactly(2))
             ->method('getParameter')
-            ->withAnyParameters()
-            ->willReturn($token);
+            ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
+            ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], $token);
 
         $this->purgeClient->purge($locationId);
     }
@@ -104,10 +117,28 @@ class VarnishPurgeClientTest extends TestCase
     public function testPurge(array $locationIds)
     {
         foreach ($locationIds as $key => $locationId) {
+            $this->configResolver
+                ->expects($this->at($key * 3))
+                ->method('getParameter')
+                ->with('http_cache.purge_servers')
+                ->willReturn(['https://varnishpurgehost']);
+
+            $this->configResolver
+                ->expects($this->at($key * 3 + 1))
+                ->method('hasParameter')
+                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+                ->willReturn(true);
+
+            $this->configResolver
+                ->expects($this->at($key * 3 + 2))
+                ->method('getParameter')
+                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+                ->willReturn(null);
+
             $this->cacheManager
                 ->expects($this->at($key))
                 ->method('invalidatePath')
-                ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost']);
+                ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost']);
         }
 
         $this->purgeClient->purge($locationIds);
@@ -123,13 +154,19 @@ class VarnishPurgeClientTest extends TestCase
 
         foreach ($locationIds as $key => $locationId) {
             $this->configResolver
-                ->expects($this->at($key * 2))
-                ->method('hasParameter')
-                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
-                ->willReturn($token);
+                ->expects($this->at($key * 3))
+                ->method('getParameter')
+                ->with('http_cache.purge_servers')
+                ->willReturn(['https://varnishpurgehost']);
 
             $this->configResolver
-                ->expects($this->at($key * 2 + 1))
+                ->expects($this->at($key * 3 + 1))
+                ->method('hasParameter')
+                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+                ->willReturn(true);
+
+            $this->configResolver
+                ->expects($this->at($key * 3 + 2))
                 ->method('getParameter')
                 ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
                 ->willReturn($token);
@@ -137,7 +174,7 @@ class VarnishPurgeClientTest extends TestCase
             $this->cacheManager
                 ->expects($this->at($key))
                 ->method('invalidatePath')
-                ->with('/', ['key' => "location-$locationId", 'Host' => 'localhost', $tokenName => $token]);
+                ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost', $tokenName => $token]);
         }
 
         $this->purgeClient->purge($locationIds);
@@ -157,7 +194,19 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => 'ez-all', 'Host' => 'localhost']);
+            ->with('/', ['key' => 'ez-all', 'Host' => 'varnishpurgehost']);
+
+        $this->configResolver
+            ->expects($this->exactly(1))
+            ->method('hasParameter')
+            ->withAnyParameters()
+            ->willReturn(true);
+
+        $this->configResolver
+            ->expects($this->exactly(2))
+            ->method('getParameter')
+            ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
+            ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], null);
 
         $this->purgeClient->purgeAll();
     }
@@ -170,7 +219,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => 'ez-all', 'Host' => 'localhost', $tokenName => $token]);
+            ->with('/', ['key' => 'ez-all', 'Host' => 'varnishpurgehost', $tokenName => $token]);
 
         $this->configResolver
             ->expects($this->exactly(1))
@@ -179,10 +228,10 @@ class VarnishPurgeClientTest extends TestCase
             ->willReturn(true);
 
         $this->configResolver
-            ->expects($this->exactly(1))
+            ->expects($this->exactly(2))
             ->method('getParameter')
-            ->withAnyParameters()
-            ->willReturn($token);
+            ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
+            ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], $token);
 
         $this->purgeClient->purgeAll();
     }

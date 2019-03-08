@@ -88,7 +88,7 @@ class VarnishPurgeClientTest extends TestCase
     public function testPurgeOneLocationIdWithAuthHeaderAndKey()
     {
         $locationId = 123;
-        $tokenName = 'x-purge-token';
+        $tokenName = VarnishPurgeClient::INVALIDATE_TOKEN_PARAM_NAME;
         $token = 'secret-token-key';
 
         $this->cacheManager
@@ -149,7 +149,7 @@ class VarnishPurgeClientTest extends TestCase
      */
     public function testPurgeWithAuthHeaderAndKey(array $locationIds = [])
     {
-        $tokenName = 'x-purge-token';
+        $tokenName = VarnishPurgeClient::INVALIDATE_TOKEN_PARAM_NAME;
         $token = 'secret-token-key';
 
         foreach ($locationIds as $key => $locationId) {
@@ -213,7 +213,7 @@ class VarnishPurgeClientTest extends TestCase
 
     public function testPurgeAllWithAuthHeaderAndKey()
     {
-        $tokenName = 'x-purge-token';
+        $tokenName = VarnishPurgeClient::INVALIDATE_TOKEN_PARAM_NAME;
         $token = 'secret-token-key';
 
         $this->cacheManager

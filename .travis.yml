@@ -30,7 +30,7 @@ matrix:
         - php: 7.2
           env: TEST_CMD="bin/phpunit -v vendor/ezsystems/ezpublish-kernel/eZ/Bundle/EzPublishRestBundle/Tests/Functional" SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'" PHP_IMAGE=ezsystems/php:7.2-v1
 
-# test only master (+ Pull requests)
+# test only master + stable (+ Pull requests)
 branches:
     only:
         - master

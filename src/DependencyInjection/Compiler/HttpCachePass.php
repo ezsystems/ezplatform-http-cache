@@ -23,6 +23,7 @@ class HttpCachePass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $this->processCacheManager($container);
+        $this->setProxyClient($container);
     }
 
     private function processCacheManager(ContainerBuilder $container)
@@ -52,5 +53,11 @@ class HttpCachePass implements CompilerPassInterface
         // Forcing cache manager to use Varnish proxy client, for PURGE/BAN support.
         $cacheManagerDef = $container->findDefinition('ezplatform.http_cache.cache_manager');
         $cacheManagerDef->replaceArgument(0, new Reference('fos_http_cache.proxy_client.varnish'));
+    }
+
+    public function setProxyClient(ContainerBuilder $container)
+    {
+        // Injecting our own Varnish ProxyClient instead of FOS'
+        $container->setParameter('fos_http_cache.proxy_client.varnish.class', 'EzSystems\PlatformHttpCacheBundle\ProxyClient\Varnish');
     }
 }

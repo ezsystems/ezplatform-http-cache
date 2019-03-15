@@ -1,6 +1,3 @@
-parameters:
-    ezplatform.http_cache.proxy_client.varnish.class: EzSystems\PlatformHttpCacheBundle\ProxyClient\Varnish
-
 services:
     ezplatform.http_cache.cache_manager:
         parent: fos_http_cache.cache_manager
@@ -8,7 +5,7 @@ services:
 
     ezplatform.http_cache.proxy_client.varnish.factory:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishProxyClientFactory
-        arguments: ['@ezpublish.config.resolver', '@ezpublish.config.dynamic_setting.parser', '%ezplatform.http_cache.proxy_client.varnish.class%']
+        arguments: ['@ezpublish.config.resolver', '@ezpublish.config.dynamic_setting.parser', '%fos_http_cache.proxy_client.varnish.class%']
 
     ezplatform.http_cache.purge_client:
         alias: ezplatform.http_cache.purge_client_decorator

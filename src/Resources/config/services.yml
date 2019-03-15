@@ -1,5 +1,4 @@
 parameters:
-    ezplatform.http_cache.proxy_client.varnish.class: EzSystems\PlatformHttpCacheBundle\ProxyClient\Varnish
     ezplatform.http_cache.controller.invalidatetoken.class: EzSystems\PlatformHttpCacheBundle\Controller\InvalidateTokenController
     ezplatform.http_cache.listener.vary_header.class: EzSystems\PlatformHttpCacheBundle\EventListener\ConditionallyRemoveVaryHeaderListener
 
@@ -10,7 +9,7 @@ services:
 
     ezplatform.http_cache.proxy_client.varnish.factory:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishProxyClientFactory
-        arguments: ['@ezpublish.config.resolver', '@ezpublish.config.dynamic_setting.parser', '%ezplatform.http_cache.proxy_client.varnish.class%']
+        arguments: ['@ezpublish.config.resolver', '@ezpublish.config.dynamic_setting.parser', '%fos_http_cache.proxy_client.varnish.class%']
 
     ezplatform.http_cache.purge_client:
         alias: ezplatform.http_cache.purge_client_decorator

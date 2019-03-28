@@ -167,6 +167,18 @@ services:
         tags:
             - { name: ezpublish.api.slot, signal: URLService\UpdateUrlSignal }
 
+    ezplatform.http_cache.signalslot.hide_content:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\HideContentSlot
+        parent: ezplatform.http_cache.signalslot.abstract_publish
+        tags:
+            - { name: ezpublish.api.slot, signal: ContentService\HideContentSignal }
+
+    ezplatform.http_cache.signalslot.reveal_content:
+        class: EzSystems\PlatformHttpCacheBundle\SignalSlot\RevealContentSlot
+        parent: ezplatform.http_cache.signalslot.abstract_publish
+        tags:
+            - { name: ezpublish.api.slot, signal: ContentService\RevealContentSignal }
+
     # Content Type
     ezplatform.http_cache.signalslot.assign_content_type_group:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\ContentTypeService\AssignContentTypeGroupSlot

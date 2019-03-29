@@ -190,6 +190,8 @@ abstract class AbstractSlotTest extends TestCase
             Signal\ContentService\PublishVersionSignal::class,
             Signal\ContentService\DeleteRelationSignal::class,
             Signal\ContentService\DeleteVersionSignal::class,
+            Signal\ContentService\HideContentSignal::class,
+            Signal\ContentService\RevealContentSignal::class,
             Signal\LocationService\UpdateLocationSignal::class,
             Signal\LocationService\HideLocationSignal::class,
             Signal\LocationService\SwapLocationSignal::class,

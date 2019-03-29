@@ -13,6 +13,10 @@ class HideContentSlotTest extends AbstractPublishSlotTest
 {
     public function createSignal()
     {
+        if (!class_exists('eZ\Publish\Core\SignalSlot\Signal\ContentService\HideContentSignal', false)) {
+            $this->markTestSkipped("eZ\Publish\Core\SignalSlot\Signal\ContentService\HideContentSignal doesn't exists");
+        }
+
         return new HideContentSignal([
             'contentId' => $this->contentId,
         ]);

@@ -117,7 +117,7 @@ abstract class AbstractSlotTest extends TestCase
      */
     private function getAllSignals()
     {
-        return array(
+        $signals = array(
             Signal\URLAliasService\CreateUrlAliasSignal::class,
             Signal\URLAliasService\RemoveAliasesSignal::class,
             Signal\URLAliasService\CreateGlobalUrlAliasSignal::class,
@@ -190,8 +190,6 @@ abstract class AbstractSlotTest extends TestCase
             Signal\ContentService\PublishVersionSignal::class,
             Signal\ContentService\DeleteRelationSignal::class,
             Signal\ContentService\DeleteVersionSignal::class,
-            Signal\ContentService\HideContentSignal::class,
-            Signal\ContentService\RevealContentSignal::class,
             Signal\LocationService\UpdateLocationSignal::class,
             Signal\LocationService\HideLocationSignal::class,
             Signal\LocationService\SwapLocationSignal::class,
@@ -201,5 +199,15 @@ abstract class AbstractSlotTest extends TestCase
             Signal\LocationService\DeleteLocationSignal::class,
             Signal\LocationService\CopySubtreeSignal::class,
         );
+
+        if (class_exists('eZ\Publish\Core\SignalSlot\Signal\ContentService\HideContentSignal', false)) {
+            $signals[] = Signal\ContentService\HideContentSignal::class;
+        }
+
+        if (class_exists('eZ\Publish\Core\SignalSlot\Signal\ContentService\RevealContentSignal', false)) {
+            $signals[] = Signal\ContentService\RevealContentSignal::class;
+        }
+
+        return $signals;
     }
 }

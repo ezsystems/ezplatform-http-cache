@@ -13,6 +13,10 @@ class RevealContentSlotTest extends AbstractPublishSlotTest
 {
     public function createSignal()
     {
+        if (!class_exists('eZ\Publish\Core\SignalSlot\Signal\ContentService\RevealContentSignal', false)) {
+            $this->markTestSkipped("eZ\Publish\Core\SignalSlot\Signal\ContentService\RevealContentSignal doesn't exists");
+        }
+
         return new RevealContentSignal([
             'contentId' => $this->contentId,
         ]);

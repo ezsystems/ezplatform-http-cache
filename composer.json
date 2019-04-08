@@ -9,8 +9,17 @@
             "email": "dev-team@ez.no"
         }
     ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../ezpublish-kernel",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "require": {
-        "ezsystems/ezpublish-kernel": "^8.0@dev",
+        "ezsystems/ezpublish-kernel": "dev-symfony4 as 8.0.0",
         "friendsofsymfony/http-cache-bundle": "^2.6",
         "symfony/http-kernel": "^4.2",
         "symfony/http-foundation": "^4.2",

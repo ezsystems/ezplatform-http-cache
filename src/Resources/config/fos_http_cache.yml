@@ -1,8 +1,7 @@
 proxy_client:
     default: varnish
     varnish:
-        http:
-            servers: [$http_cache.purge_servers$]
+        servers: ['$http_cache.purge_servers$']
 
 user_context:
     enabled: true

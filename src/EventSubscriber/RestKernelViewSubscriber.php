@@ -14,6 +14,7 @@ use eZ\Publish\Core\REST\Server\Values\ContentTypeGroupRefList;
 use eZ\Publish\Core\REST\Server\Values\RestContentType;
 use eZ\Publish\Core\REST\Server\Values\VersionList;
 use EzSystems\MultiFileUpload\API\Repository\Values\PermissionReport;
+use FOS\HttpCacheBundle\Http\SymfonyResponseTagger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -28,12 +29,12 @@ use FOS\HttpCache\Handler\TagHandler;
  */
 class RestKernelViewSubscriber implements EventSubscriberInterface
 {
-    /** @var \FOS\HttpCache\Handler\TagHandler */
-    private $tagHandler;
+    /** @var \FOS\HttpCacheBundle\Http\SymfonyResponseTagger */
+    private $symfonyResponseTagger;
 
-    public function __construct(TagHandler $tagHandler)
+    public function __construct(SymfonyResponseTagger $symfonyResponseTagger)
     {
-        $this->tagHandler = $tagHandler;
+        $this->symfonyResponseTagger = $symfonyResponseTagger;
     }
 
     public static function getSubscribedEvents()
@@ -56,7 +57,7 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
         }
 
         // Add tags and swap Rest Value for cached value now that REST server can safely cache it
-        $this->tagHandler->addTags($tags);
+        $this->symfonyResponseTagger->addTags($tags);
         $event->setControllerResult(new CachedValue($restValue));
     }
 

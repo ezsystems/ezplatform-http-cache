@@ -3,15 +3,15 @@
 namespace EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value;
 
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger;
-use FOS\HttpCache\Handler\TagHandler;
+use FOS\HttpCacheBundle\Http\SymfonyResponseTagger;
 
 abstract class AbstractValueTagger implements ResponseTagger
 {
-    /** @var TagHandler */
-    protected $tagHandler;
+    /** @var \FOS\HttpCacheBundle\Http\SymfonyResponseTagger */
+    protected $symfonyResponseTagger;
 
-    public function __construct(TagHandler $tagHandler)
+    public function __construct(SymfonyResponseTagger $symfonyResponseTagger)
     {
-        $this->tagHandler = $tagHandler;
+        $this->symfonyResponseTagger = $symfonyResponseTagger;
     }
 }

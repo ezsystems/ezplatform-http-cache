@@ -8,7 +8,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Proxy;
 
-use FOS\HttpCache\SymfonyCache\UserContextSubscriber as BaseUserContextSubscriber;
+use FOS\HttpCache\SymfonyCache\UserContextListener as BaseUserContextSubscriber;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

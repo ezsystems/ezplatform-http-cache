@@ -124,10 +124,10 @@ Alternatively if you have a location(s) that you render inline & want invalidate
 
 #### PHP use
 
-Fo PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service which lets you add tags to a response:
+Fo PHP usage, FOSHttpCache exposes `fos_http_cache.http.symfony_response_tagger` service which lets you add tags to a response:
 ```php
-    /** @var \FOS\HttpCache\Handler\TagHandler $tagHandler */
-    $tagHandler->addTags(['relation-33', 'relation-44']);
+    /** @var \FOS\HttpCacheBundle\Http\SymfonyResponseTagger $symfonyResponseTagger */
+    $symfonyResponseTagger->addTags(['relation-33', 'relation-44']);
 ```
 
 See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#tagging-from-code

@@ -10,13 +10,13 @@ services:
 
     ezplatform.x_location_id.response_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\XLocationIdResponseSubscriber
-        arguments: ['@fos_http_cache.handler.tag_handler', '@ezpublish.api.repository']
+        arguments: ['@fos_http_cache.http.symfony_response_tagger', '@ezpublish.api.repository']
         tags:
             - { name: kernel.event_subscriber }
 
     ezplatform.rest_cache_tagging.view_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\RestKernelViewSubscriber
-        arguments: ['@fos_http_cache.handler.tag_handler']
+        arguments: ['@fos_http_cache.http.symfony_response_tagger']
         tags:
             - { name: kernel.event_subscriber }
 
@@ -42,7 +42,6 @@ services:
             - '$content.view_cache$'
             - '$content.ttl_cache$'
             - '$content.default_ttl$'
-            - '@fos_http_cache.handler.tag_handler'
 
     # ResponseTagger dispatcher
     ezplatform.view_cache.response_tagger.dispatcher:
@@ -67,7 +66,7 @@ services:
     # ResponseTagger value handlers
     ezplatform.view_cache.response_tagger.abstract_value:
         abstract: true
-        arguments: ['@fos_http_cache.handler.tag_handler']
+        arguments: ['@fos_http_cache.http.symfony_response_tagger']
 
     ezplatform.view_cache.response_tagger.content_info:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\ContentInfoTagger

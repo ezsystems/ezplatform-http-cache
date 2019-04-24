@@ -3,10 +3,6 @@ parameters:
     ezplatform.http_cache.listener.vary_header.class: EzSystems\PlatformHttpCacheBundle\EventListener\ConditionallyRemoveVaryHeaderListener
 
 services:
-    ezplatform.http_cache.cache_manager:
-        parent: fos_http_cache.cache_manager
-        class: FOS\HttpCacheBundle\CacheManager
-
     ezplatform.http_cache.proxy_client.varnish.factory:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishProxyClientFactory
         arguments: ['@ezpublish.config.resolver', '@ezpublish.config.dynamic_setting.parser', '%fos_http_cache.proxy_client.varnish.class%']
@@ -46,15 +42,23 @@ services:
         class: EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore
         arguments: ['%ezplatform.http_cache.store.root%']
 
-    ezplatform.http_cache.fos_tag_handler.xkey:
-        class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
+    ezplatform.http_cache.cache_manager:
+        class: EzSystems\PlatformHttpCacheBundle\CacheManager
         arguments:
-         - '@ezplatform.http_cache.cache_manager'
-         - '%ezplatform.http_cache.tags.header%'
-         - '@ezplatform.http_cache.purge_client'
-        # Use setter to avoid SiteAccess system creating two instances of handler before and after SiteAccess is set
+            - '@fos_http_cache.default_proxy_client'
+            - '@router'
+            - '@ezplatform.http_cache.purge_client'
         calls:
-            - [setRepositoryId, [$repository$]]
+            - ['setEventDispatcher', ['@?event_dispatcher']]
+            - ['setGenerateUrlType', ['%fos_http_cache.cache_manager.generate_url_type%']]
+
+    ezplatform.http_cache.symfony_response_tagger:
+        class: EzSystems\PlatformHttpCacheBundle\SymfonyResponseTagger
+        parent: fos_http_cache.http.symfony_response_tagger
+        arguments:
+            $tagsHeader: '%ezplatform.http_cache.tags.header%'
+        calls:
+            - ['addTags', [['ez-all']]]
 
     ezplatform.http_cache.user_context_provider.role_identify:
         class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify
@@ -67,7 +71,7 @@ services:
         arguments:
          - '@ezpublish.config.resolver'
          - "%ezplatform.http_cache.invalidate_token.ttl%"
-         - "@fos_http_cache.handler.tag_handler"
+         - "@ezplatform.http_cache.symfony_response_tagger"
 
     ezplatform.http_cache.listener.vary_header:
         class: "%ezplatform.http_cache.listener.vary_header.class%"

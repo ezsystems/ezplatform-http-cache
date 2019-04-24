@@ -6,9 +6,10 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle;
 
-use FOS\HttpCacheBundle\SymfonyCache\EventDispatchingHttpCache;
+use FOS\HttpCache\SymfonyCache\EventDispatchingHttpCache;
 use EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore;
 use EzSystems\PlatformHttpCacheBundle\Proxy\UserContextSubscriber;
+use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,15 +19,9 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * "deprecated" This and classes used here will be removed once this package moves to FosHttpCache 2.x.
  */
-class AppCache extends EventDispatchingHttpCache
+class AppCache extends HttpCache
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function createStore()
-    {
-        return new TagAwareStore($this->cacheDir ?: $this->kernel->getCacheDir() . '/http_cache');
-    }
+    use EventDispatchingHttpCache;
 
     /**
      * {@inheritdoc}

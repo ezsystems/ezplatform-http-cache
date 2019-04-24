@@ -6,6 +6,8 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Controller;
 
+use EzSystems\PlatformHttpCacheBundle\SymfonyResponseTagger;
+use FOS\HttpCacheBundle\CacheManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\IpUtils;
@@ -25,22 +27,22 @@ class InvalidateTokenController
     private $ttl;
 
     /**
-     * @var FOS\HttpCacheBundle\Handler\TagHandler
+     * @var \EzSystems\PlatformHttpCacheBundle\SymfonyResponseTagger
      */
-    private $tagHandler;
+    private $responseTagger;
 
     /**
      * TokenController constructor.
      * @param ConfigResolverInterface $configResolver
      * @param int $ttl
-     * @param TagHandler $tagHandler
+     * @param \EzSystems\PlatformHttpCacheBundle\SymfonyResponseTagger $responseTagger
      * @internal param string $invalidatetoken
      */
-    public function __construct(ConfigResolverInterface $configResolver, $ttl, TagHandler $tagHandler)
+    public function __construct(ConfigResolverInterface $configResolver, $ttl, SymfonyResponseTagger $responseTagger)
     {
         $this->configResolver = $configResolver;
         $this->ttl = $ttl;
-        $this->tagHandler = $tagHandler;
+        $this->responseTagger = $responseTagger;
     }
 
     /**
@@ -74,7 +76,7 @@ class InvalidateTokenController
 
             return $response;
         }
-        $this->tagHandler->addTags(['ez-invalidate-token']);
+        $this->responseTagger->addTags(['ez-invalidate-token']);
 
         $headers = $response->headers;
         $headers->set('Content-Type', 'application/vnd.ezplatform.invalidate-token');

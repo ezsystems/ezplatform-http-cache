@@ -5,6 +5,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
+use EzSystems\PlatformHttpCacheBundle\RepositoryIdAwareTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -14,20 +15,14 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class UserContextSubscriber implements EventSubscriberInterface
 {
-    /** @var string */
-    private $tagHeader = 'xkey';
+    use RepositoryIdAwareTrait;
 
     /** @var string */
-    private $repoPrefix = '';
+    private $tagHeader = 'xkey';
 
     public function __construct($tagHeader)
     {
         $this->tagHeader = $tagHeader;
-    }
-
-    public function setRepositoryId($repositoryId)
-    {
-        $this->repoPrefix = empty($repositoryId) ? '' : $repositoryId . '_';
     }
 
     public static function getSubscribedEvents()

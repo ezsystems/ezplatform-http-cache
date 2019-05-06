@@ -7,6 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\Handler;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
+use EzSystems\PlatformHttpCacheBundle\RepositoryIdAwareTrait;
 use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\HttpCacheBundle\CacheManager;
@@ -21,10 +22,11 @@ use FOS\HttpCacheBundle\CacheManager;
  */
 class TagHandler extends FOSTagHandler
 {
+    use RepositoryIdAwareTrait;
+
     private $cacheManager;
     private $purgeClient;
     private $tagsHeader;
-    private $repoPrefix = '';
 
     public function __construct(
         CacheManager $cacheManager,
@@ -47,11 +49,6 @@ class TagHandler extends FOSTagHandler
     public function purge($tags)
     {
         $this->purgeClient->purge($tags);
-    }
-
-    public function setRepositoryId($repositoryId)
-    {
-        $this->repoPrefix = empty($repositoryId) ? '' : $repositoryId . '_';
     }
 
     public function tagResponse(Response $response, $replace = false)

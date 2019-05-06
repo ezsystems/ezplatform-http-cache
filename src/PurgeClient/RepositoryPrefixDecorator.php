@@ -8,6 +8,8 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\PurgeClient;
 
+use EzSystems\PlatformHttpCacheBundle\RepositoryIdAwareTrait;
+
 /**
  * RepositoryPrefixDecorator decorates the real purge client in order to prefix tags with respository id.
  *
@@ -15,20 +17,14 @@ namespace EzSystems\PlatformHttpCacheBundle\PurgeClient;
  */
 class RepositoryPrefixDecorator implements PurgeClientInterface
 {
+    use RepositoryIdAwareTrait;
+
     /** @var \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface */
     private $purgeClient;
-
-    /** @var string */
-    private $repoPrefix = '';
 
     public function __construct(PurgeClientInterface $purgeClient)
     {
         $this->purgeClient = $purgeClient;
-    }
-
-    public function setRepositoryId($repositoryId)
-    {
-        $this->repoPrefix = empty($repositoryId) ? '' : $repositoryId . '_';
     }
 
     public function purge($tags)

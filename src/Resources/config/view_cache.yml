@@ -25,7 +25,7 @@ services:
         arguments: ['%ezplatform.http_cache.tags.header%']
         # Use setter to avoid SiteAccess system creating two instances of handler before and after SiteAccess is set
         calls:
-            - [setRepositoryId, [$repository$]]
+            - [setRepositoryId, [$repository$, '%ezpublish.repositories%']]
         tags:
             - { name: kernel.event_subscriber }
 

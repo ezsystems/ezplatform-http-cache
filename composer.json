@@ -28,7 +28,13 @@
         }
     },
     "scripts": {
-        "fix-cs": "@php ./vendor/bin/php-cs-fixer fix -v --show-progress=estimating"
+        "fix-cs": "php-cs-fixer fix -v --show-progress=estimating",
+        "unit": "phpunit -c phpunit.xml",
+        "spec": "phpspec run --format=pretty",
+        "test": [
+            "@unit",
+            "@spec"
+        ]
     },
     "extra": {
         "_ezplatform_branch_for_behat_tests": "2.5",

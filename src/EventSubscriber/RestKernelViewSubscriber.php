@@ -7,7 +7,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
 use eZ\Publish\API\Repository\Values\Content\Section;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
-use eZ\Publish\Core\REST\Common\Values\Root;
+use EzSystems\EzPlatformRestCommon\Values\Root;
 use eZ\Publish\Core\REST\Server\Values\CachedValue;
 use eZ\Publish\Core\REST\Server\Values\ContentTypeGroupList;
 use eZ\Publish\Core\REST\Server\Values\ContentTypeGroupRefList;

@@ -93,13 +93,33 @@ class TagHandlerSpec extends ObjectBehavior
         $this->tagResponse($response, true);
     }
 
+    public function it_tags_all_tags_we_add_on_null_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
+    {
+        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
+
+        $this->addTags(['location-4', 'content-4']);
+        $this->addTags(['path-2']);
+        $this->setRepositoryId(null, ['default' => []]);
+        $this->tagResponse($response, true);
+    }
+
+    public function it_tags_all_tags_we_add_on_default_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
+    {
+        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
+
+        $this->addTags(['location-4', 'content-4']);
+        $this->addTags(['path-2']);
+        $this->setRepositoryId('intranet', ['intranet' => []]);
+        $this->tagResponse($response, true);
+    }
+
     public function it_tags_all_tags_we_add_and_prefix_with_repo_id(Response $response, ResponseHeaderBag $responseHeaderBag)
     {
         $responseHeaderBag->set('xkey', Argument::exact('intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2 ez-all'))->shouldBeCalled();
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
-        $this->setRepositoryId('intranet');
+        $this->setRepositoryId('intranet', ['default' => []]);
         $this->tagResponse($response, true);
     }
 
@@ -111,7 +131,7 @@ class TagHandlerSpec extends ObjectBehavior
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
-        $this->setRepositoryId('intranet');
+        $this->setRepositoryId('intranet', ['default' => []]);
         $this->tagResponse($response, false);
     }
 }

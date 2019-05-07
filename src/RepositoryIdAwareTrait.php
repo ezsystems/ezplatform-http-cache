@@ -7,7 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle;
 
 /**
- * Trait RepositoryIdAwareTrait
+ * Trait RepositoryIdAwareTrait.
  *
  * @internal For use in EzSystems\PlatformHttpCacheBundle package.
  */

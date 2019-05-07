@@ -26,6 +26,32 @@ class RepositoryPrefixDecoratorTest extends TestCase
         $prefixDecorator->purge([123, 'content-44', 'ez-all']);
     }
 
+    public function testPurgeWithNullPrefix()
+    {
+        $purgeClient = $this->createMock(PurgeClientInterface::class);
+        $purgeClient
+            ->expects($this->once())
+            ->method('purge')
+            ->with($this->equalTo(['location-123', 'content-44', 'ez-all']));
+
+        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient);
+        $prefixDecorator->setRepositoryId(null, ['default' => []]);
+        $prefixDecorator->purge([123, 'content-44', 'ez-all']);
+    }
+
+    public function testPurgeWithDefaultPrefix()
+    {
+        $purgeClient = $this->createMock(PurgeClientInterface::class);
+        $purgeClient
+            ->expects($this->once())
+            ->method('purge')
+            ->with($this->equalTo(['location-123', 'content-44', 'ez-all']));
+
+        $prefixDecorator = new RepositoryPrefixDecorator($purgeClient);
+        $prefixDecorator->setRepositoryId('default', ['default' => []]);
+        $prefixDecorator->purge([123, 'content-44', 'ez-all']);
+    }
+
     public function testPurgeWithPrefix()
     {
         $purgeClient = $this->createMock(PurgeClientInterface::class);
@@ -35,7 +61,7 @@ class RepositoryPrefixDecoratorTest extends TestCase
             ->with($this->equalTo(['intranet_location-123', 'intranet_content-44', 'intranet_ez-all']));
 
         $prefixDecorator = new RepositoryPrefixDecorator($purgeClient);
-        $prefixDecorator->setRepositoryId('intranet');
+        $prefixDecorator->setRepositoryId('intranet', ['default' => []]);
         $prefixDecorator->purge([123, 'content-44', 'ez-all']);
     }
 
@@ -58,7 +84,7 @@ class RepositoryPrefixDecoratorTest extends TestCase
             ->method('purgeAll');
 
         $prefixDecorator = new RepositoryPrefixDecorator($purgeClient);
-        $prefixDecorator->setRepositoryId('intranet');
+        $prefixDecorator->setRepositoryId('intranet', ['default' => []]);
         $prefixDecorator->purgeAll();
     }
 }

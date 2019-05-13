@@ -58,8 +58,8 @@ class UserContextSubscriber implements EventSubscriberInterface
 
         // We need to set tag directly on response here to make sure this does not also get applied to the main request
         // when using Symfony Proxy, as tag handler does not clear tags between requests.
-        // OPEN QUESTION: Is SA even loaded for user hash route? If not, using prefix for this won't work.
-        // IF so change RepositoryTagPrefix to TagPrefixer->prefixTag($tag) or something so we can skip prefix on tags we know need to be global ("all" and "ez-user-context-hash")
+        // NB: We prefix this even if route is not SA aware, but this is the same as with REST. As doc states,
+        // it's expected that each repo needs to have own domain so requests against base domain represent same repo.
         $response->headers->set($this->tagHeader, $this->prefixService->getRepositoryPrefix() . 'ez-user-context-hash');
     }
 }

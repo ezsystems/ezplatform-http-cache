@@ -5,7 +5,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
-use EzSystems\PlatformHttpCacheBundle\RepositoryIdAwareTrait;
+use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -15,13 +15,19 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class UserContextSubscriber implements EventSubscriberInterface
 {
-    use RepositoryIdAwareTrait;
+    /**
+     * @var \EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix
+     */
+    private $prefixService;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $tagHeader = 'xkey';
 
-    public function __construct($tagHeader)
+    public function __construct(RepositoryTagPrefix $prefixService, $tagHeader)
     {
+        $this->prefixService = $prefixService;
         $this->tagHeader = $tagHeader;
     }
 
@@ -50,8 +56,10 @@ class UserContextSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // We need to set tag directly on repsonse here to make sure this does not also get applied to the main request
+        // We need to set tag directly on response here to make sure this does not also get applied to the main request
         // when using Symfony Proxy, as tag handler does not clear tags between requests.
-        $response->headers->set($this->tagHeader, $this->repoPrefix . 'ez-user-context-hash');
+        // OPEN QUESTION: Is SA even loaded for user hash route? If not, using prefix for this won't work.
+        // IF so change RepositoryTagPrefix to TagPrefixer->prefixTag($tag) or something so we can skip prefix on tags we know need to be global ("all" and "ez-user-context-hash")
+        $response->headers->set($this->tagHeader, $this->prefixService->getRepositoryPrefix() . 'ez-user-context-hash');
     }
 }

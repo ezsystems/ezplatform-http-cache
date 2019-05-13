@@ -7,7 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\Handler;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
-use EzSystems\PlatformHttpCacheBundle\RepositoryIdAwareTrait;
+use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
 use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\HttpCacheBundle\CacheManager;
@@ -22,20 +22,21 @@ use FOS\HttpCacheBundle\CacheManager;
  */
 class TagHandler extends FOSTagHandler
 {
-    use RepositoryIdAwareTrait;
-
     private $cacheManager;
     private $purgeClient;
+    private $prefixService;
     private $tagsHeader;
 
     public function __construct(
         CacheManager $cacheManager,
         $tagsHeader,
-        PurgeClientInterface $purgeClient
+        PurgeClientInterface $purgeClient,
+        RepositoryTagPrefix $prefixService
     ) {
         $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
+        $this->prefixService = $prefixService;
 
         parent::__construct($cacheManager, $tagsHeader);
         $this->addTags(['ez-all']);
@@ -67,10 +68,11 @@ class TagHandler extends FOSTagHandler
             $tags = array_merge($tags, explode(',', $this->getTagsHeaderValue()));
 
             // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
-            if (!empty($this->repoPrefix)) {
+            $repoPrefix = $this->prefixService->getRepositoryPrefix();
+            if (!empty($repoPrefix)) {
                 $tags = array_map(
-                    function ($tag) {
-                        return $this->repoPrefix . $tag;
+                    static function ($tag) use ($repoPrefix) {
+                        return $repoPrefix . $tag;
                     },
                     $tags
                 );

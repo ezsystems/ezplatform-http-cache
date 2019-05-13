@@ -16,10 +16,7 @@ services:
 
     ezplatform.http_cache.purge_client_decorator:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\RepositoryPrefixDecorator
-        arguments: ['@ezplatform.http_cache.purge_client_internal']
-        # Use setter to avoid SiteAccess system creating two instances of handler before and after SiteAccess is set
-        calls:
-            - [setRepositoryId, [$repository$]]
+        arguments: ['@ezplatform.http_cache.purge_client_internal', '@ezplatform.http_cache.repository_tag_prefix']
 
     ezplatform.http_cache.purge_client_internal:
         alias: ezplatform.http_cache.purge_client.local
@@ -52,9 +49,7 @@ services:
          - '@ezplatform.http_cache.cache_manager'
          - '%ezplatform.http_cache.tags.header%'
          - '@ezplatform.http_cache.purge_client'
-        # Use setter to avoid SiteAccess system creating two instances of handler before and after SiteAccess is set
-        calls:
-            - [setRepositoryId, [$repository$]]
+         - '@ezplatform.http_cache.repository_tag_prefix'
 
     ezplatform.http_cache.user_context_provider.role_identify:
         class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify
@@ -75,3 +70,8 @@ services:
          - "%ezplatform.http_cache.no_vary.routes%"
         tags:
             - { name: kernel.event_subscriber, priority: -100 }
+
+    ezplatform.http_cache.repository_tag_prefix:
+        class: EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix
+        # Use config resolver to be able to lazy load reading SA setting "repository" to avoid scope change issues
+        arguments: ["@ezpublish.config.resolver", '%ezpublish.repositories%']

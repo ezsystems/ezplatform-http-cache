@@ -7,6 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\Handler;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
+use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
 use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\HttpCacheBundle\CacheManager;
@@ -23,17 +24,19 @@ class TagHandler extends FOSTagHandler
 {
     private $cacheManager;
     private $purgeClient;
+    private $prefixService;
     private $tagsHeader;
-    private $repoPrefix = '';
 
     public function __construct(
         CacheManager $cacheManager,
         $tagsHeader,
-        PurgeClientInterface $purgeClient
+        PurgeClientInterface $purgeClient,
+        RepositoryTagPrefix $prefixService
     ) {
         $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
+        $this->prefixService = $prefixService;
 
         parent::__construct($cacheManager, $tagsHeader);
         $this->addTags(['ez-all']);
@@ -47,11 +50,6 @@ class TagHandler extends FOSTagHandler
     public function purge($tags)
     {
         $this->purgeClient->purge($tags);
-    }
-
-    public function setRepositoryId($repositoryId)
-    {
-        $this->repoPrefix = empty($repositoryId) ? '' : $repositoryId . '_';
     }
 
     public function tagResponse(Response $response, $replace = false)
@@ -70,10 +68,11 @@ class TagHandler extends FOSTagHandler
             $tags = array_merge($tags, explode(',', $this->getTagsHeaderValue()));
 
             // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
-            if (!empty($this->repoPrefix)) {
+            $repoPrefix = $this->prefixService->getRepositoryPrefix();
+            if (!empty($repoPrefix)) {
                 $tags = array_map(
-                    function ($tag) {
-                        return $this->repoPrefix . $tag;
+                    static function ($tag) use ($repoPrefix) {
+                        return $repoPrefix . $tag;
                     },
                     $tags
                 );

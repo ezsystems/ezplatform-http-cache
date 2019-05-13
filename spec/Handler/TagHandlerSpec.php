@@ -7,6 +7,7 @@ namespace spec\EzSystems\PlatformHttpCacheBundle\Handler;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 
+use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
 use FOS\HttpCacheBundle\CacheManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -19,12 +20,13 @@ class TagHandlerSpec extends ObjectBehavior
         CacheManager $cacheManager,
         PurgeClientInterface $purgeClient,
         Response $response,
-        ResponseHeaderBag $responseHeaderBag
+        ResponseHeaderBag $responseHeaderBag,
+        RepositoryTagPrefix $tagPrefix
     ) {
         $response->headers = $responseHeaderBag;
         $cacheManager->supports(CacheManager::INVALIDATE)->willReturn(true);
 
-        $this->beConstructedWith($cacheManager, 'xkey', $purgeClient);
+        $this->beConstructedWith($cacheManager, 'xkey', $purgeClient, $tagPrefix);
     }
 
     public function it_calls_purge_on_invalidate()
@@ -93,25 +95,43 @@ class TagHandlerSpec extends ObjectBehavior
         $this->tagResponse($response, true);
     }
 
-    public function it_tags_all_tags_we_add_and_prefix_with_repo_id(Response $response, ResponseHeaderBag $responseHeaderBag)
+    public function it_tags_all_tags_we_add_on_null_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
     {
+        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
+
+        $this->addTags(['location-4', 'content-4']);
+        $this->addTags(['path-2']);
+        $this->tagResponse($response, true);
+    }
+
+    public function it_tags_all_tags_we_add_on_default_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
+    {
+        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
+
+        $this->addTags(['location-4', 'content-4']);
+        $this->addTags(['path-2']);
+        $this->tagResponse($response, true);
+    }
+
+    public function it_tags_all_tags_we_add_and_prefix_with_repo_id(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
+    {
+        $tagPrefix->getRepositoryPrefix()->willReturn('intranet_');
         $responseHeaderBag->set('xkey', Argument::exact('intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2 ez-all'))->shouldBeCalled();
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
-        $this->setRepositoryId('intranet');
         $this->tagResponse($response, true);
     }
 
-    public function it_tags_all_tags_we_add_and_prefix_with_repo_id_also_with_existing_header(Response $response, ResponseHeaderBag $responseHeaderBag)
+    public function it_tags_all_tags_we_add_and_prefix_with_repo_id_also_with_existing_header(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
     {
+        $tagPrefix->getRepositoryPrefix()->willReturn('intranet_');
         $responseHeaderBag->has('xkey')->willReturn(true);
         $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1']);
         $responseHeaderBag->set('xkey', Argument::exact('intranet_tag1 intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2 ez-all'))->shouldBeCalled();
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
-        $this->setRepositoryId('intranet');
         $this->tagResponse($response, false);
     }
 }

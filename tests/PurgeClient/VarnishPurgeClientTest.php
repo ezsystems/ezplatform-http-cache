@@ -77,10 +77,10 @@ class VarnishPurgeClientTest extends TestCase
             ->willReturn(true);
 
         $this->configResolver
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getParameter')
-            ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
-            ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], null);
+            ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM], ['http_cache.varnish_bulk_purge'])
+            ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], null, true);
 
         $this->purgeClient->purge($locationId);
     }
@@ -103,10 +103,10 @@ class VarnishPurgeClientTest extends TestCase
             ->willReturn(true);
 
         $this->configResolver
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getParameter')
-            ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
-            ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], $token);
+            ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM], ['http_cache.varnish_bulk_purge'])
+            ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], $token, false);
 
         $this->purgeClient->purge($locationId);
     }
@@ -116,30 +116,40 @@ class VarnishPurgeClientTest extends TestCase
      */
     public function testPurge(array $locationIds)
     {
-        foreach ($locationIds as $key => $locationId) {
-            $this->configResolver
-                ->expects($this->at($key * 3))
-                ->method('getParameter')
-                ->with('http_cache.purge_servers')
-                ->willReturn(['https://varnishpurgehost']);
+        $this->configResolver
+            ->expects($this->at(0))
+            ->method('getParameter')
+            ->with('http_cache.purge_servers')
+            ->willReturn(['https://varnishpurgehost']);
 
-            $this->configResolver
-                ->expects($this->at($key * 3 + 1))
-                ->method('hasParameter')
-                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
-                ->willReturn(true);
+        $this->configResolver
+            ->expects($this->at(1))
+            ->method('hasParameter')
+            ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+            ->willReturn(true);
 
-            $this->configResolver
-                ->expects($this->at($key * 3 + 2))
-                ->method('getParameter')
-                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
-                ->willReturn(null);
+        $this->configResolver
+            ->expects($this->at(2))
+            ->method('getParameter')
+            ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+            ->willReturn(null);
 
-            $this->cacheManager
-                ->expects($this->at($key))
-                ->method('invalidatePath')
-                ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost']);
-        }
+        $this->configResolver
+            ->expects($this->at(3))
+            ->method('getParameter')
+            ->with('http_cache.varnish_bulk_purge')
+            ->willReturn(true);
+
+        $keys = array_map(static function ($id) {
+            return "location-$id";
+        },
+            $locationIds
+        );
+
+        $this->cacheManager
+            ->expects($this->once())
+            ->method('invalidatePath')
+            ->with('/', ['key' => implode(' ', $keys), 'Host' => 'varnishpurgehost']);
 
         $this->purgeClient->purge($locationIds);
     }
@@ -152,30 +162,40 @@ class VarnishPurgeClientTest extends TestCase
         $tokenName = VarnishPurgeClient::INVALIDATE_TOKEN_PARAM_NAME;
         $token = 'secret-token-key';
 
-        foreach ($locationIds as $key => $locationId) {
-            $this->configResolver
-                ->expects($this->at($key * 3))
-                ->method('getParameter')
-                ->with('http_cache.purge_servers')
-                ->willReturn(['https://varnishpurgehost']);
+        $this->configResolver
+            ->expects($this->at(0))
+            ->method('getParameter')
+            ->with('http_cache.purge_servers')
+            ->willReturn(['https://varnishpurgehost']);
 
-            $this->configResolver
-                ->expects($this->at($key * 3 + 1))
-                ->method('hasParameter')
-                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
-                ->willReturn(true);
+        $this->configResolver
+            ->expects($this->at(1))
+            ->method('hasParameter')
+            ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+            ->willReturn(true);
 
-            $this->configResolver
-                ->expects($this->at($key * 3 + 2))
-                ->method('getParameter')
-                ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
-                ->willReturn($token);
+        $this->configResolver
+            ->expects($this->at(2))
+            ->method('getParameter')
+            ->with(VarnishPurgeClient::INVALIDATE_TOKEN_PARAM)
+            ->willReturn($token);
 
-            $this->cacheManager
-                ->expects($this->at($key))
-                ->method('invalidatePath')
-                ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost', $tokenName => $token]);
-        }
+        $this->configResolver
+            ->expects($this->at(3))
+            ->method('getParameter')
+            ->with('http_cache.varnish_bulk_purge')
+            ->willReturn(true);
+
+        $keys = array_map(static function ($id) {
+            return "location-$id";
+        },
+            $locationIds
+        );
+
+        $this->cacheManager
+            ->expects($this->once())
+            ->method('invalidatePath')
+            ->with('/', ['key' => implode(' ', $keys), 'Host' => 'varnishpurgehost', $tokenName => $token]);
 
         $this->purgeClient->purge($locationIds);
     }

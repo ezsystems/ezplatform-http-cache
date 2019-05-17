@@ -53,9 +53,9 @@ class VarnishPurgeClient implements PurgeClientInterface
 
             $headers = [
                 'key' => $tag,
-                'Host' => empty($_SERVER['SERVER_NAME']) ? parse_url($this->configResolver->getParameter('http_cache.purge_servers')[0], PHP_URL_HOST) : $_SERVER['SERVER_NAME'],
             ];
 
+            $headers = $this->addHostHeader($headers);
             $headers = $this->addPurgeAuthHeader($headers);
 
             $this->cacheManager->invalidatePath(
@@ -69,15 +69,32 @@ class VarnishPurgeClient implements PurgeClientInterface
     {
         $headers = [
             'key' => 'ez-all',
-            'Host' => empty($_SERVER['SERVER_NAME']) ? parse_url($this->configResolver->getParameter('http_cache.purge_servers')[0], PHP_URL_HOST) : $_SERVER['SERVER_NAME'],
         ];
 
+        $headers = $this->addHostHeader($headers);
         $headers = $this->addPurgeAuthHeader($headers);
 
         $this->cacheManager->invalidatePath(
             '/',
             $headers
         );
+    }
+
+    /**
+     * Adds a Host header for Purge.
+     *
+     * @param array $headers
+     * @return array
+     */
+    private function addHostHeader(array $headers)
+    {
+        $server = $this->configResolver->getParameter('http_cache.purge_servers')[0];
+        $host = parse_url($server, PHP_URL_HOST);
+        if ($host) {
+            $headers['Host'] = $host;
+        }
+
+        return $headers;
     }
 
     /**

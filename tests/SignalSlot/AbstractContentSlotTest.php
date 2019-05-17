@@ -20,23 +20,64 @@ abstract class AbstractContentSlotTest extends AbstractSlotTest
     public function generateTags()
     {
         $tags = [];
+
         if ($this->contentId) {
-            $tags = ['content-' . $this->contentId, 'relation-' . $this->contentId];
+            $this->tagProviderMock
+                ->method('getTagForContentId')
+                ->willReturnCallback(static function ($arg) {
+                    return 'content-' . $arg;
+                });
+            $tags[] = 'content-' . $this->contentId;
+
+            $this->tagProviderMock
+                ->method('getTagForRelationId')
+                ->willReturnCallback(static function ($arg) {
+                    return 'relation-' . $arg;
+                });
+            $tags[] = 'relation-' . $this->contentId;
         }
 
         if ($this->locationId) {
             // self(s)
+            $this->tagProviderMock
+                ->method('getTagForLocationId')
+                ->willReturnCallback(static function ($arg) {
+                    return 'location-' . $arg;
+                });
             $tags[] = 'location-' . $this->locationId;
+
             // children
+            $this->tagProviderMock
+                ->method('getTagForParentId')
+                ->willReturnCallback(static function ($arg) {
+                    return 'parent-' . $arg;
+                });
             $tags[] = 'parent-' . $this->locationId;
+
             // reverse location relations
+            $this->tagProviderMock
+                ->method('getTagForRelationLocationId')
+                ->willReturnCallback(static function ($arg) {
+                    return 'relation-location-' . $arg;
+                });
             $tags[] = 'relation-location-' . $this->locationId;
         }
 
         if ($this->parentLocationId) {
             // parent(s)
+            $this->tagProviderMock
+                ->method('getTagForLocationId')
+                ->willReturnCallback(static function ($arg) {
+                    return 'location-' . $arg;
+                });
             $tags[] = 'location-' . $this->parentLocationId;
+
             // siblings
+            $this->tagProviderMock
+                ->method('getTagForParentId')
+                ->willReturnCallback(static function ($arg) {
+                    return 'parent-' . $arg;
+                });
             $tags[] = 'parent-' . $this->parentLocationId;
         }
 

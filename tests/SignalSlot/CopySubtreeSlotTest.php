@@ -28,6 +28,18 @@ class CopySubtreeSlotTest extends AbstractContentSlotTest
 
     public function generateTags()
     {
+        $this->tagProviderMock
+            ->expects($this->at(0))
+            ->method('getTagForLocationId')
+            ->with($this->targetParentLocationId)
+            ->willReturn("location-{$this->targetParentLocationId}");
+
+        $this->tagProviderMock
+            ->expects($this->at(1))
+            ->method('getTagForParentId')
+            ->with($this->targetParentLocationId)
+            ->willReturn("parent-{$this->targetParentLocationId}");
+
         return [
             'location-' . $this->targetParentLocationId,
             'parent-' . $this->targetParentLocationId,

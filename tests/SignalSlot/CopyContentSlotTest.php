@@ -9,6 +9,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use eZ\Publish\Core\SignalSlot\Signal\ContentService\CopyContentSignal;
+use EzSystems\PlatformHttpCacheBundle\SignalSlot\CopyContentSlot;
 
 class CopyContentSlotTest extends AbstractContentSlotTest
 {
@@ -21,16 +22,34 @@ class CopyContentSlotTest extends AbstractContentSlotTest
 
     public function generateTags()
     {
+        $this->tagProviderMock
+            ->expects($this->at(0))
+            ->method('getTagForContentId')
+            ->with($this->contentId)
+            ->willReturn("content-{$this->contentId}");
+
+        $this->tagProviderMock
+            ->expects($this->at(1))
+            ->method('getTagForLocationId')
+            ->with($this->parentLocationId)
+            ->willReturn("location-{$this->parentLocationId}");
+
+        $this->tagProviderMock
+            ->expects($this->at(2))
+            ->method('getTagForPathId')
+            ->with($this->parentLocationId)
+            ->willReturn("path-{$this->parentLocationId}");
+
         return ['content-' . $this->contentId, 'location-' . $this->parentLocationId, 'path-' . $this->parentLocationId];
     }
 
     public function getSlotClass()
     {
-        return 'EzSystems\PlatformHttpCacheBundle\SignalSlot\CopyContentSlot';
+        return CopyContentSlot::class;
     }
 
     public function getReceivedSignalClasses()
     {
-        return ['eZ\Publish\Core\SignalSlot\Signal\ContentService\CopyContentSignal'];
+        return [CopyContentSignal::class];
     }
 }

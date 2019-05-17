@@ -10,6 +10,7 @@ namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use eZ\Publish\Core\SignalSlot\Signal;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractSlotTest extends TestCase
@@ -20,12 +21,16 @@ abstract class AbstractSlotTest extends TestCase
     /** @var \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $purgeClientMock;
 
+    /** @var \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $tagProviderMock;
+
     /** @var \eZ\Publish\Core\SignalSlot\Signal */
     private $signal;
 
     public function setUp()
     {
         $this->purgeClientMock = $this->createMock(PurgeClientInterface::class);
+        $this->tagProviderMock = $this->createMock(TagProviderInterface::class);
         $this->slot = $this->createSlot();
         $this->signal = $this->createSignal();
     }
@@ -34,7 +39,7 @@ abstract class AbstractSlotTest extends TestCase
     {
         $class = $this->getSlotClass();
 
-        return new $class($this->purgeClientMock);
+        return new $class($this->purgeClientMock, $this->tagProviderMock);
     }
 
     /**

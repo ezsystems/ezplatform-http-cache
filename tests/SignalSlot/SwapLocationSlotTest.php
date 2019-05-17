@@ -33,6 +33,46 @@ class SwapLocationSlotTest extends AbstractContentSlotTest
 
     public function generateTags()
     {
+        $this->tagProviderMock
+            ->expects($this->at(0))
+            ->method('getTagForContentId')
+            ->willReturn('content-' . $this->contentId);
+
+        $this->tagProviderMock
+            ->expects($this->at(1))
+            ->method('getTagForPathId')
+            ->willReturn('path-' . $this->locationId);
+
+        $this->tagProviderMock
+            ->expects($this->at(2))
+            ->method('getTagForLocationId')
+            ->willReturn('location-' . $this->parentLocationId);
+
+        $this->tagProviderMock
+            ->expects($this->at(3))
+            ->method('getTagForParentId')
+            ->willReturn('parent-' . $this->parentLocationId);
+
+        $this->tagProviderMock
+            ->expects($this->at(4))
+            ->method('getTagForContentId')
+            ->willReturn('content-' . $this->swapContentId);
+
+        $this->tagProviderMock
+            ->expects($this->at(5))
+            ->method('getTagForPathId')
+            ->willReturn('path-' . $this->swapLocationId);
+
+        $this->tagProviderMock
+            ->expects($this->at(6))
+            ->method('getTagForLocationId')
+            ->willReturn('location-' . $this->swapParentLocationId);
+
+        $this->tagProviderMock
+            ->expects($this->at(7))
+            ->method('getTagForParentId')
+            ->willReturn('parent-' . $this->swapParentLocationId);
+
         return [
             'content-' . $this->contentId,
             'path-' . $this->locationId,

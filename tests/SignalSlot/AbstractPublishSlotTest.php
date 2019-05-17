@@ -26,7 +26,7 @@ abstract class AbstractPublishSlotTest extends AbstractContentSlotTest
             $this->spiLocationHandlerMock = $this->createMock(Handler::class);
         }
 
-        return new $class($this->purgeClientMock, $this->spiLocationHandlerMock);
+        return new $class($this->purgeClientMock, $this->tagProviderMock, $this->spiLocationHandlerMock);
     }
 
     /**

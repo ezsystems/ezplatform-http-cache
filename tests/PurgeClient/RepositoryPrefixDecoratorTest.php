@@ -11,6 +11,7 @@ namespace EzSystems\PlatformHttpCacheBundle\Tests\PurgeClient;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\RepositoryPrefixDecorator;
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use PHPUnit\Framework\TestCase;
 
 class RepositoryPrefixDecoratorTest extends TestCase
@@ -30,18 +31,24 @@ class RepositoryPrefixDecoratorTest extends TestCase
      */
     private $prefixDecorator;
 
+    /**
+     * @var TagProviderInterface
+     */
+    private $tagProviderMock;
+
     protected function setUp()
     {
         parent::setUp();
 
         $this->purgeClientMock = $this->createMock(PurgeClientInterface::class);
         $this->tagPrefixMock = $this->createMock(RepositoryTagPrefix::class);
-        $this->prefixDecorator = new RepositoryPrefixDecorator($this->purgeClientMock, $this->tagPrefixMock);
+        $this->tagProviderMock = $this->createMock(TagProviderInterface::class);
+        $this->prefixDecorator = new RepositoryPrefixDecorator($this->purgeClientMock, $this->tagPrefixMock, $this->tagProviderMock);
     }
 
     protected function tearDown()
     {
-        unset($this->purgeClientMock, $this->tagPrefixMock, $this->prefixDecorator);
+        unset($this->purgeClientMock, $this->tagPrefixMock, $this->prefixDecorator, $this->tagProviderMock);
 
         parent::tearDown();
     }
@@ -58,6 +65,12 @@ class RepositoryPrefixDecoratorTest extends TestCase
             ->method('getRepositoryPrefix')
             ->willReturn('');
 
+        $this->tagProviderMock
+            ->expects($this->once())
+            ->method('getTagForLocationId')
+            ->with(123)
+            ->willReturn('location-123');
+
         $this->prefixDecorator->purge([123, 'content-44', 'ez-all']);
     }
 
@@ -72,6 +85,12 @@ class RepositoryPrefixDecoratorTest extends TestCase
             ->expects($this->once())
             ->method('getRepositoryPrefix')
             ->willReturn('intranet_');
+
+        $this->tagProviderMock
+            ->expects($this->once())
+            ->method('getTagForLocationId')
+            ->with(123)
+            ->willReturn('location-123');
 
         $this->prefixDecorator->purge([123, 'content-44', 'ez-all']);
     }

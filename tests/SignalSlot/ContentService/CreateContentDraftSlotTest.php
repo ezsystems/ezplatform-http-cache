@@ -19,7 +19,13 @@ class CreateContentDraftSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
-        return ['content-versions-55'];
+        $tag = 'content-versions-55';
+        $this->tagProviderMock
+            ->method('getTagForContentVersions')
+            ->with(55)
+            ->willReturn($tag);
+
+        return [$tag];
     }
 
     public function getSlotClass()

@@ -21,6 +21,12 @@ class UpdateContentTypeGroupSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
+        $this->tagProviderMock
+            ->expects($this->at(0))
+            ->method('getTagForTypeGroupId')
+            ->with(4)
+            ->willReturn('type-group-4');
+
         return ['type-group-4'];
     }
 

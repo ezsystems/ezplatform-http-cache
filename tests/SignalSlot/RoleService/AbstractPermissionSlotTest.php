@@ -14,6 +14,10 @@ abstract class AbstractPermissionSlotTest extends AbstractSlotTest
 {
     public function generateTags()
     {
+        $this->tagProviderMock
+            ->method('getTagForUserContextHash')
+            ->willReturn('ez-user-context-hash');
+
         return ['ez-user-context-hash'];
     }
 }

@@ -21,7 +21,14 @@ class AssignContentTypeGroupSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
-        return ['type-group-4'];
+        $groupId = 4;
+        $tag = 'type-group-' . $groupId;
+        $this->tagProviderMock
+            ->method('getTagForTypeGroupId')
+            ->with($groupId)
+            ->willReturn($tag);
+
+        return [$tag];
     }
 
     public function getReceivedSignalClasses()

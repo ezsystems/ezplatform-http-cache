@@ -29,7 +29,12 @@ class DeleteLocationSlotTest extends AbstractContentSlotTest
     public function generateTags()
     {
         $tags = parent::generateTags();
-        $tags[] = 'path-' . $this->locationId;
+        $pathTag = 'path-' . $this->locationId;
+        $this->tagProviderMock
+            ->method('getTagForPathId')
+            ->with($this->locationId)
+            ->willReturn($pathTag);
+        $tags[] = $pathTag;
 
         return $tags;
     }

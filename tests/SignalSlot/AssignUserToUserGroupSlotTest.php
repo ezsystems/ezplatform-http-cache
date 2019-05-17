@@ -20,6 +20,23 @@ class AssignUserToUserGroupSlotTest extends AbstractContentSlotTest
 
     public function generateTags()
     {
+        $this->tagProviderMock
+            ->expects($this->at(0))
+            ->method('getTagForContentId')
+            ->with($this->contentId)
+            ->willReturn("content-{$this->contentId}");
+
+        $this->tagProviderMock
+            ->expects($this->at(1))
+            ->method('getTagForContentId')
+            ->with(99)
+            ->willReturn('content-99');
+
+        $this->tagProviderMock
+            ->expects($this->at(2))
+            ->method('getTagForUserContextHash')
+            ->willReturn('ez-user-context-hash');
+
         return ['content-' . $this->contentId, 'content-99', 'ez-user-context-hash'];
     }
 

@@ -45,7 +45,7 @@ class UpdateUrlSlotTest extends AbstractSlotTest
                 ->willReturn(self::CONTENT_IDS);
         }
 
-        return new $class($this->purgeClientMock, $this->spiUrlHandlerMock);
+        return new $class($this->purgeClientMock, $this->tagProviderMock, $this->spiUrlHandlerMock);
     }
 
     public function createSignal()
@@ -58,9 +58,17 @@ class UpdateUrlSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
-        return array_map(function ($id) {
-            return 'content-' . $id;
-        }, self::CONTENT_IDS);
+        $tags = [];
+
+        foreach (self::CONTENT_IDS as $key => $contentId) {
+            $this->tagProviderMock
+                ->expects($this->at($key))
+                ->method('getTagForContentId')
+                ->willReturn('content-' . $contentId);
+            $tags[] = 'content-' . $contentId;
+        }
+
+        return $tags;
     }
 
     public function getReceivedSignalClasses()

@@ -29,6 +29,31 @@ class MoveSubtreeSlotTest extends AbstractContentSlotTest
 
     public function generateTags()
     {
+        $this->tagProviderMock
+            ->expects($this->at(0))
+            ->method('getTagForPathId')
+            ->willReturn('path-' . $this->locationId);
+
+        $this->tagProviderMock
+            ->expects($this->at(1))
+            ->method('getTagForLocationId')
+            ->willReturn('location-' . $this->oldParentLocationId);
+
+        $this->tagProviderMock
+            ->expects($this->at(2))
+            ->method('getTagForParentId')
+            ->willReturn('parent-' . $this->oldParentLocationId);
+
+        $this->tagProviderMock
+            ->expects($this->at(3))
+            ->method('getTagForLocationId')
+            ->willReturn('location-' . $this->parentLocationId);
+
+        $this->tagProviderMock
+            ->expects($this->at(4))
+            ->method('getTagForParentId')
+            ->willReturn('parent-' . $this->parentLocationId);
+
         return ['path-' . $this->locationId, 'location-' . $this->oldParentLocationId, 'parent-' . $this->oldParentLocationId, 'location-' . $this->parentLocationId, 'parent-' . $this->parentLocationId];
     }
 

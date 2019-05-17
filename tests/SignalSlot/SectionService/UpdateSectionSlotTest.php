@@ -21,6 +21,10 @@ class UpdateSectionSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
+        $this->tagProviderMock
+            ->method('getTagForSectionId')
+            ->willReturn('section-2');
+
         return ['section-2'];
     }
 

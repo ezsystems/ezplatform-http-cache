@@ -9,6 +9,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\Proxy;
 
 use EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +24,8 @@ class TagAwareStoreTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->store = new TagAwareStore(__DIR__);
+        $this->tagProviderMock = $this->createMock(TagProviderInterface::class);
+        $this->store = new TagAwareStore(__DIR__, $this->tagProviderMock);
     }
 
     protected function tearDown()

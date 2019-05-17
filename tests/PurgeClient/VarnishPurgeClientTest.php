@@ -10,6 +10,7 @@ namespace EzSystems\PlatformHttpCacheBundle\Tests\PurgeClient;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use FOS\HttpCache\ProxyClient\ProxyClientInterface;
 use FOS\HttpCacheBundle\CacheManager;
 use PHPUnit\Framework\TestCase;
@@ -32,6 +33,11 @@ class VarnishPurgeClientTest extends TestCase
      */
     private $configResolver;
 
+    /**
+     * @var \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $tagProvider;
+
     protected function setUp()
     {
         parent::setUp();
@@ -46,9 +52,11 @@ class VarnishPurgeClientTest extends TestCase
             )
             ->getMock();
         $this->configResolver = $this->createMock(ConfigResolverInterface::class);
+        $this->tagProvider = $this->createMock(TagProviderInterface::class);
         $this->purgeClient = new VarnishPurgeClient(
             $this->cacheManager,
-            $this->configResolver
+            $this->configResolver,
+            $this->tagProvider
         );
     }
 
@@ -82,6 +90,12 @@ class VarnishPurgeClientTest extends TestCase
             ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
             ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], null);
 
+        $this->tagProvider
+            ->expects($this->once())
+            ->method('getTagForLocationId')
+            ->with(123)
+            ->willReturn('location-123');
+
         $this->purgeClient->purge($locationId);
     }
 
@@ -107,6 +121,12 @@ class VarnishPurgeClientTest extends TestCase
             ->method('getParameter')
             ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
             ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], $token);
+
+        $this->tagProvider
+            ->expects($this->once())
+            ->method('getTagForLocationId')
+            ->with(123)
+            ->willReturn('location-123');
 
         $this->purgeClient->purge($locationId);
     }
@@ -139,6 +159,12 @@ class VarnishPurgeClientTest extends TestCase
                 ->expects($this->at($key))
                 ->method('invalidatePath')
                 ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost']);
+
+            $this->tagProvider
+                ->expects($this->at($key))
+                ->method('getTagForLocationId')
+                ->with($locationId)
+                ->willReturn("location-$locationId");
         }
 
         $this->purgeClient->purge($locationIds);
@@ -175,6 +201,12 @@ class VarnishPurgeClientTest extends TestCase
                 ->expects($this->at($key))
                 ->method('invalidatePath')
                 ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost', $tokenName => $token]);
+
+            $this->tagProvider
+                ->expects($this->at($key))
+                ->method('getTagForLocationId')
+                ->with($locationId)
+                ->willReturn("location-$locationId");
         }
 
         $this->purgeClient->purge($locationIds);
@@ -208,6 +240,11 @@ class VarnishPurgeClientTest extends TestCase
             ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
             ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], null);
 
+        $this->tagProvider
+            ->expects($this->once())
+            ->method('getTagForAll')
+            ->willReturn('ez-all');
+
         $this->purgeClient->purgeAll();
     }
 
@@ -232,6 +269,11 @@ class VarnishPurgeClientTest extends TestCase
             ->method('getParameter')
             ->withConsecutive(['http_cache.purge_servers'], [VarnishPurgeClient::INVALIDATE_TOKEN_PARAM])
             ->willReturnOnConsecutiveCalls(['https://varnishpurgehost'], $token);
+
+        $this->tagProvider
+            ->expects($this->once())
+            ->method('getTagForAll')
+            ->willReturn('ez-all');
 
         $this->purgeClient->purgeAll();
     }

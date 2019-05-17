@@ -21,6 +21,18 @@ class DeleteContentTypeSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
+        $this->tagProviderMock
+            ->expects($this->at(0))
+            ->method('getTagForContentTypeId')
+            ->with(4)
+            ->willReturn('content-type-4');
+
+        $this->tagProviderMock
+            ->expects($this->at(1))
+            ->method('getTagForTypeId')
+            ->with(4)
+            ->willReturn('type-4');
+
         return ['content-type-4', 'type-4'];
     }
 

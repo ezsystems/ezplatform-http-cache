@@ -22,6 +22,7 @@ namespace eZ\Publish\Core\MVC\Symfony\Cache\Tests;
 
 use EzSystems\PlatformHttpCacheBundle\RequestAwarePurger;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -39,7 +40,27 @@ class LocalPurgeClientTest extends TestCase
             ->method('purgeByRequest')
             ->with($this->equalTo($expectedBanRequest));
 
-        $purgeClient = new LocalPurgeClient($cacheStore);
+        $tagProviderMock = $this->createMock(TagProviderInterface::class);
+
+        $tagProviderMock
+            ->expects($this->at(0))
+            ->method('getTagForLocationId')
+            ->with(123)
+            ->willReturn('location-123');
+
+        $tagProviderMock
+            ->expects($this->at(1))
+            ->method('getTagForLocationId')
+            ->with(456)
+            ->willReturn('location-456');
+
+        $tagProviderMock
+            ->expects($this->at(2))
+            ->method('getTagForLocationId')
+            ->with(789)
+            ->willReturn('location-789');
+
+        $purgeClient = new LocalPurgeClient($cacheStore, $tagProviderMock);
         $purgeClient->purge($locationIds);
     }
 }

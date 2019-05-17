@@ -9,17 +9,29 @@
 namespace EzSystems\PlatformHttpCacheBundle\Tests\SignalSlot;
 
 use eZ\Publish\Core\SignalSlot\Signal\ContentService\DeleteContentSignal;
+use EzSystems\PlatformHttpCacheBundle\SignalSlot\DeleteContentSlot;
 
 class DeleteContentSlotTest extends AbstractContentSlotTest
 {
+    const AFFECTED_LOCATION_IDS = [45, 55];
+
     public function createSignal()
     {
-        return new DeleteContentSignal(['contentId' => $this->contentId, 'affectedLocationIds' => [45, 55]]);
+        return new DeleteContentSignal(['contentId' => $this->contentId, 'affectedLocationIds' => self::AFFECTED_LOCATION_IDS]);
     }
 
     public function generateTags()
     {
         $tags = parent::generateTags();
+
+        foreach (self::AFFECTED_LOCATION_IDS as $key => $affectedLocationId) {
+            $this->tagProviderMock
+                ->method('getTagForPathId')
+                ->willReturnCallback(static function ($arg) {
+                    return 'path-' . $arg;
+                });
+        }
+
         $tags[] = 'path-45';
         $tags[] = 'path-55';
 
@@ -28,11 +40,11 @@ class DeleteContentSlotTest extends AbstractContentSlotTest
 
     public function getSlotClass()
     {
-        return 'EzSystems\PlatformHttpCacheBundle\SignalSlot\DeleteContentSlot';
+        return DeleteContentSlot::class;
     }
 
     public function getReceivedSignalClasses()
     {
-        return ['eZ\Publish\Core\SignalSlot\Signal\ContentService\DeleteContentSignal'];
+        return [DeleteContentSignal::class];
     }
 }

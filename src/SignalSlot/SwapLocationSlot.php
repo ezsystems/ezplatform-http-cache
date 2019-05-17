@@ -17,18 +17,19 @@ class SwapLocationSlot extends AbstractContentSlot
 {
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\LocationService\SwapLocationSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
         return [
-            'content-' . $signal->content1Id,
-            'path-' . $signal->location1Id,
-            'location-' . $signal->parentLocation1Id,
-            'parent-' . $signal->parentLocation1Id,
-            'content-' . $signal->content2Id,
-            'path-' . $signal->location2Id,
-            'location-' . $signal->parentLocation2Id,
-            'parent-' . $signal->parentLocation2Id,
+            $this->tagProvider->getTagForContentId($signal->content1Id),
+            $this->tagProvider->getTagForPathId($signal->location1Id),
+            $this->tagProvider->getTagForLocationId($signal->parentLocation1Id),
+            $this->tagProvider->getTagForParentId($signal->parentLocation1Id),
+            $this->tagProvider->getTagForContentId($signal->content2Id),
+            $this->tagProvider->getTagForPathId($signal->location2Id),
+            $this->tagProvider->getTagForLocationId($signal->parentLocation2Id),
+            $this->tagProvider->getTagForParentId($signal->parentLocation2Id),
         ];
     }
 

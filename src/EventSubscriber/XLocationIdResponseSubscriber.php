@@ -7,6 +7,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\Repository;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -30,10 +31,14 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
     /** @var \eZ\Publish\API\Repository\Repository */
     private $repository;
 
-    public function __construct(TagHandler $tagHandler, Repository $repository)
+    /** @var \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface */
+    private $tagProvider;
+
+    public function __construct(TagHandler $tagHandler, Repository $repository, TagProviderInterface $tagProvider)
     {
         $this->tagHandler = $tagHandler;
         $this->repository = $repository;
+        $this->tagProvider = $tagProvider;
     }
 
     public static function getSubscribedEvents()
@@ -59,27 +64,27 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
             $id = trim($id);
             try {
                 /** @var $location \eZ\Publish\API\Repository\Values\Content\Location */
-                $location = $this->repository->sudo(function (Repository $repository) use ($id) {
+                $location = $this->repository->sudo(static function (Repository $repository) use ($id) {
                     return $repository->getLocationService()->loadLocation($id);
                 });
 
-                $tags[] = 'location-' . $location->id;
-                $tags[] = 'parent-' . $location->parentLocationId;
+                $tags[] = $this->tagProvider->getTagForLocationId($location->id);
+                $tags[] = $this->tagProvider->getTagForParentId($location->parentLocationId);
 
                 foreach ($location->path as $pathItem) {
-                    $tags[] = 'path-' . $pathItem;
+                    $tags[] = $this->tagProvider->getTagForPathId($pathItem);
                 }
 
                 $contentInfo = $location->getContentInfo();
-                $tags[] = 'content-' . $contentInfo->id;
-                $tags[] = 'content-type-' . $contentInfo->contentTypeId;
+                $tags[] = $this->tagProvider->getTagForContentId($contentInfo->id);
+                $tags[] = $this->tagProvider->getTagForContentTypeId($contentInfo->contentTypeId);
 
                 if ($contentInfo->mainLocationId !== $location->id) {
-                    $tags[] = 'location-' . $contentInfo->mainLocationId;
+                    $tags[] = $this->tagProvider->getTagForLocationId($contentInfo->mainLocationId);
                 }
             } catch (NotFoundException $e) {
-                $tags[] = "location-$id";
-                $tags[] = "path-$id";
+                $tags[] = $this->tagProvider->getTagForLocationId($id);
+                $tags[] = $this->tagProvider->getTagForPathId($id);
             }
         }
 

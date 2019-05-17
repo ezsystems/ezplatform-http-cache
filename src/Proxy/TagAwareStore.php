@@ -9,6 +9,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\Proxy;
 
 use EzSystems\PlatformHttpCacheBundle\RequestAwarePurger;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,9 +24,20 @@ class TagAwareStore extends Store implements RequestAwarePurger
     const TAG_CACHE_DIR = 'ez';
 
     /**
+     * @var \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface
+     */
+    private $tagProvider;
+
+    /**
      * @var \Symfony\Component\Filesystem\Filesystem
      */
     private $fs;
+
+    public function __construct($root, TagProviderInterface $tagProvider)
+    {
+        parent::__construct($root);
+        $this->tagProvider = $tagProvider;
+    }
 
     /**
      * Injects a Filesystem instance
@@ -148,11 +160,11 @@ class TagAwareStore extends Store implements RequestAwarePurger
         } elseif ($locationId[0] === '(' && substr($locationId, -1) === ')') {
             // Deprecated: (123|456|789) => Purge for #123, #456 and #789 location IDs.
             $tags = array_map(
-                function ($id) {return 'location-' . $id;},
+                function ($id) {return $this->tagProvider->getTagForLocationId($id);},
                 explode('|', substr($locationId, 1, -1))
             );
         } else {
-            $tags = array('location-' . $locationId);
+            $tags = array($this->tagProvider->getTagForLocationId($locationId));
         }
 
         if (empty($tags)) {

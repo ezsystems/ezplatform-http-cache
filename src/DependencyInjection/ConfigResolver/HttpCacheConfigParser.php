@@ -37,6 +37,14 @@ class HttpCacheConfigParser implements ParserInterface
                     ->scalarNode('varnish_invalidate_token')
                         ->info('Optional: Varnish Invalidation token for purge')
                         ->defaultNull()
+                    ->end()
+                    ->scalarNode('tag_format')
+                        ->info('Choose whether to use short or long tags')
+                        ->defaultValue('short')
+                        ->validate()
+                            ->ifNotInArray(['short', 'long'])
+                            ->thenInvalid('Invalid tag format')
+                        ->end()
                     ->end();
 
         foreach ($this->getExtraConfigParsers() as $extraConfigParser) {
@@ -58,6 +66,10 @@ class HttpCacheConfigParser implements ParserInterface
 
         if (isset($scopeSettings['http_cache']['varnish_invalidate_token'])) {
             $contextualizer->setContextualParameter('http_cache.varnish_invalidate_token', $currentScope, $scopeSettings['http_cache']['varnish_invalidate_token']);
+        }
+
+        if (isset($scopeSettings['http_cache']['tag_format'])) {
+            $contextualizer->setContextualParameter('http_cache.tag_format', $currentScope, $scopeSettings['http_cache']['tag_format']);
         }
 
         foreach ($this->getExtraConfigParsers() as $extraConfigParser) {

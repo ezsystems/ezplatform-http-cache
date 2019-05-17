@@ -1,6 +1,7 @@
 parameters:
     ezplatform.http_cache.controller.invalidatetoken.class: EzSystems\PlatformHttpCacheBundle\Controller\InvalidateTokenController
     ezplatform.http_cache.listener.vary_header.class: EzSystems\PlatformHttpCacheBundle\EventListener\ConditionallyRemoveVaryHeaderListener
+    ezplatform.http_cache.tag_provider.class: EzSystems\PlatformHttpCacheBundle\TagProvider\TagProvider
 
 services:
     ezplatform.http_cache.cache_manager:
@@ -11,12 +12,17 @@ services:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishProxyClientFactory
         arguments: ['@ezpublish.config.resolver', '@ezpublish.config.dynamic_setting.parser', '%fos_http_cache.proxy_client.varnish.class%']
 
+    ezplatform.http_cache.tags_converter_decorator:
+        class: EzSystems\PlatformHttpCacheBundle\PurgeClient\TagsConverterDecorator
+        decorates: ezplatform.http_cache.purge_client_decorator
+        arguments: ['@ezplatform.http_cache.tags_converter_decorator.inner', '@ezplatform.http_cache.tag_provider', '@ezplatform.http_cache.tag_converter']
+
     ezplatform.http_cache.purge_client:
         alias: ezplatform.http_cache.purge_client_decorator
 
     ezplatform.http_cache.purge_client_decorator:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\RepositoryPrefixDecorator
-        arguments: ['@ezplatform.http_cache.purge_client_internal', '@ezplatform.http_cache.repository_tag_prefix']
+        arguments: ['@ezplatform.http_cache.purge_client_internal', '@ezplatform.http_cache.repository_tag_prefix', '@ezplatform.http_cache.tag_provider']
 
     ezplatform.http_cache.purge_client_internal:
         alias: ezplatform.http_cache.purge_client.local
@@ -26,13 +32,14 @@ services:
         arguments:
             - '@ezplatform.http_cache.cache_manager'
             - '@ezpublish.config.resolver'
+            - '@ezplatform.http_cache.tag_provider'
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: http}
             - {name: ezplatform.http_cache.purge_client, purge_type: varnish}
 
     ezplatform.http_cache.purge_client.local:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient
-        arguments: ['@ezplatform.http_cache.store']
+        arguments: ['@ezplatform.http_cache.store', '@ezplatform.http_cache.tag_provider']
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: local}
 
@@ -41,7 +48,9 @@ services:
 
     ezplatform.http_cache.tag_aware_store:
         class: EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore
-        arguments: ['%ezplatform.http_cache.store.root%']
+        arguments:
+            - '%ezplatform.http_cache.store.root%'
+            - '@ezplatform.http_cache.tag_provider'
 
     ezplatform.http_cache.fos_tag_handler.xkey:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
@@ -75,3 +84,15 @@ services:
         class: EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix
         # Use config resolver to be able to lazy load reading SA setting "repository" to avoid scope change issues
         arguments: ["@ezpublish.config.resolver", '%ezpublish.repositories%']
+
+    ezplatform.http_cache.tag_provider:
+        class: "%ezplatform.http_cache.tag_provider.class%"
+        arguments:
+            - '@ezpublish.config.resolver.chain'
+            - '%ezplatform.http_cache.tags_map%'
+            - '%ezplatform.http_cache.user_context_hash_tag%'
+
+    ezplatform.http_cache.tag_converter:
+        class: EzSystems\PlatformHttpCacheBundle\TagProvider\ShortToLongTagConverter
+        arguments: ['%ezplatform.http_cache.tags_map%']
+

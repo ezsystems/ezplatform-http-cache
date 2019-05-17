@@ -17,15 +17,16 @@ class DeleteContentSlot extends AbstractContentSlot
 {
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\ContentService\DeleteContentSignal $signal
+     * @return array
      *
-     * @todo Missing parent, however it would be clener if kernel emmited cascading Delete Location signals on affected
+     * @todo Missing parent, however it would be cleaner if kernel emitted cascading Delete Location signals on affected
      *       locations instead.
      */
     protected function generateTags(Signal $signal)
     {
         $tags = parent::generateTags($signal);
         foreach ($signal->affectedLocationIds as $locationId) {
-            $tags[] = 'path-' . $locationId;
+            $tags[] = $this->tagProvider->getTagForPathId($locationId);
         }
 
         return $tags;

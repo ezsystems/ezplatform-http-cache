@@ -11,6 +11,7 @@ namespace EzSystems\PlatformHttpCacheBundle\SignalSlot;
 use eZ\Publish\Core\SignalSlot\Signal;
 use eZ\Publish\SPI\Persistence\URL\Handler as UrlHandler;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 
 /**
  * A slot handling UpdateUrlSignal.
@@ -24,23 +25,25 @@ class UpdateUrlSlot extends AbstractContentSlot
      * UpdateUrlSlot constructor.
      *
      * @param PurgeClientInterface $purgeClient
+     * @param TagProviderInterface $tagProvider
      * @param UrlHandler $urlHandler
      */
-    public function __construct(PurgeClientInterface $purgeClient, UrlHandler $urlHandler)
+    public function __construct(PurgeClientInterface $purgeClient, TagProviderInterface $tagProvider, UrlHandler $urlHandler)
     {
-        parent::__construct($purgeClient);
+        parent::__construct($purgeClient, $tagProvider);
 
         $this->urlHandler = $urlHandler;
     }
 
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\URLService\UpdateUrlSignal $signal
+     * @return array
      */
     public function generateTags(Signal $signal)
     {
         if ($signal->urlChanged) {
             return array_map(function ($contentId) {
-                return 'content-' . $contentId;
+                return $this->tagProvider->getTagForContentId($contentId);
             }, $this->urlHandler->findUsages($signal->urlId));
         }
 

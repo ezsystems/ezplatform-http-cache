@@ -12,10 +12,13 @@ class ContentInfoTagger extends AbstractValueTagger
             return $this;
         }
 
-        $this->tagHandler->addTags(['content-' . $value->id, 'content-type-' . $value->contentTypeId]);
+        $this->tagHandler->addTags([
+            $this->tagProvider->getTagForContentId($value->id),
+            $this->tagProvider->getTagForContentTypeId($value->contentTypeId),
+        ]);
 
         if ($value->mainLocationId) {
-            $this->tagHandler->addTags(['location-' . $value->mainLocationId]);
+            $this->tagHandler->addTags([$this->tagProvider->getTagForLocationId($value->mainLocationId)]);
         }
     }
 }

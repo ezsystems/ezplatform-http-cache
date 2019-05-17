@@ -20,6 +20,6 @@ abstract class AbstractPermissionSlot extends AbstractSlot
     {
         // On permission changes we simply clear user hash cache so next requests will vary on updated hash if a given
         // user was afected. This avoids us having to clear all cache as most or some users might still have same cache.
-        return ['ez-user-context-hash'];
+        return [$this->tagProvider->getTagForUserContextHash()];
     }
 }

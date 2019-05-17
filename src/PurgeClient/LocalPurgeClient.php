@@ -9,6 +9,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\PurgeClient;
 
 use EzSystems\PlatformHttpCacheBundle\RequestAwarePurger;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -22,9 +23,15 @@ class LocalPurgeClient implements PurgeClientInterface
      */
     protected $cacheStore;
 
-    public function __construct(RequestAwarePurger $cacheStore)
+    /**
+     * @var \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface
+     */
+    private $tagProvider;
+
+    public function __construct(RequestAwarePurger $cacheStore, TagProviderInterface $tagProvider)
     {
         $this->cacheStore = $cacheStore;
+        $this->tagProvider = $tagProvider;
     }
 
     public function purge($tags)
@@ -35,7 +42,7 @@ class LocalPurgeClient implements PurgeClientInterface
 
         $tags = array_map(
             function ($tag) {
-                return is_numeric($tag) ? 'location-' . $tag : $tag;
+                return is_numeric($tag) ? $this->tagProvider->getTagForLocationId($tag) : $tag;
             },
             (array)$tags
         );

@@ -17,11 +17,12 @@ class HideLocationSlot extends AbstractContentSlot
 {
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\LocationService\HideLocationSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
         $tags = parent::generateTags($signal);
-        $tags[] = 'path-' . $signal->locationId;
+        $tags[] = $this->tagProvider->getTagForPathId($signal->locationId);
 
         return $tags;
     }

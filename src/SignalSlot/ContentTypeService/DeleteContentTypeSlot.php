@@ -23,9 +23,13 @@ class DeleteContentTypeSlot extends AbstractSlot
 
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\ContentTypeService\DeleteContentTypeSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
-        return ['content-type-' . $signal->contentTypeId, 'type-' . $signal->contentTypeId];
+        return [
+            $this->tagProvider->getTagForContentTypeId($signal->contentTypeId),
+            $this->tagProvider->getTagForTypeId($signal->contentTypeId),
+        ];
     }
 }

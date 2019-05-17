@@ -20,9 +20,12 @@ class UpdateContentSlot extends AbstractSlot
 
     /**
      * @param Signal\ContentService\UpdateContentSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
-        return ['content-versions-' . $signal->contentId];
+        return [
+            $this->tagProvider->getTagForContentVersions($signal->contentId),
+        ];
     }
 }

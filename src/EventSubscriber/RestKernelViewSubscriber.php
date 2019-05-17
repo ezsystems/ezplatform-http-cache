@@ -14,6 +14,7 @@ use eZ\Publish\Core\REST\Server\Values\ContentTypeGroupRefList;
 use eZ\Publish\Core\REST\Server\Values\RestContentType;
 use eZ\Publish\Core\REST\Server\Values\VersionList;
 use EzSystems\MultiFileUpload\API\Repository\Values\PermissionReport;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -31,9 +32,13 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
     /** @var \FOS\HttpCache\Handler\TagHandler */
     private $tagHandler;
 
-    public function __construct(TagHandler $tagHandler)
+    /** @var \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface */
+    private $tagProvider;
+
+    public function __construct(TagHandler $tagHandler, TagProviderInterface $tagProvider)
     {
         $this->tagHandler = $tagHandler;
+        $this->tagProvider = $tagProvider;
     }
 
     public static function getSubscribedEvents()
@@ -70,23 +75,23 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
         $tags = [];
         switch ($value) {
             case $value instanceof VersionList && !empty($value->versions):
-                $tags[] = 'content-' . $value->versions[0]->contentInfo->id;
-                $tags[] = 'content-versions-' . $value->versions[0]->contentInfo->id;
+                $tags[] = $this->tagProvider->getTagForContentId($value->versions[0]->contentInfo->id);
+                $tags[] = $this->tagProvider->getTagForContentVersions($value->versions[0]->contentInfo->id);
 
                 break;
 
             case $value instanceof Section:
-                $tags[] = 'section-' . $value->id;
+                $tags[] = $this->tagProvider->getTagForSectionId($value->id);
                 break;
 
             case $value instanceof ContentTypeGroupRefList:
                 if ($value->contentType->status !== ContentType::STATUS_DEFINED) {
                     return [];
                 }
-                $tags[] = 'type-' . $value->contentType->id;
+                $tags[] = $this->tagProvider->getTagForTypeId($value->contentType->id);
             case $value instanceof ContentTypeGroupList:
                 foreach ($value->contentTypeGroups as $contentTypeGroup) {
-                    $tags[] = 'type-group-' . $contentTypeGroup->id;
+                    $tags[] = $this->tagProvider->getTagForTypeGroupId($contentTypeGroup->id);
                 }
                 break;
 
@@ -96,11 +101,11 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
                 if ($value->status !== ContentType::STATUS_DEFINED) {
                     return [];
                 }
-                $tags[] = 'type-' . $value->id;
+                $tags[] = $this->tagProvider->getTagForTypeId($value->id);
                 break;
 
             case $value instanceof Root:
-                $tags[] = 'ez-all';
+                $tags[] = $this->tagProvider->getTagForAll();
                 break;
 
                 // @deprecated The following logic is 1.x specific, and should be removed before a 1.0 version
@@ -111,13 +116,13 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
                 }
 
                 // In case of for instance location swap where content type might change affecting allowed content types
-                $tags[] = 'content-' . $value->parentLocation->contentId;
-                $tags[] = 'content-type-' . $value->parentLocation->contentInfo->contentTypeId;
-                $tags[] = 'location-' . $value->parentLocation->id;
+                $tags[] = $this->tagProvider->getTagForContentId($value->parentLocation->contentId);
+                $tags[] = $this->tagProvider->getTagForContentTypeId($value->parentLocation->contentInfo->contentTypeId);
+                $tags[] = $this->tagProvider->getTagForLocationId($value->parentLocation->id);
 
                 // In case of permissions assigned by subtree, so if path changes affecting this (move subtree operation)
                 foreach ($value->parentLocation->path as $pathItem) {
-                    $tags[] = 'path-' . $pathItem;
+                    $tags[] = $this->tagProvider->getTagForPathId($pathItem);
                 }
                 break;
         }

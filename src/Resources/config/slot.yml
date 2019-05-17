@@ -2,11 +2,11 @@ services:
     # AbstractSlot or AbstractContentSlot
     ezplatform.http_cache.signalslot.abstract:
         abstract: true
-        arguments: ["@ezplatform.http_cache.purge_client"]
+        arguments: ["@ezplatform.http_cache.purge_client", '@ezplatform.http_cache.tag_provider']
 
     ezplatform.http_cache.signalslot.abstract_publish:
         abstract: true
-        arguments: ["@ezplatform.http_cache.purge_client", "@ezpublish.spi.persistence.cache.locationHandler"]
+        arguments: ["@ezplatform.http_cache.purge_client", "@ezplatform.http_cache.tag_provider", "@ezpublish.spi.persistence.cache.locationHandler"]
 
     # Content
     ezplatform.http_cache.signalslot.copy_content:

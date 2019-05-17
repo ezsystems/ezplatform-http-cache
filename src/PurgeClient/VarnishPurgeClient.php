@@ -6,6 +6,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\PurgeClient;
 
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 use FOS\HttpCacheBundle\CacheManager;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
@@ -27,10 +28,16 @@ class VarnishPurgeClient implements PurgeClientInterface
      */
     private $configResolver;
 
-    public function __construct(CacheManager $cacheManager, ConfigResolverInterface $configResolver)
+    /**
+     * @var \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface
+     */
+    private $tagProvider;
+
+    public function __construct(CacheManager $cacheManager, ConfigResolverInterface $configResolver, TagProviderInterface $tagProvider)
     {
         $this->cacheManager = $cacheManager;
         $this->configResolver = $configResolver;
+        $this->tagProvider = $tagProvider;
     }
 
     public function __destruct()
@@ -48,7 +55,7 @@ class VarnishPurgeClient implements PurgeClientInterface
         // These will be queued by FOS\HttpCache\ProxyClient\Varnish and handled on kernel.terminate.
         foreach (array_unique((array)$tags) as $tag) {
             if (is_numeric($tag)) {
-                $tag = 'location-' . $tag;
+                $tag = $this->tagProvider->getTagForLocationId($tag);
             }
 
             $headers = [
@@ -68,7 +75,7 @@ class VarnishPurgeClient implements PurgeClientInterface
     public function purgeAll()
     {
         $headers = [
-            'key' => 'ez-all',
+            'key' => $this->tagProvider->getTagForAll(),
             'Host' => empty($_SERVER['SERVER_NAME']) ? parse_url($this->configResolver->getParameter('http_cache.purge_servers')[0], PHP_URL_HOST) : $_SERVER['SERVER_NAME'],
         ];
 

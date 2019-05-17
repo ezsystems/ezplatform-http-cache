@@ -21,9 +21,10 @@ class UpdateContentTypeGroupSlot extends AbstractSlot
 
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\ContentTypeService\UpdateContentTypeGroupSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
-        return ['type-group-' . $signal->contentTypeGroupId];
+        return [$this->tagProvider->getTagForTypeGroupId($signal->contentTypeGroupId)];
     }
 }

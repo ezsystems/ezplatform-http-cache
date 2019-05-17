@@ -21,8 +21,8 @@ class RecoverSlot extends AbstractContentSlot
     protected function generateTags(Signal $signal)
     {
         $tags = parent::generateTags($signal);
-        $tags[] = 'location-' . $signal->newParentLocationId;
-        $tags[] = 'parent-' . $signal->newParentLocationId;
+        $tags[] = $this->tagProvider->getTagForLocationId($signal->newParentLocationId);
+        $tags[] = $this->tagProvider->getTagForParentId($signal->newParentLocationId);
 
         return $tags;
     }

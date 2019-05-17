@@ -10,13 +10,13 @@ services:
 
     ezplatform.x_location_id.response_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\XLocationIdResponseSubscriber
-        arguments: ['@fos_http_cache.handler.tag_handler', '@ezpublish.api.repository']
+        arguments: ['@fos_http_cache.handler.tag_handler', '@ezpublish.api.repository', '@ezplatform.http_cache.tag_provider']
         tags:
             - { name: kernel.event_subscriber }
 
     ezplatform.rest_cache_tagging.view_subscriber:
         class: EzSystems\PlatformHttpCacheBundle\EventSubscriber\RestKernelViewSubscriber
-        arguments: ['@fos_http_cache.handler.tag_handler']
+        arguments: ['@fos_http_cache.handler.tag_handler', '@ezplatform.http_cache.tag_provider']
         tags:
             - { name: kernel.event_subscriber }
 
@@ -64,7 +64,7 @@ services:
     # ResponseTagger value handlers
     ezplatform.view_cache.response_tagger.abstract_value:
         abstract: true
-        arguments: ['@fos_http_cache.handler.tag_handler']
+        arguments: ['@fos_http_cache.handler.tag_handler', '@ezplatform.http_cache.tag_provider']
 
     ezplatform.view_cache.response_tagger.content_info:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\ContentInfoTagger
@@ -81,6 +81,6 @@ services:
     # Twig
     ezplatform.view_cache.twig_extension:
         class: EzSystems\PlatformHttpCacheBundle\Twig\ContentTaggingExtension
-        arguments: ['@ezplatform.view_cache.response_tagger.dispatcher']
+        arguments: ['@ezplatform.view_cache.response_tagger.dispatcher', '@ezplatform.http_cache.tag_provider', '@ezplatform.http_cache.fos_tag_handler.xkey']
         tags:
             - {name: twig.extension}

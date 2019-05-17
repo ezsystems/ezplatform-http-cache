@@ -17,20 +17,21 @@ class MoveSubtreeSlot extends AbstractContentSlot
 {
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\LocationService\MoveSubtreeSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
         return [
             // The tree being moved
-            'path-' . $signal->locationId,
+            $this->tagProvider->getTagForPathId($signal->locationId),
             // old parent
-            'location-' . $signal->oldParentLocationId,
+            $this->tagProvider->getTagForLocationId($signal->oldParentLocationId),
             // old siblings
-            'parent-' . $signal->oldParentLocationId,
+            $this->tagProvider->getTagForParentId($signal->oldParentLocationId),
             // new parent
-            'location-' . $signal->newParentLocationId,
+            $this->tagProvider->getTagForLocationId($signal->newParentLocationId),
             // new siblings
-            'parent-' . $signal->newParentLocationId,
+            $this->tagProvider->getTagForParentId($signal->newParentLocationId),
         ];
     }
 

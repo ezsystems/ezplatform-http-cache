@@ -17,10 +17,15 @@ class CopyContentSlot extends AbstractContentSlot
 {
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\ContentService\CopyContentSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
-        return ['content-' . $signal->dstContentId, 'location-' . $signal->dstParentLocationId, 'path-' . $signal->dstParentLocationId];
+        return [
+            $this->tagProvider->getTagForContentId($signal->dstContentId),
+            $this->tagProvider->getTagForLocationId($signal->dstParentLocationId),
+            $this->tagProvider->getTagForPathId($signal->dstParentLocationId),
+        ];
     }
 
     protected function supports(Signal $signal)

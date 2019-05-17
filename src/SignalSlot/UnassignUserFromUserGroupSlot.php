@@ -17,10 +17,15 @@ class UnassignUserFromUserGroupSlot extends AbstractContentSlot
 {
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\UserService\UnAssignUserFromUserGroupSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
-        return ['content-' . $signal->userId, 'content-' . $signal->userGroupId, 'ez-user-context-hash'];
+        return [
+            $this->tagProvider->getTagForContentId($signal->userId),
+            $this->tagProvider->getTagForContentId($signal->userGroupId),
+            $this->tagProvider->getTagForUserContextHash(),
+        ];
     }
 
     protected function supports(Signal $signal)

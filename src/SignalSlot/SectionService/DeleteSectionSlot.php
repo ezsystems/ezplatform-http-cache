@@ -23,9 +23,10 @@ class DeleteSectionSlot extends AbstractSlot
 
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\SectionService\DeleteSectionSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
-        return ['section-' . $signal->sectionId];
+        return [$this->tagProvider->getTagForSectionId($signal->sectionId)];
     }
 }

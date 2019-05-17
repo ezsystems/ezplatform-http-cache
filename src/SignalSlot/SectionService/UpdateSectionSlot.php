@@ -23,9 +23,10 @@ class UpdateSectionSlot extends AbstractSlot
 
     /**
      * @param Signal\SectionService\UpdateSectionSignal $signal
+     * @return array
      */
     protected function generateTags(Signal $signal)
     {
-        return ['section-' . $signal->sectionId];
+        return [$this->tagProvider->getTagForSectionId($signal->sectionId)];
     }
 }

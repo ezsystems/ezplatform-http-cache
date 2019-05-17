@@ -11,6 +11,7 @@ namespace EzSystems\PlatformHttpCacheBundle\SignalSlot;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use eZ\Publish\Core\SignalSlot\Signal;
 use eZ\Publish\Core\SignalSlot\Slot;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 
 /**
  * A abstract slot covering common functions needed for tag based http cahe slots.
@@ -23,11 +24,18 @@ abstract class AbstractSlot extends Slot
     protected $purgeClient;
 
     /**
-     * @param \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface $purgeClient
+     * @var \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface
      */
-    public function __construct(PurgeClientInterface $purgeClient)
+    protected $tagProvider;
+
+    /**
+     * @param \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface $purgeClient
+     * @param \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface $tagProvider
+     */
+    public function __construct(PurgeClientInterface $purgeClient, TagProviderInterface $tagProvider)
     {
         $this->purgeClient = $purgeClient;
+        $this->tagProvider = $tagProvider;
     }
 
     final public function receive(Signal $signal)
@@ -51,7 +59,7 @@ abstract class AbstractSlot extends Slot
     abstract protected function supports(Signal $signal);
 
     /**
-     * Return list of tags to be clered.
+     * Return list of tags to be cleared.
      *
      * @param \eZ\Publish\Core\SignalSlot\Signal $signal
      *

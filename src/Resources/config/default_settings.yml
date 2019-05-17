@@ -3,3 +3,33 @@ parameters:
     ezplatform.http_cache.tags.header: 'xkey'
     ezplatform.http_cache.invalidate_token.ttl: 86400
     ezplatform.http_cache.no_vary.routes: ['ezplatform.httpcache.invalidatetoken']
+    ezplatform.http_cache.user_context_hash_tag: 'ez-user-context-hash'
+
+    ezplatform.http_cache.tags_map:
+        short:
+            location: 'l'
+            content: 'c'
+            contentType: 'ct'
+            contentVersions: 'cv'
+            parent: 'p'
+            relation: 'r'
+            relationLocation: 'rl'
+            path: 'pa'
+            type: 't'
+            typeGroup: 'tg'
+            section: 's'
+            all: 'ea'
+        long:
+            location: 'location'
+            content: 'content'
+            contentType: 'content-type'
+            contentVersions: 'content-versions'
+            parent: 'parent'
+            relation: 'relation'
+            relationLocation: 'relation-location'
+            path: 'path'
+            type: 'type'
+            typeGroup: 'type-group'
+            section: 'section'
+            all: 'ez-all'
+

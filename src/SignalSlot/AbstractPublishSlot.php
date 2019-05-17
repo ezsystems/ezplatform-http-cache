@@ -11,6 +11,7 @@ namespace EzSystems\PlatformHttpCacheBundle\SignalSlot;
 use eZ\Publish\Core\SignalSlot\Signal;
 use eZ\Publish\SPI\Persistence\Content\Location\Handler;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
+use EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface;
 
 abstract class AbstractPublishSlot extends AbstractContentSlot
 {
@@ -21,11 +22,12 @@ abstract class AbstractPublishSlot extends AbstractContentSlot
 
     /**
      * @param \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface $purgeClient
+     * @param \EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface $tagProvider
      * @param \eZ\Publish\SPI\Persistence\Content\Location\Handler $spiLocationHandler
      */
-    public function __construct(PurgeClientInterface $purgeClient, Handler $spiLocationHandler)
+    public function __construct(PurgeClientInterface $purgeClient, TagProviderInterface $tagProvider, Handler $spiLocationHandler)
     {
-        parent::__construct($purgeClient);
+        parent::__construct($purgeClient, $tagProvider);
         $this->locationHandler = $spiLocationHandler;
     }
 
@@ -43,22 +45,22 @@ abstract class AbstractPublishSlot extends AbstractContentSlot
 
         $tags = [
             // self in all forms (also without locations)
-            'content-' . $contentId,
+            $this->tagProvider->getTagForContentId($contentId),
             // reverse relations
-            'relation-' . $contentId,
+            $this->tagProvider->getTagForRelationId($contentId),
         ];
 
         foreach ($this->locationHandler->loadLocationsByContent($contentId) as $location) {
             // self
-            $tags[] = 'location-' . $location->id;
+            $tags[] = $this->tagProvider->getTagForLocationId($location->id);
             // children
-            $tags[] = 'parent-' . $location->id;
+            $tags[] = $this->tagProvider->getTagForParentId($location->id);
             // reverse location relations
-            $tags[] = 'relation-location-' . $location->id;
+            $tags[] = $this->tagProvider->getTagForRelationLocationId($location->id);
             // parent
-            $tags[] = 'location-' . $location->parentId;
+            $tags[] = $this->tagProvider->getTagForLocationId($location->parentId);
             // siblings
-            $tags[] = 'parent-' . $location->parentId;
+            $tags[] = $this->tagProvider->getTagForParentId($location->parentId);
         }
 
         return $tags;

@@ -6,7 +6,6 @@
 namespace spec\EzSystems\PlatformHttpCacheBundle\Handler;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
-
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
 use FOS\HttpCacheBundle\CacheManager;
 use PhpSpec\ObjectBehavior;

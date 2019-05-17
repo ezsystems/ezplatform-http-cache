@@ -10,12 +10,12 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class KernelPassSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType(KernelPass::class);
     }
 
-    function it_disables_the_kernels_httpcache_services(ContainerBuilder $container, Definition $cacheClearer, Definition $hashGenerator)
+    public function it_disables_the_kernels_httpcache_services(ContainerBuilder $container, Definition $cacheClearer, Definition $hashGenerator)
     {
         $container->getAlias('ezpublish.http_cache.purge_client')->willReturn('some_random_id');
         $container->hasAlias('ezpublish.http_cache.purger')->willReturn(true);
@@ -44,14 +44,14 @@ class KernelPassSpec extends ObjectBehavior
                 'ezpublish.http_cache.witness_service',
                 'ezpublish.http_cache.purger.some_purger',
                 'ezpublish.http_cache.purger.some_other_purger',
-                'witness_service'
-            ]
+                'witness_service',
+            ],
         ]);
         $cacheClearer->setArguments([
             [
                 'ezpublish.http_cache.witness_service',
-                'witness_service'
-            ]
+                'witness_service',
+            ],
         ])->shouldBeCalled();
 
         $container->hasDefinition('ezpublish.user.identity_definer.role_id')->willReturn(true);
@@ -62,13 +62,13 @@ class KernelPassSpec extends ObjectBehavior
                 $ref1 = new Reference('ezplatform.http_cache.user_context_provider.role_identify'),
                 $ref2 = new Reference('ezpublish.user.hash_generator'),
                 new Reference('ezpublish.user.identity_definer.role_id'),
-            ]
+            ],
         ]);
         $hashGenerator->setArguments([
             [
                 $ref1,
                 $ref2,
-            ]
+            ],
         ])->shouldBeCalled();
 
         $container->getParameter('ezpublish.http_cache.purge_type')->shouldBeCalled();

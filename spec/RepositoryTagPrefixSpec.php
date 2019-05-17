@@ -14,7 +14,7 @@ class RepositoryTagPrefixSpec extends ObjectBehavior
         $this->beConstructedWith($resolver, ['default' => [], 'intra' => []]);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType(RepositoryTagPrefix::class);
     }

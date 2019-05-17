@@ -25,7 +25,7 @@ class UserContextSubscriberSpec extends ObjectBehavior
         $this->beConstructedWith($prefixService, 'xkey');
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType(UserContextSubscriber::class);
     }

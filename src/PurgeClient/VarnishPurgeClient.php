@@ -17,6 +17,7 @@ class VarnishPurgeClient implements PurgeClientInterface
     const INVALIDATE_TOKEN_PARAM = 'http_cache.varnish_invalidate_token';
     const INVALIDATE_TOKEN_PARAM_NAME = 'x-invalidate-token';
     const DEFAULT_HEADER_LENGTH = 7500;
+    const XKEY_TAG_SEPERATOR = ' ';
 
     /**
      * @var \FOS\HttpCacheBundle\CacheManager
@@ -45,7 +46,7 @@ class VarnishPurgeClient implements PurgeClientInterface
             return;
         }
 
-        // For 1.x BC make sure to map any int to location id tag
+        // For 5.4/1.x BC make sure to map any int to location id tag
         $tags = array_unique(array_map(static function ($tag) {
             return is_numeric($tag) ? 'location-' . $tag : $tag;
         },
@@ -55,7 +56,7 @@ class VarnishPurgeClient implements PurgeClientInterface
         $headers = $this->getPurgeHeaders();
         $chunkSize = $this->determineTagsPerHeader($tags);
 
-        // NB! Thish requries varnish-moduls 0.10.2 or higher, 0.9.x only supported purging one tag at a time
+        // NB! This requries varnish-moduls 0.10.2 or higher, 0.9.x only supported purging one tag at a time
         // If you need support for varnish-moduls 0.9.x, use ezplatform-http-cache 0.8.x
         foreach (array_chunk($tags, $chunkSize) as $tagchunk) {
             $headers['key'] = implode(' ', $tagchunk);
@@ -106,17 +107,13 @@ class VarnishPurgeClient implements PurgeClientInterface
      */
     private function determineTagsPerHeader(array $tags)
     {
-        if (!$this->configResolver->getParameter('http_cache.varnish_bulk_purge')) {
-            return 1;
-        }
-
-        if (mb_strlen(implode(' ', $tags)) < self::DEFAULT_HEADER_LENGTH) {
+        if (mb_strlen(implode(self::XKEY_TAG_SEPERATOR, $tags)) < self::DEFAULT_HEADER_LENGTH) {
             return count($tags);
         }
 
         // Estimate the amount of tags by dividing the max header length by the largest tag (minus the glue length)
         $tagsize = max(array_map('mb_strlen', $tags));
 
-        return floor(self::DEFAULT_HEADER_LENGTH / ($tagsize + strlen(' '))) ?: 1;
+        return floor(self::DEFAULT_HEADER_LENGTH / ($tagsize + strlen(self::XKEY_TAG_SEPERATOR))) ?: 1;
     }
 }

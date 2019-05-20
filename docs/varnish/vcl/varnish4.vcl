@@ -1,6 +1,6 @@
 // Varnish VCL for:
 // - Varnish 4.1 or higher (4.1LTS or 6.0LTS recommended, and is what we mainly test against)
-//   - Varnish xkey vmod (via varnish-modules package, or via Varnish Plus)
+//   - Varnish xkey vmod (via varnish-modules package 0.10.2 or higher, or via Varnish Plus)
 // - eZ Platform 1.13 with ezplatform-http-cache bundle
 //
 // Make sure to at least adjust default parameters.yml, defaults there reflect our testing needs with docker.

@@ -5,6 +5,7 @@ Prerequisites
 -------------
 * A working Varnish 4.1 and higher setup with xkey module installed
   * _As of eZ Platform 2.5LTS the requirement is Varnish 5.1 (6.0LTS recommended and what we mainly test against)_
+  * ezplatform-http-cache 0.9+ requires varnish-modules 0.10.2 or higher, use 0.8 if you need to use varnish-modules 0.9
 * Varnish Plus comes with xkey out of the box and can also be used.
 
 Recommended VCL base files
@@ -23,7 +24,7 @@ For tuning the VCL further to you needs, see the following relevant examples:
 
 Example installation on Debian/Ubuntu:
 --------------------------------------
-Starting with Debian 9 and Ubuntu 16.10 installation of `xkey` VMOD is greatly
+Starting with Debian 9 and Ubuntu 18.04 installation of `xkey` VMOD is greatly
 simplified as new [varnish-modules](https://github.com/varnish/varnish-modules) package now exists.
 
 Install:

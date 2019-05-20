@@ -20,30 +20,31 @@ Varnish or Fastly are highly recommended for medium to large traffic needs. Besi
 ## Tags in use in this bundle
 
 ### Tags for Content responses
+Tag format is configurable. By default, system uses `short` format, but you can use `long` format, for instance, for debugging purposes. 
 
-- `content-<content-id>` :
+- `c-<content-id>` / `content-<content-id>`:
   _Used on anything that is affected by changes to content, on content itself as well as location and so on._
 
-- `content-versions-<content-id>` :
+- `cv-<content-id>` / `content-versions-<content-id>`:
   _Used for clearing cache for content version list views, when not affecting the published content._
 
-- `content-type-<content-type-id>` :
+- `ct-<content-id>` / `content-type-<content-type-id>`:
   _For use when content type changes affecting content of its type._
 
-- `location-<location-id>` :
+- `l-<location-id>` / `location-<location-id>`:
   _Used for clearing all cache relevant for a given location._
 
-- `parent-<parent-location-id>` :
+- `p-<parent-location-id>` / `parent-<parent-location-id>`:
   _Used for clearing cache of all siblings of an location._
 
-- `parent-<location-id>` :
+- `p-<location-id>` / `parent-<location-id>`:
   _Used for clearing cache of all the children of a location._
 
-- `path-<location-id>` :
+- `pa-<location-id>` / `path-<location-id>`:
   _For operations that change the tree itself, like move/remove/(..)._
 
-- `relation-<content-id>` :
-- `relation-location-<location-id>` :
+- `r-<content-id>` / `relation-<content-id>`:
+- `rl-<location-id>` / `relation-location-<location-id>`:
    _For use when updates affect all their reverse relations. ezplatform-http-cache does not add this tag to responses
    automatically, just purges on it if present, response tagging with this is currently done inline in template logic / views
    where relation is actually used for rendering (when using ESI, if inline it's own tags will be added to response).
@@ -51,16 +52,16 @@ Varnish or Fastly are highly recommended for medium to large traffic needs. Besi
 
 ### Tags for Section responses
 
-- `section-<section-id>` :
+- `s-<section-id>` / `section-<section-id>`:
   _For use when section changes affecting section reponses (i.e. REST)._
 
 
 ### Tags for ContenType responses
 
-- `type-<content-type-id>` :
+- `t-<content-type-id>` / `type-<content-type-id>`:
   _For use when content type changes affecting content type reponses (i.e. REST)._
 
-- `type-group-<content-type-id>` :
+- `tg-<content-type-id>` / `type-group-<content-type-id>`:
   _For use when content type group changes affecting content type group reponses (i.e. REST)._
 
 ### Misc
@@ -68,7 +69,7 @@ Varnish or Fastly are highly recommended for medium to large traffic needs. Besi
 - `ez-user-context-hash`
    _Internal tag used for tagging /_fos_user_context_hash to expire it on role & role assigment changes._
 
-- `ez-all`:
+- `ea` / `ez-all`:
    _Internal tag used for being able to clear all cache. Main use case is being able to expire (soft purge) all cache on
    deployment of new versions of your installation which for instance changes representation / design dramatically._
 
@@ -107,7 +108,24 @@ to tag your responses.
 
 #### Twig use
 
-For twig usage, you can make sure response is tagged correctly by using the following twig operator in your template:
+For Twig usage, you can make sure response is tagged correctly by using the one of the following Twig operators in your template:
+```twig
+    {{ ez_httpcache_tag_location(<location-id>) }}
+    {{ ez_httpcache_tag_content(<content-id>) }}
+    {{ ez_httpcache_tag_content_type(<content-type-id>) }}
+    {{ ez_httpcache_tag_content_versions(<content-id>) }}
+    {{ ez_httpcache_tag_content_parent(<location-id>) }}
+    {{ ez_httpcache_tag_content_relation(<content-id>) }}
+    {{ ez_httpcache_tag_content_relation_location(<location-id>) }}
+    {{ ez_httpcache_tag_content_path(<location-id>) }}
+    {{ ez_httpcache_tag_content_section(<section-id>) }}
+    {{ ez_httpcache_tag_type(<content-type-id>) }}
+    {{ ez_httpcache_tag_type_group(<content-type-id>) }}
+```
+
+These functions use `\EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface` internally.
+
+You can use generic FOS Twig function as well, but you have to take care of the proper tags key and value on your own:
 ```twig
     {{ fos_httpcache_tag('relation-33') }}
 
@@ -124,11 +142,13 @@ Alternatively if you have a location(s) that you render inline & want invalidate
 
 #### PHP use
 
-Fo PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service which lets you add tags to a response:
+For PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service which lets you add tags to a response:
 ```php
     /** @var \FOS\HttpCache\Handler\TagHandler $tagHandler */
     $tagHandler->addTags(['relation-33', 'relation-44']);
 ```
+
+Instead of writing tags manually, you should use `\EzSystems\PlatformHttpCacheBundle\TagProvider\TagProviderInterface` (`ezplatform.http_cache.tag_provider`) which will generate proper tags according to the currently configured format.
 
 See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#tagging-from-code
 
@@ -149,15 +169,15 @@ E.g. on Move Location signal the following tags will be purged:
     {
         return [
             // The tree itself being moved (all children will have this tag)
-            'path-' . $signal->locationId,
+            $this->tagProvider->getTagForPathId($signal->locationId),
             // old parent
-            'location-' . $signal->oldParentLocationId,
+            $this->tagProvider->getTagForLocationId($signal->oldParentLocationId),
             // old siblings
-            'parent-' . $signal->oldParentLocationId,
+            $this->tagProvider->getTagForParentId($signal->oldParentLocationId),
             // new parent
-            'location-' . $signal->newParentLocationId,
+            $this->tagProvider->getTagForLocationId($signal->newParentLocationId),
             // new siblings
-            'parent-' . $signal->newParentLocationId,
+            $this->tagProvider->getTagForParentId($signal->newParentLocationId),
         ];
     }
 ```

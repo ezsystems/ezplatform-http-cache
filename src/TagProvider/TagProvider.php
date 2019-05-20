@@ -4,7 +4,7 @@ namespace EzSystems\PlatformHttpCacheBundle\TagProvider;
 
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
-final class TagProvider implements TagProviderInterface
+class TagProvider implements TagProviderInterface
 {
     /**
      * @var array

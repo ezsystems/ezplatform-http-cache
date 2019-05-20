@@ -87,6 +87,7 @@ services:
 
     ezplatform.http_cache.tag_provider:
         class: "%ezplatform.http_cache.tag_provider.class%"
+        lazy: true
         arguments:
             - '@ezpublish.config.resolver.chain'
             - '%ezplatform.http_cache.tags_map%'

@@ -10,7 +10,9 @@
         }
     ],
     "require": {
-        "ezsystems/ezpublish-kernel": "^6.13.4@dev || ^7.3@dev || ^8.0@dev",
+        "ezsystems/ezpublish-kernel": "^8.0@dev",
+        "ezsystems/doctrine-dbal-schema": "^1.0@dev",
+        "ezsystems/ezplatform-rest": "^1.0@dev",
         "friendsofsymfony/http-cache-bundle": "^1.3.13",
         "symfony/symfony": "^2.8.40 || ^3.4.11"
     },

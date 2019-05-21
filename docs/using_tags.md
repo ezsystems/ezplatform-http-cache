@@ -9,7 +9,7 @@ They work in a similar way as [persistence cache tags in eZ Platform v2](https:/
 
 It works across all supported proxies _(see ["drivers"](drivers.md))_ by eZ Platform:
 - Symfony Proxy _(PHP based for single server usage, primarily for smaller web sites)_
-- [Varnish](https://varnish-cache.org/) with [xkey module](https://github.com/varnish/varnish-modules) _or_ [Varnish Plus](https://www.varnish-software.com/products/varnish-plus/) _(High performance reverse proxy)_
+- [Varnish](https://varnish-cache.org/) with [xkey module (0.10.2+)](https://github.com/varnish/varnish-modules) _or_ [Varnish Plus](https://www.varnish-software.com/products/varnish-plus/) _(High performance reverse proxy)_
 - [Fastly](https://www.fastly.com/) _(High performance reverse proxy, originally based on Varnish, worldwide as a CDN, driver available in eZ Platform Enterprise)_
 
 _In order to support several repositories on one installation, tags will be prefixed by

@@ -56,7 +56,7 @@ class VarnishPurgeClient implements PurgeClientInterface
         $headers = $this->getPurgeHeaders();
         $chunkSize = $this->determineTagsPerHeader($tags);
 
-        // NB! This requries varnish-modules 0.10.2, if you need support for varnish-moduls 0.9.x, use ezplatform-http-cache 0.8.x
+        // NB! This requries varnish-modules 0.10.2, if you need support for varnish-modules 0.9.x, use ezplatform-http-cache 0.8.x
         foreach (array_chunk($tags, $chunkSize) as $tagchunk) {
             $headers['key'] = implode(' ', $tagchunk);
             $this->cacheManager->invalidatePath(

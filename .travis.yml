@@ -17,18 +17,14 @@ env:
 matrix:
     fast_finish: true
     include:
-        - php: 5.6
-        - php: 7.0
         - php: 7.1
           env: CHECK_CS=true
         - php: 7.2
         # Functional
-        - php: 7.0
-          env: TEST_CMD="bin/behat --profile=rest --tags=~@broken --suite=fullJson" EZPLATFORM_BRANCH=1.13 PHP_IMAGE=ezsystems/php:7.0-v1
         - php: 7.1
           env: TEST_CMD="bin/behat --profile=rest --tags=~@broken --suite=fullJson"
         - php: 7.2
-          env: TEST_CMD="bin/phpunit -v vendor/ezsystems/ezpublish-kernel/eZ/Bundle/EzPublishRestBundle/Tests/Functional" SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'" PHP_IMAGE=ezsystems/php:7.2-v1
+          env: TEST_CMD="bin/phpunit -c vendor/ezsystems/ezplatform-rest/phpunit-integration-rest.xml" SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'" PHP_IMAGE=ezsystems/php:7.2-v1
 
 # test only master + stable (+ Pull requests)
 branches:

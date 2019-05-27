@@ -7,10 +7,10 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\Repository;
+use EzSystems\PlatformHttpCacheBundle\Handler\TagHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use FOS\HttpCache\Handler\TagHandler;
 
 /**
  * Rewrites the X-Location-Id HTTP header.
@@ -24,7 +24,7 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
 {
     const LOCATION_ID_HEADER = 'X-Location-Id';
 
-    /** @var \FOS\HttpCache\Handler\TagHandler */
+    /** @var \EzSystems\PlatformHttpCacheBundle\Handler\TagHandler */
     private $tagHandler;
 
     /** @var \eZ\Publish\API\Repository\Repository */

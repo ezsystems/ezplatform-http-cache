@@ -29,8 +29,8 @@ class DriverPass implements CompilerPassInterface
             // on to the purge client
             $configuredFosTagHandlerServiceId = 'ezplatform.http_cache.fos_tag_handler.xkey';
         }
-
-        $container->setAlias('fos_http_cache.handler.tag_handler', $configuredFosTagHandlerServiceId);
+        $container->setAlias('fos_http_cache.http.symfony_response_tagger', $configuredFosTagHandlerServiceId);
+        //        $container->setAlias('fos_http_cache.handler.tag_handler', $configuredFosTagHandlerServiceId);
     }
 
     public static function getTaggedService(ContainerBuilder $container, $tag)

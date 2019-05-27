@@ -29,52 +29,22 @@ class VarnishPurgeClient implements PurgeClientInterface
      */
     private $configResolver;
 
-    public function __construct(CacheManager $cacheManager, ConfigResolverInterface $configResolver)
-    {
+    public function __construct(
+        CacheManager $cacheManager,
+        ConfigResolverInterface $configResolver
+    ) {
         $this->cacheManager = $cacheManager;
         $this->configResolver = $configResolver;
     }
 
-    public function __destruct()
-    {
-        $this->cacheManager->flush();
-    }
-
     public function purge($tags)
     {
-        if (empty($tags)) {
-            return;
-        }
-
-        // For 5.4/1.x BC make sure to map any int to location id tag
-        $tags = array_unique(array_map(static function ($tag) {
-            return is_numeric($tag) ? 'location-' . $tag : $tag;
-        },
-            (array)$tags
-        ));
-
-        $headers = $this->getPurgeHeaders();
-        $chunkSize = $this->determineTagsPerHeader($tags);
-
-        // NB! This requries varnish-modules 0.10.2, if you need support for varnish-modules 0.9.x, use ezplatform-http-cache 0.8.x
-        foreach (array_chunk($tags, $chunkSize) as $tagchunk) {
-            $headers['key'] = implode(' ', $tagchunk);
-            $this->cacheManager->invalidatePath(
-                '/',
-                $headers
-            );
-        }
+        $this->cacheManager->invalidateTags($tags);
     }
 
     public function purgeAll()
     {
-        $headers = $this->getPurgeHeaders();
-        $headers['key'] = 'ez-all';
-
-        $this->cacheManager->invalidatePath(
-            '/',
-            $headers
-        );
+        $this->cacheManager->invalidateTags(['ez-all']);
     }
 
     /**

@@ -6,10 +6,10 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Controller;
 
+use EzSystems\PlatformHttpCacheBundle\Handler\TagHandler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\IpUtils;
-use FOS\HttpCacheBundle\Handler\TagHandler;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 class InvalidateTokenController
@@ -25,7 +25,7 @@ class InvalidateTokenController
     private $ttl;
 
     /**
-     * @var FOS\HttpCacheBundle\Handler\TagHandler
+     * @var \EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
      */
     private $tagHandler;
 

@@ -1,15 +1,26 @@
 parameters:
     ezplatform.http_cache.controller.invalidatetoken.class: EzSystems\PlatformHttpCacheBundle\Controller\InvalidateTokenController
     ezplatform.http_cache.listener.vary_header.class: EzSystems\PlatformHttpCacheBundle\EventListener\ConditionallyRemoveVaryHeaderListener
+    ezplatform.http_cache.proxy_client.http_dispatcher.class: FOS\HttpCache\ProxyClient\HttpDispatcher
 
 services:
-    ezplatform.http_cache.cache_manager:
-        parent: fos_http_cache.cache_manager
-        class: FOS\HttpCacheBundle\CacheManager
+    EzSystems\PlatformHttpCacheBundle\ProxyClient\HttpDispatcherFactory:
+        arguments:
+            - '@ezpublish.config.resolver'
+            - '@ezpublish.config.dynamic_setting.parser'
+            - '%ezplatform.http_cache.proxy_client.http_dispatcher.class%'
 
-    ezplatform.http_cache.proxy_client.varnish.factory:
-        class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishProxyClientFactory
-        arguments: ['@ezpublish.config.resolver', '@ezpublish.config.dynamic_setting.parser', '%fos_http_cache.proxy_client.varnish.class%']
+    FOS\HttpCache\ProxyClient\HttpDispatcher:
+        factory: 'EzSystems\PlatformHttpCacheBundle\ProxyClient\HttpDispatcherFactory:buildHttpDispatcher'
+        lazy: true
+        arguments:
+            - '%ezplatform.http_cache.varnish.http.servers%'
+            - '%ezplatform.http_cache.varnish.http.base_url%'
+
+    fos_http_cache.proxy_client.varnish:
+        class: FOS\HttpCache\ProxyClient\Varnish
+        arguments:
+            - '@FOS\HttpCache\ProxyClient\HttpDispatcher'
 
     ezplatform.http_cache.purge_client:
         alias: ezplatform.http_cache.purge_client_decorator
@@ -24,7 +35,7 @@ services:
     ezplatform.http_cache.purge_client.varnish:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient
         arguments:
-            - '@ezplatform.http_cache.cache_manager'
+            - '@fos_http_cache.cache_manager'
             - '@ezpublish.config.resolver'
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: http}
@@ -46,10 +57,10 @@ services:
     ezplatform.http_cache.fos_tag_handler.xkey:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
         arguments:
-         - '@ezplatform.http_cache.cache_manager'
          - '%ezplatform.http_cache.tags.header%'
-         - '@ezplatform.http_cache.purge_client'
          - '@ezplatform.http_cache.repository_tag_prefix'
+         - header_formatter: '@fos_http_cache.tag_handler.header_formatter'
+           strict: '%fos_http_cache.tag_handler.strict%'
 
     ezplatform.http_cache.user_context_provider.role_identify:
         class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify
@@ -62,7 +73,7 @@ services:
         arguments:
          - '@ezpublish.config.resolver'
          - "%ezplatform.http_cache.invalidate_token.ttl%"
-         - "@fos_http_cache.handler.tag_handler"
+         - "@fos_http_cache.http.symfony_response_tagger"
 
     ezplatform.http_cache.listener.vary_header:
         class: "%ezplatform.http_cache.listener.vary_header.class%"

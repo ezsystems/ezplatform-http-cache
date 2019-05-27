@@ -6,20 +6,30 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle;
 
-use FOS\HttpCacheBundle\SymfonyCache\EventDispatchingHttpCache;
 use EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore;
-use EzSystems\PlatformHttpCacheBundle\Proxy\UserContextSubscriber;
+use EzSystems\PlatformHttpCacheBundle\Proxy\UserContextListener;
+use FOS\HttpCache\SymfonyCache\EventDispatchingHttpCache;
+use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Custom AppCache.
  *
  * "deprecated" This and classes used here will be removed once this package moves to FosHttpCache 2.x.
  */
-class AppCache extends EventDispatchingHttpCache
+class AppCache extends HttpCache
 {
+    use EventDispatchingHttpCache;
+
+    public function __construct(KernelInterface $kernel, $cacheDir = null)
+    {
+        parent::__construct($kernel, $cacheDir);
+        $this->addSubscriber(new UserContextListener(['session_name_prefix' => 'eZSESSID']));
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -40,15 +50,6 @@ class AppCache extends EventDispatchingHttpCache
         }
 
         return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getDefaultSubscribers()
-    {
-        // Currently we don't reuse purge/refresh subscribers from FosHttpCache as we need custom invalidation logic
-        return [new UserContextSubscriber(['user_hash_header' => 'X-User-Hash', 'session_name_prefix' => 'eZSESSID'])];
     }
 
     /**

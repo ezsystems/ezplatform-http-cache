@@ -1,7 +1,8 @@
 proxy_client:
     default: varnish
     varnish:
-        servers: [$http_cache.purge_servers$]
+        http:
+            servers: ['$http_cache.purge_servers$']
 
 user_context:
     enabled: true
@@ -13,4 +14,4 @@ user_context:
 tags:
     # Configure tag header for FosHttpCache
     # See docs/using_tags.md for further info on usage
-    header: '%ezplatform.http_cache.tags.header%'
+    response_header: '%ezplatform.http_cache.tags.header%'

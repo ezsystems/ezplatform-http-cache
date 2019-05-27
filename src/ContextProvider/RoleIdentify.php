@@ -7,7 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\ContextProvider;
 
 use eZ\Publish\API\Repository\Repository;
-use FOS\HttpCache\UserContext\ContextProviderInterface;
+use FOS\HttpCache\UserContext\ContextProvider;
 use FOS\HttpCache\UserContext\UserContext;
 
 /**
@@ -20,7 +20,7 @@ use FOS\HttpCache\UserContext\UserContext;
  * For user unique policies like Owner limitation, make sure to handle this in controller/view layer, in
  * the future there might be a way in api to give hints to view/controllers about this more cleanly.
  */
-class RoleIdentify implements ContextProviderInterface
+class RoleIdentify implements ContextProvider
 {
     /**
      * @var \eZ\Publish\Core\Repository\Repository

@@ -2,12 +2,12 @@
 
 namespace EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value;
 
+use EzSystems\PlatformHttpCacheBundle\Handler\TagHandler;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger;
-use FOS\HttpCache\Handler\TagHandler;
 
 abstract class AbstractValueTagger implements ResponseTagger
 {
-    /** @var TagHandler */
+    /** @var \EzSystems\PlatformHttpCacheBundle\Handler\TagHandler */
     protected $tagHandler;
 
     public function __construct(TagHandler $tagHandler)

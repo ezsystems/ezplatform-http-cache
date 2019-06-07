@@ -35,7 +35,10 @@ class AppCache extends HttpCache
      */
     protected function createStore()
     {
-        return new TagAwareStore($this->cacheDir ?: $this->kernel->getCacheDir() . '/http_cache');
+        return new TagAwareStore([
+            'cache_tags_header' => 'xkey',
+            'cache_directory' => $this->cacheDir ?: $this->kernel->getCacheDir() . '/http_cache',
+        ]);
     }
 
     /**

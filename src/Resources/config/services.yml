@@ -52,7 +52,9 @@ services:
 
     ezplatform.http_cache.tag_aware_store:
         class: EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore
-        arguments: ['%ezplatform.http_cache.store.root%']
+        arguments:
+            - cache_directory: '%ezplatform.http_cache.store.root%'
+              cache_tags_header: 'xkey'
 
     ezplatform.http_cache.fos_tag_handler.xkey:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler

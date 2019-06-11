@@ -46,43 +46,4 @@ class VarnishPurgeClient implements PurgeClientInterface
     {
         $this->cacheManager->invalidateTags(['ez-all']);
     }
-
-    /**
-     * Adds an generic headers needed for purge (Host and Authentication).
-     *
-     * @return array
-     */
-    private function getPurgeHeaders()
-    {
-        $headers = [
-            'Host' => empty($_SERVER['SERVER_NAME']) ? parse_url($this->configResolver->getParameter('http_cache.purge_servers')[0], PHP_URL_HOST) : $_SERVER['SERVER_NAME'],
-        ];
-
-        if ($this->configResolver->hasParameter(self::INVALIDATE_TOKEN_PARAM)
-            && null !== ($token = $this->configResolver->getParameter(self::INVALIDATE_TOKEN_PARAM))
-        ) {
-            $headers[self::INVALIDATE_TOKEN_PARAM_NAME] = $token;
-        }
-
-        return $headers;
-    }
-
-    /**
-     * Get amount of tags per header, adapted from FOSHttpCache 2.x.
-     *
-     * @param array $tags
-     *
-     * @return int
-     */
-    private function determineTagsPerHeader(array $tags)
-    {
-        if (mb_strlen(implode(self::XKEY_TAG_SEPERATOR, $tags)) < self::DEFAULT_HEADER_LENGTH) {
-            return count($tags);
-        }
-
-        // Estimate the amount of tags by dividing the max header length by the largest tag (minus the glue length)
-        $tagsize = max(array_map('mb_strlen', $tags));
-
-        return floor(self::DEFAULT_HEADER_LENGTH / ($tagsize + strlen(self::XKEY_TAG_SEPERATOR))) ?: 1;
-    }
 }

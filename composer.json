@@ -13,9 +13,15 @@
         "ezsystems/ezpublish-kernel": "^8.0@dev",
         "ezsystems/ezplatform-rest": "^1.0@dev",
         "friendsofsymfony/http-cache-bundle": "^2.6.1",
-        "symfony/symfony": "^2.8.40 || ^3.4.11",
-        "psr/http-client": "^0.1",
-        "php-http/curl-client": "^1.7",
+        "symfony/http-foundation": "^4.3",
+        "symfony/http-kernel": "^4.3",
+        "symfony/dependency-injection": "^4.3",
+        "symfony/event-dispatcher": "^4.3",
+        "symfony/routing": "^4.3",
+        "symfony/yaml": "^4.3",
+        "symfony/config": "^4.3",
+        "psr/http-client": "^1.0",
+        "php-http/curl-client": "^2.0",
         "toflar/psr6-symfony-http-cache-store": "^2.0"
     },
     "require-dev": {

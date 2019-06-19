@@ -18,9 +18,10 @@ services:
             - '%ezplatform.http_cache.varnish.http.base_url%'
 
     fos_http_cache.proxy_client.varnish:
-        class: FOS\HttpCache\ProxyClient\Varnish
+        class: EzSystems\PlatformHttpCacheBundle\ProxyClient\Varnish
         arguments:
             - '@FOS\HttpCache\ProxyClient\HttpDispatcher'
+            - '%fos_http_cache.proxy_client.varnish.options%'
 
     ezplatform.http_cache.purge_client:
         alias: ezplatform.http_cache.purge_client_decorator

@@ -11,7 +11,6 @@ namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use InvalidArgumentException;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * HttpCache related compiler pass.
@@ -23,8 +22,7 @@ class HttpCachePass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $this->processHttpDispatcher($container);
-        $this->processCacheManager($container);
-//        $this->setProxyClient($container);
+        $this->processVarnishProxyClient($container);
     }
 
     private function processHttpDispatcher(ContainerBuilder $container)
@@ -37,12 +35,8 @@ class HttpCachePass implements CompilerPassInterface
         $httpDispatcher->replaceArgument(0, []);
     }
 
-    private function processCacheManager(ContainerBuilder $container)
+    private function processVarnishProxyClient(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('fos_http_cache.cache_manager')) {
-            return;
-        }
-
         if (!$container->hasDefinition('fos_http_cache.proxy_client.varnish')) {
             throw new InvalidArgumentException('Varnish proxy client must be enabled in FOSHttpCacheBundle');
         }
@@ -61,15 +55,5 @@ class HttpCachePass implements CompilerPassInterface
             'ezplatform.http_cache.varnish.http.base_url',
             $baseUrl
         );
-
-        // Forcing cache manager to use Varnish proxy client, for PURGE/BAN support.
-//        $cacheManagerDef = $container->findDefinition('ezplatform.http_cache.cache_manager');
-//        $cacheManagerDef->replaceArgument(0, new Reference('fos_http_cache.proxy_client.varnish'));
-    }
-
-    public function setProxyClient(ContainerBuilder $container)
-    {
-        // Injecting our own Varnish ProxyClient instead of FOS'
-        $container->setParameter('fos_http_cache.proxy_client.varnish.class', 'EzSystems\PlatformHttpCacheBundle\ProxyClient\Varnish');
     }
 }

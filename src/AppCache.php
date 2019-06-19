@@ -8,6 +8,7 @@ namespace EzSystems\PlatformHttpCacheBundle;
 
 use EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore;
 use EzSystems\PlatformHttpCacheBundle\Proxy\UserContextListener;
+use FOS\HttpCache\SymfonyCache\CacheInvalidation;
 use FOS\HttpCache\SymfonyCache\EventDispatchingHttpCache;
 use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -20,14 +21,22 @@ use Symfony\Component\HttpKernel\KernelInterface;
  *
  * "deprecated" This and classes used here will be removed once this package moves to FosHttpCache 2.x.
  */
-class AppCache extends HttpCache
+class AppCache extends HttpCache implements CacheInvalidation
 {
-    use EventDispatchingHttpCache;
+    use EventDispatchingHttpCache {
+        handle as protected baseHandle;
+        invalidate as protected baseInvalidate;
+    }
 
     public function __construct(KernelInterface $kernel, $cacheDir = null)
     {
         parent::__construct($kernel, $cacheDir);
         $this->addSubscriber(new UserContextListener(['session_name_prefix' => 'eZSESSID']));
+    }
+
+    public function fetch(Request $request, $catch = false)
+    {
+        return parent::fetch($request, $catch);
     }
 
     /**
@@ -46,7 +55,7 @@ class AppCache extends HttpCache
      */
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
-        $response = parent::handle($request, $type, $catch);
+        $response = $this->baseHandle($request, $type, $catch);
 
         if (!$this->getKernel()->isDebug()) {
             $this->cleanupHeadersForProd($response);
@@ -61,7 +70,7 @@ class AppCache extends HttpCache
     protected function invalidate(Request $request, $catch = false)
     {
         if ($request->getMethod() !== 'PURGE' && $request->getMethod() !== 'BAN') {
-            return parent::invalidate($request, $catch);
+            return $this->baseInvalidate($request, $catch);
         }
 
         // Reject all non-authorized clients

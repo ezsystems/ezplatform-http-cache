@@ -3,6 +3,8 @@ proxy_client:
     varnish:
         http:
             servers: ['$http_cache.purge_servers$']
+        tag_mode: 'purgekeys'
+        tags_header: 'key'
 
 user_context:
     enabled: true

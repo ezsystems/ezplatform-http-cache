@@ -50,6 +50,15 @@ class HttpDispatcherFactory
             $allServers = array_merge($allServers, (array)$configuredServers);
         }
 
+        if ($this->dynamicSettingParser->isDynamicSetting($baseUrl)) {
+            $baseUrlSettings = $this->dynamicSettingParser->parseDynamicSetting($baseUrl);
+            $baseUrl = $this->configResolver->getParameter(
+                $baseUrlSettings['param'],
+                $baseUrlSettings['namespace'],
+                $baseUrlSettings['scope']
+            );
+        }
+
         return new $this->httpDispatcherClass($allServers, $baseUrl);
     }
 }

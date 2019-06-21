@@ -24,7 +24,7 @@ class LocalPurgeClient implements PurgeClientInterface
         $this->cacheStore = $cacheStore;
     }
 
-    public function purge($tags)
+    public function purge(array $tags)
     {
         $this->cacheStore->invalidateTags($tags);
     }

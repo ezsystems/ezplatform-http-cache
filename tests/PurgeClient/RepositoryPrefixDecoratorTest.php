@@ -58,7 +58,7 @@ class RepositoryPrefixDecoratorTest extends TestCase
             ->method('getRepositoryPrefix')
             ->willReturn('');
 
-        $this->prefixDecorator->purge([123, 'content-44', 'ez-all']);
+        $this->prefixDecorator->purge(['location-123', 'content-44', 'ez-all']);
     }
 
     public function testPurgeWithPrefix()
@@ -73,7 +73,7 @@ class RepositoryPrefixDecoratorTest extends TestCase
             ->method('getRepositoryPrefix')
             ->willReturn('intranet_');
 
-        $this->prefixDecorator->purge([123, 'content-44', 'ez-all']);
+        $this->prefixDecorator->purge(['location-123', 'content-44', 'ez-all']);
     }
 
     public function testPurgeAll()

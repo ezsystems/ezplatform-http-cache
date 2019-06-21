@@ -16,9 +16,9 @@ interface PurgeClientInterface
      *
      * It's up to the implementor to decide whether to purge tags right away or to delegate to a separate process.
      *
-     * @param array|int $tags Array of tags to purge, int for BC (location-<int>).
+     * @param array $tags Array of tags to purge.
      */
-    public function purge($tags);
+    public function purge(array $tags);
 
     /**
      * Purge the whole http cache.

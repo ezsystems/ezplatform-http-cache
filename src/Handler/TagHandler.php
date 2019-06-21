@@ -6,17 +6,8 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Handler;
 
-use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
-use FOS\HttpCache\Exception\ExceptionCollection;
-use FOS\HttpCache\Exception\InvalidArgumentException;
-use FOS\HttpCache\Exception\UnsupportedProxyOperationException;
-use FOS\HttpCache\ProxyClient\Invalidation\PurgeCapable;
-use FOS\HttpCache\ResponseTagger as FOSResponseTagger;
-use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
 use FOS\HttpCacheBundle\Http\SymfonyResponseTagger;
-use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

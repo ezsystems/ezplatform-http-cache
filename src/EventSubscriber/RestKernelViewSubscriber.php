@@ -13,10 +13,10 @@ use EzSystems\EzPlatformRest\Server\Values\ContentTypeGroupList;
 use EzSystems\EzPlatformRest\Server\Values\ContentTypeGroupRefList;
 use EzSystems\EzPlatformRest\Server\Values\RestContentType;
 use EzSystems\EzPlatformRest\Server\Values\VersionList;
+use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use EzSystems\PlatformHttpCacheBundle\Handler\TagHandler;
 
 /**
  * Set cache tags on a few REST responses used by UI in order to be able to cache them.
@@ -27,10 +27,10 @@ use EzSystems\PlatformHttpCacheBundle\Handler\TagHandler;
  */
 class RestKernelViewSubscriber implements EventSubscriberInterface
 {
-    /** @var \EzSystems\PlatformHttpCacheBundle\Handler\TagHandler */
+    /** @var \FOS\HttpCache\ResponseTagger */
     private $tagHandler;
 
-    public function __construct(TagHandler $tagHandler)
+    public function __construct(ResponseTagger $tagHandler)
     {
         $this->tagHandler = $tagHandler;
     }

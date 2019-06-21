@@ -17,10 +17,13 @@ env:
 matrix:
     fast_finish: true
     include:
-        - php: 7.3
+        - name: "CS Check"
+          php: 7.3
           env: CHECK_CS=true
-        # Functional
-        - php: 7.3
+        - name: "PHP 7.3 PHPUnit & PHPSpec"
+          php: 7.3
+        - name: "PHP 7.3 Rest Functional Tests"
+          php: 7.3
           env:
             - TEST_CMD="bin/phpunit -c vendor/ezsystems/ezplatform-rest/phpunit-integration-rest.xml" SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'"
             - PHP_IMAGE=ezsystems/php:7.3-v1

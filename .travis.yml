@@ -17,12 +17,13 @@ env:
 matrix:
     fast_finish: true
     include:
-        - php: 7.1
+        - php: 7.3
           env: CHECK_CS=true
-        - php: 7.2
         # Functional
-        - php: 7.2
-          env: TEST_CMD="bin/phpunit -c vendor/ezsystems/ezplatform-rest/phpunit-integration-rest.xml" SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'" PHP_IMAGE=ezsystems/php:7.2-v1
+        - php: 7.3
+          env:
+            - TEST_CMD="bin/phpunit -c vendor/ezsystems/ezplatform-rest/phpunit-integration-rest.xml" SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'"
+            - PHP_IMAGE=ezsystems/php:7.3-v1
 
 # test only master + stable (+ Pull requests)
 branches:

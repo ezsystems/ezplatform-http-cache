@@ -37,7 +37,6 @@ services:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient
         arguments:
             - '@fos_http_cache.cache_manager'
-            - '@ezpublish.config.resolver'
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: http}
             - {name: ezplatform.http_cache.purge_client, purge_type: varnish}

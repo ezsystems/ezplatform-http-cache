@@ -19,9 +19,8 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
 {
     /** @var \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface */
     private $purgeClient;
-    /**
-     * @var \EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix
-     */
+
+    /** @var \EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix */
     private $prefixService;
 
     public function __construct(PurgeClientInterface $purgeClient, RepositoryTagPrefix $prefixService)
@@ -39,9 +38,6 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
         $repoPrefix = $this->prefixService->getRepositoryPrefix();
         $tags = array_map(
             static function ($tag) use ($repoPrefix) {
-                // Obsolete: for BC with older purge calls for BAN based HttpCache impl
-                $tag = is_numeric($tag) ? 'location-' . $tag : $tag;
-
                 // Prefix tags with repository prefix
                 return $repoPrefix . $tag;
             },

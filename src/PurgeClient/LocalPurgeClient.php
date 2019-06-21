@@ -16,9 +16,7 @@ use Toflar\Psr6HttpCacheStore\Psr6StoreInterface;
  */
 class LocalPurgeClient implements PurgeClientInterface
 {
-    /**
-     * @var \Toflar\Psr6HttpCacheStore\Psr6StoreInterface
-     */
+    /** @var \Toflar\Psr6HttpCacheStore\Psr6StoreInterface */
     protected $cacheStore;
 
     public function __construct(Psr6StoreInterface $cacheStore)
@@ -28,18 +26,11 @@ class LocalPurgeClient implements PurgeClientInterface
 
     public function purge($tags)
     {
-        if (empty($tags)) {
-            return;
-        }
-
         $this->cacheStore->invalidateTags($tags);
     }
 
-    /**
-     * @todo Adapt RequestAwarePurger to add a purgeAll method to avoid special requests like this known by tag storage.
-     */
     public function purgeAll()
     {
-        $this->cacheStore->purge('http://localhost/');
+        $this->cacheStore->invalidateTags(['ez-all']);
     }
 }

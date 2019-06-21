@@ -8,8 +8,6 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\PurgeClient;
 
-use EzSystems\PlatformHttpCacheBundle\RequestAwarePurger;
-use Symfony\Component\HttpFoundation\Request;
 use Toflar\Psr6HttpCacheStore\Psr6StoreInterface;
 
 /**
@@ -19,7 +17,7 @@ use Toflar\Psr6HttpCacheStore\Psr6StoreInterface;
 class LocalPurgeClient implements PurgeClientInterface
 {
     /**
-     * @var \EzSystems\PlatformHttpCacheBundle\RequestAwarePurger
+     * @var \Toflar\Psr6HttpCacheStore\Psr6StoreInterface
      */
     protected $cacheStore;
 
@@ -34,13 +32,6 @@ class LocalPurgeClient implements PurgeClientInterface
             return;
         }
 
-        $tags = array_map(
-            function ($tag) {
-                return is_numeric($tag) ? 'location-' . $tag : $tag;
-            },
-            (array)$tags
-        );
-
         $this->cacheStore->invalidateTags($tags);
     }
 
@@ -49,7 +40,6 @@ class LocalPurgeClient implements PurgeClientInterface
      */
     public function purgeAll()
     {
-        $purgeRequest = Request::create('http://localhost/', 'PURGE');
-        $this->cacheStore->purgeByRequest($purgeRequest);
+        $this->cacheStore->purge('http://localhost/');
     }
 }

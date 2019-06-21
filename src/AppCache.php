@@ -15,6 +15,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Toflar\Psr6HttpCacheStore\Psr6Store;
+use Toflar\Psr6HttpCacheStore\Psr6StoreInterface;
 
 /**
  * Custom AppCache.
@@ -44,8 +46,7 @@ class AppCache extends HttpCache implements CacheInvalidation
      */
     protected function createStore()
     {
-        return new TagAwareStore([
-            'cache_tags_header' => 'xkey',
+        return new Psr6Store([
             'cache_directory' => $this->cacheDir ?: $this->kernel->getCacheDir() . '/http_cache',
         ]);
     }
@@ -79,12 +80,7 @@ class AppCache extends HttpCache implements CacheInvalidation
         }
 
         $response = new Response();
-        $store = $this->getStore();
-        if ($store instanceof RequestAwarePurger) {
-            $result = $store->purgeByRequest($request);
-        } else {
-            $result = $store->purge($request->getUri());
-        }
+        $result = $this->getStore()->purge($request->getUri());
 
         if ($result === true) {
             $response->setStatusCode(200, 'Purged');

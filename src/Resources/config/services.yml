@@ -44,18 +44,14 @@ services:
 
     ezplatform.http_cache.purge_client.local:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient
-        arguments: ['@ezplatform.http_cache.store']
+        arguments: ['@ezplatform.http_cache.tag_aware_store']
         tags:
             - {name: ezplatform.http_cache.purge_client, purge_type: local}
 
-    ezplatform.http_cache.store:
-        alias: ezplatform.http_cache.tag_aware_store
-
     ezplatform.http_cache.tag_aware_store:
-        class: EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore
+        class: Toflar\Psr6HttpCacheStore\Psr6Store
         arguments:
             - cache_directory: '%ezplatform.http_cache.store.root%'
-              cache_tags_header: 'xkey'
 
     ezplatform.http_cache.fos_tag_handler.xkey:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler

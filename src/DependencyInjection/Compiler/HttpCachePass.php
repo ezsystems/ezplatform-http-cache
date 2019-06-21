@@ -31,8 +31,9 @@ class HttpCachePass implements CompilerPassInterface
             return;
         }
 
-        $httpDispatcher = $container->findDefinition('fos_http_cache.proxy_client.varnish.http_dispatcher');
-        $httpDispatcher->replaceArgument(0, []);
+        //Remove FOS default httpDispatcher definition as it fails at validating when using dynamicSettings.
+        //Use \EzSystems\PlatformHttpCacheBundle\ProxyClient\HttpDispatcherFactory instead.
+        $container->removeDefinition('fos_http_cache.proxy_client.varnish.http_dispatcher');
     }
 
     private function processVarnishProxyClient(ContainerBuilder $container)

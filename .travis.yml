@@ -21,8 +21,6 @@ matrix:
           env: CHECK_CS=true
         - php: 7.2
         # Functional
-        - php: 7.1
-          env: TEST_CMD="bin/behat --profile=rest --tags=~@broken --suite=fullJson"
         - php: 7.2
           env: TEST_CMD="bin/phpunit -c vendor/ezsystems/ezplatform-rest/phpunit-integration-rest.xml" SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'" PHP_IMAGE=ezsystems/php:7.2-v1
 

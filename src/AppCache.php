@@ -9,6 +9,8 @@ namespace EzSystems\PlatformHttpCacheBundle;
 use EzSystems\PlatformHttpCacheBundle\Proxy\UserContextListener;
 use FOS\HttpCache\SymfonyCache\CacheInvalidation;
 use FOS\HttpCache\SymfonyCache\EventDispatchingHttpCache;
+use FOS\HttpCache\SymfonyCache\PurgeListener;
+use FOS\HttpCache\SymfonyCache\PurgeTagsListener;
 use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,13 +27,14 @@ class AppCache extends HttpCache implements CacheInvalidation
 {
     use EventDispatchingHttpCache {
         handle as protected baseHandle;
-        invalidate as protected baseInvalidate;
     }
 
     public function __construct(KernelInterface $kernel, $cacheDir = null)
     {
         parent::__construct($kernel, $cacheDir);
         $this->addSubscriber(new UserContextListener(['session_name_prefix' => 'eZSESSID']));
+        $this->addSubscriber(new PurgeTagsListener(['tags_method' => 'PURGE', 'client_ips' => $this->getInternalAllowedIPs()]));
+        $this->addSubscriber(new PurgeListener(['client_ips' => $this->getInternalAllowedIPs()]));
     }
 
     public function fetch(Request $request, $catch = false)
@@ -58,32 +61,6 @@ class AppCache extends HttpCache implements CacheInvalidation
 
         if (!$this->getKernel()->isDebug()) {
             $this->cleanupHeadersForProd($response);
-        }
-
-        return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function invalidate(Request $request, $catch = false)
-    {
-        if ($request->getMethod() !== 'PURGE' && $request->getMethod() !== 'BAN') {
-            return $this->baseInvalidate($request, $catch);
-        }
-
-        // Reject all non-authorized clients
-        if (!\in_array($request->getClientIp(), $this->getInternalAllowedIPs())) {
-            return new Response('', 405);
-        }
-
-        $response = new Response();
-        $result = $this->getStore()->purge($request->getUri());
-
-        if ($result === true) {
-            $response->setStatusCode(200, 'Purged');
-        } else {
-            $response->setStatusCode(404, 'Not purged');
         }
 
         return $response;

@@ -42,7 +42,7 @@ class DriverPass implements CompilerPassInterface
             $currentPurgeTypeId = null;
             $currentTagHandlerServiceId = null;
             foreach ($attributes as $attribute) {
-                if (array_key_exists('purge_type', $attribute)) {
+                if (\array_key_exists('purge_type', $attribute)) {
                     $currentPurgeTypeId = $attribute['purge_type'];
                 }
                 if ($currentPurgeTypeId !== null) {

@@ -21,9 +21,7 @@ function time()
 namespace eZ\Publish\Core\MVC\Symfony\Cache\Tests;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient;
-use EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
 use Toflar\Psr6HttpCacheStore\Psr6StoreInterface;
 
 class LocalPurgeClientTest extends TestCase

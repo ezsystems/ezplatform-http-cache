@@ -6,7 +6,6 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle;
 
-use EzSystems\PlatformHttpCacheBundle\Proxy\TagAwareStore;
 use EzSystems\PlatformHttpCacheBundle\Proxy\UserContextListener;
 use FOS\HttpCache\SymfonyCache\CacheInvalidation;
 use FOS\HttpCache\SymfonyCache\EventDispatchingHttpCache;
@@ -16,7 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Toflar\Psr6HttpCacheStore\Psr6Store;
-use Toflar\Psr6HttpCacheStore\Psr6StoreInterface;
 
 /**
  * Custom AppCache.
@@ -75,7 +73,7 @@ class AppCache extends HttpCache implements CacheInvalidation
         }
 
         // Reject all non-authorized clients
-        if (!in_array($request->getClientIp(), $this->getInternalAllowedIPs())) {
+        if (!\in_array($request->getClientIp(), $this->getInternalAllowedIPs())) {
             return new Response('', 405);
         }
 

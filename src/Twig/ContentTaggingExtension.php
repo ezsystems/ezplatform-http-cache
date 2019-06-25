@@ -34,7 +34,7 @@ class ContentTaggingExtension extends Twig_Extension
     {
         return [
             new Twig_SimpleFunction(
-                'ez_http_tag_location',
+                'ez_http_cache_tag_location',
                 [$this, 'tagHttpCacheForLocation']
             ),
         ];

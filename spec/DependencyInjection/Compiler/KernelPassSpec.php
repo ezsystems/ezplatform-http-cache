@@ -15,7 +15,7 @@ class KernelPassSpec extends ObjectBehavior
         $this->shouldHaveType(KernelPass::class);
     }
 
-    function it_disables_the_kernels_httpcache_services(ContainerBuilder $container, Definition $cacheClearer, Definition $hashGenerator)
+    function it_disables_the_kernels_httpcache_services(ContainerBuilder $container, Definition $hashGenerator)
     {
         $container->getAlias('ezpublish.http_cache.purge_client')->willReturn('some_random_id');
         $container->hasAlias('ezpublish.http_cache.purger')->willReturn(true);
@@ -30,7 +30,6 @@ class KernelPassSpec extends ObjectBehavior
             'ezpublish.http_cache.purger.some_other_purger' => new Definition(),
             'witness_service' => new Definition(),
         ]);
-        $container->getDefinition('cache_clearer')->willReturn($cacheClearer);
         $container->removeDefinition('ezpublish.http_cache.signalslot.some_slot')->shouldBeCalled();
         $container->removeDefinition('ezpublish.http_cache.signalslot.some_other_slot')->shouldBeCalled();
         $container->removeDefinition('ezpublish.cache_clear.content.some_listener')->shouldBeCalled();
@@ -38,21 +37,6 @@ class KernelPassSpec extends ObjectBehavior
         $container->removeDefinition('ezpublish.http_cache.purger.some_purger')->shouldBeCalled();
         $container->removeDefinition('ezpublish.http_cache.purger.some_other_purger')->shouldBeCalled();
         $container->removeAlias('ezpublish.http_cache.purger')->shouldBeCalled();
-
-        $cacheClearer->getArguments()->willReturn([
-            [
-                'ezpublish.http_cache.witness_service',
-                'ezpublish.http_cache.purger.some_purger',
-                'ezpublish.http_cache.purger.some_other_purger',
-                'witness_service'
-            ]
-        ]);
-        $cacheClearer->setArguments([
-            [
-                'ezpublish.http_cache.witness_service',
-                'witness_service'
-            ]
-        ])->shouldBeCalled();
 
         $container->hasDefinition('ezpublish.user.identity_definer.role_id')->willReturn(true);
         $container->removeDefinition('ezpublish.user.identity_definer.role_id')->willReturn(true);

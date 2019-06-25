@@ -22,12 +22,12 @@ class VarnishPurgeClient implements PurgeClientInterface
         $this->cacheManager = $cacheManager;
     }
 
-    public function purge(array $tags)
+    public function purge(array $tags): void
     {
         $this->cacheManager->invalidateTags($tags);
     }
 
-    public function purgeAll()
+    public function purgeAll(): void
     {
         $this->cacheManager->invalidateTags(['ez-all']);
     }

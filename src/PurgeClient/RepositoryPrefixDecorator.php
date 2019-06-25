@@ -29,7 +29,7 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
         $this->prefixService = $prefixService;
     }
 
-    public function purge($tags)
+    public function purge($tags): void
     {
         if (empty($tags)) {
             return;
@@ -47,7 +47,7 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
         $this->purgeClient->purge($tags);
     }
 
-    public function purgeAll()
+    public function purgeAll(): void
     {
         $this->purgeClient->purgeAll();
     }

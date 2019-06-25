@@ -18,12 +18,12 @@ interface PurgeClientInterface
      *
      * @param array $tags Array of tags to purge.
      */
-    public function purge(array $tags);
+    public function purge(array $tags): void;
 
     /**
      * Purge the whole http cache.
      *
      * This will purge cache for all repositories, to purge for only current repository call ::purge(['ez-all']).
      */
-    public function purgeAll();
+    public function purgeAll(): void;
 }

@@ -20,11 +20,14 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TagHandler extends SymfonyResponseTagger
 {
+    /** @var \EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix */
     private $prefixService;
+
+    /** @var string */
     private $tagsHeader;
 
     public function __construct(
-        $tagsHeader,
+        string $tagsHeader,
         RepositoryTagPrefix $prefixService,
         array $options = []
     ) {
@@ -35,16 +38,6 @@ class TagHandler extends SymfonyResponseTagger
         $this->addTags(['ez-all']);
     }
 
-    /**
-     * Tag a symfony response with the previously added tags.
-     *
-     * @param Response $response
-     * @param bool     $replace  Whether to replace the current tags on the
-     *                           response. If false, parses the header to merge
-     *                           tags
-     *
-     * @return $this
-     */
     public function tagSymfonyResponse(Response $response, $replace = false)
     {
         $tags = [];

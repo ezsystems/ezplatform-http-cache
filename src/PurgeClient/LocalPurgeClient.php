@@ -24,12 +24,12 @@ class LocalPurgeClient implements PurgeClientInterface
         $this->cacheStore = $cacheStore;
     }
 
-    public function purge(array $tags)
+    public function purge(array $tags): void
     {
         $this->cacheStore->invalidateTags($tags);
     }
 
-    public function purgeAll()
+    public function purgeAll(): void
     {
         $this->cacheStore->invalidateTags(['ez-all']);
     }

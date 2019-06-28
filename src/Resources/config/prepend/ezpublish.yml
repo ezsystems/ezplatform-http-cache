@@ -1,0 +1,5 @@
+system:
+    default:
+        field_templates:
+            -   template: '@EzSystemsPlatformHttpCache/fields/content_fields.html.twig'
+                priority: 5

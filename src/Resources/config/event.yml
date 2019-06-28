@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autoconfigure: true
+        autowire: true
+        public: false
+
+    EzSystems\PlatformHttpCacheBundle\EventSubscriber\CachePurge\:
+        resource: '../../EventSubscriber/CachePurge/*'
+        arguments:
+            $purgeClient: '@ezplatform.http_cache.purge_client'
+            $locationHandler: '@ezpublish.spi.persistence.cache.locationHandler'
+            $urlHandler: '@ezpublish.spi.persistence.cache.urlHandler'

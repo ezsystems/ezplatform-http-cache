@@ -48,6 +48,7 @@ class AppCache extends HttpCache implements CacheInvalidation
     protected function createStore()
     {
         return new Psr6Store([
+            'cache_tags_header' => 'xkey',
             'cache_directory' => $this->cacheDir ?: $this->kernel->getCacheDir() . '/http_cache',
         ]);
     }

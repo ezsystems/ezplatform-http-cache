@@ -40,34 +40,33 @@ class TagHandler extends SymfonyResponseTagger
 
     public function tagSymfonyResponse(Response $response, $replace = false)
     {
+        if (!$this->hasTags()) {
+            return $this;
+        }
+
         $tags = [];
-        if (!$replace && $response->headers->has($this->tagsHeader)) {
-            $headers = $response->headers->get($this->tagsHeader, null, false);
-            if (!empty($headers)) {
-                // handle both both comma (FOS) and space (this bundle/xkey/fastly) separated strings
-                // As there can be more requests going on, we don't add these to tag handler (ez-user-context-hash)
-                $tags = preg_split("/[\s,]+/", implode(' ', $headers));
+        if (!$replace && $response->headers->has($this->getTagsHeaderName())) {
+            $header = $response->headers->get($this->getTagsHeaderName());
+            if ('' !== $header) {
+                $tags = explode(',', $response->headers->get($this->getTagsHeaderName()));
             }
         }
 
-        if ($this->hasTags()) {
-            $tags = array_merge($tags, explode(',', $this->getTagsHeaderValue()));
-
-            // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
-            $repoPrefix = $this->prefixService->getRepositoryPrefix();
-            if (!empty($repoPrefix)) {
-                $tags = array_map(
-                    static function ($tag) use ($repoPrefix) {
-                        return $repoPrefix . $tag;
-                    },
-                    $tags
-                );
-                // Also add a un-prefixed `ez-all` in order to be able to purge all across repos
-                $tags[] = 'ez-all';
-            }
-
-            $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
+        $repoPrefix = $this->prefixService->getRepositoryPrefix();
+        if (!empty($repoPrefix)) {
+            $tags = array_map(
+                static function ($tag) use ($repoPrefix) {
+                    return $repoPrefix . $tag;
+                },
+                $tags
+            );
+            // Also add a un-prefixed `ez-all` in order to be able to purge all across repos
+            $tags[] = 'ez-all';
         }
+        $this->addTags($tags);
+
+        $response->headers->set($this->getTagsHeaderName(), $this->getTagsHeaderValue());
+        $this->clear();
 
         return $this;
     }

@@ -56,7 +56,7 @@ services:
         class: FOS\HttpCache\TagHeaderFormatter\CommaSeparatedTagHeaderFormatter
         arguments:
             - '%fos_http_cache.tag_handler.response_header%'
-            - "parameter('ezpublish.http_cache.purge_type') == 'local' ? ',' : ' '"
+            - "@=parameter('ezpublish.http_cache.purge_type') == 'local' ? ',' : ' '"
 
     ezplatform.http_cache.fos_tag_handler.xkey:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler

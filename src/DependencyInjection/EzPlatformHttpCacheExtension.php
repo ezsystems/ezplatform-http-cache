@@ -48,6 +48,11 @@ class EzPlatformHttpCacheExtension extends Extension implements PrependExtension
         $config = Yaml::parse(file_get_contents($configFile));
         $container->prependExtensionConfig('fos_http_cache', $config);
         $container->addResource(new FileResource($configFile));
+
+        // Override Core views
+        $coreExtensionConfigFile = realpath(__DIR__ . '/../Resources/config/prepend/ezpublish.yml');
+        $container->prependExtensionConfig('ezpublish', Yaml::parseFile($coreExtensionConfigFile));
+        $container->addResource(new FileResource($coreExtensionConfigFile));
     }
 
     public function addExtraConfigParser(ParserInterface $configParser)

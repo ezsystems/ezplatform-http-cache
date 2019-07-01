@@ -32,6 +32,14 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    EzSystems\PlatformHttpCacheBundle\EventSubscriber\UserContextSiteAccessMatchSubscriber:
+        decorates: ezpublish.siteaccess_match_listener
+        arguments:
+            - '@EzSystems\PlatformHttpCacheBundle\EventSubscriber\UserContextSiteAccessMatchSubscriber.inner'
+            - '@fos_http_cache.user_context.request_matcher'
+        tags:
+            - { name: kernel.event_subscriber }
+
     # ResponseConfigurator
     ezplatform.view_cache.response_configurator:
         class: EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ConfigurableResponseCacheConfigurator

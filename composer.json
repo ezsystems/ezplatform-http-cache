@@ -10,8 +10,8 @@
         }
     ],
     "require": {
-        "ezsystems/ezpublish-kernel": "^8.0@dev",
-        "ezsystems/ezplatform-rest": "^1.0@dev",
+        "ezsystems/ezpublish-kernel": "^8.0@beta",
+        "ezsystems/ezplatform-rest": "^1.0@beta",
         "friendsofsymfony/http-cache-bundle": "^2.6.1",
         "symfony/http-foundation": "^4.3",
         "symfony/http-kernel": "^4.3",

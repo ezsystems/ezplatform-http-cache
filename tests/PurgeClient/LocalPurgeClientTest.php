@@ -20,26 +20,35 @@ function time()
 
 namespace eZ\Publish\Core\MVC\Symfony\Cache\Tests;
 
-use EzSystems\PlatformHttpCacheBundle\RequestAwarePurger;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\LocalPurgeClient;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
+use Toflar\Psr6HttpCacheStore\Psr6StoreInterface;
 
 class LocalPurgeClientTest extends TestCase
 {
+    /** @var \PHPUnit\Framework\MockObject\MockObject|\Toflar\Psr6HttpCacheStore\Psr6StoreInterface */
+    private $store;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->store = $this->createMock(Psr6StoreInterface::class);
+    }
+
     public function testPurge()
     {
-        $locationIds = array(123, 456, 789);
-        $expectedBanRequest = Request::create('http://localhost', 'PURGE');
-        $expectedBanRequest->headers->set('key', 'location-123 location-456 location-789');
+        $keys = array_map(static function ($id) {
+            return "location-$id";
+        },
+            [123, 456, 789]
+        );
 
-        $cacheStore = $this->createMock(RequestAwarePurger::class);
-        $cacheStore
+        $this->store
             ->expects($this->once())
-            ->method('purgeByRequest')
-            ->with($this->equalTo($expectedBanRequest));
+            ->method('invalidateTags')
+            ->with($keys);
 
-        $purgeClient = new LocalPurgeClient($cacheStore);
-        $purgeClient->purge($locationIds);
+        $purgeClient = new LocalPurgeClient($this->store);
+        $purgeClient->purge($keys);
     }
 }

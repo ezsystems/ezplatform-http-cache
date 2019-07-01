@@ -11,7 +11,6 @@ namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use InvalidArgumentException;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * HttpCache related compiler pass.
@@ -22,42 +21,40 @@ class HttpCachePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $this->processCacheManager($container);
-        $this->setProxyClient($container);
+        $this->processHttpDispatcher($container);
+        $this->processVarnishProxyClient($container);
     }
 
-    private function processCacheManager(ContainerBuilder $container)
+    private function processHttpDispatcher(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('ezplatform.http_cache.cache_manager')) {
+        if (!$container->hasDefinition('fos_http_cache.proxy_client.varnish.http_dispatcher')) {
             return;
         }
 
-        // Remove so 7.0 & 6.x kernels skip HttpCachePass
-        $container->removeAlias('ezpublish.http_cache.cache_manager');
+        //Remove FOS default httpDispatcher definition as it fails at validating when using dynamicSettings.
+        //Use \EzSystems\PlatformHttpCacheBundle\ProxyClient\HttpDispatcherFactory instead.
+        $container->removeDefinition('fos_http_cache.proxy_client.varnish.http_dispatcher');
+    }
 
+    private function processVarnishProxyClient(ContainerBuilder $container)
+    {
         if (!$container->hasDefinition('fos_http_cache.proxy_client.varnish')) {
             throw new InvalidArgumentException('Varnish proxy client must be enabled in FOSHttpCacheBundle');
         }
 
-        $varnishClientDef = $container->findDefinition('fos_http_cache.proxy_client.varnish');
-        $varnishClientDef->setFactory(
-            [
-                new Reference('ezplatform.http_cache.proxy_client.varnish.factory'),
-                'buildProxyClient',
-            ]
+        $fosConfig = array_merge(...$container->getExtensionConfig('fos_http_cache'));
+
+        $servers = $fosConfig['proxy_client']['varnish']['http']['servers'] ?? [];
+        $baseUrl = $fosConfig['proxy_client']['varnish']['http']['base_url'] ?? '';
+
+        $container->setParameter(
+            'ezplatform.http_cache.varnish.http.servers',
+            $servers
         );
-        // Set it lazy as it can be loaded during cache warming and factory depends on ConfigResolver while cache warming
-        // occurs before SA matching.
-        $varnishClientDef->setLazy(true);
 
-        // Forcing cache manager to use Varnish proxy client, for PURGE/BAN support.
-        $cacheManagerDef = $container->findDefinition('ezplatform.http_cache.cache_manager');
-        $cacheManagerDef->replaceArgument(0, new Reference('fos_http_cache.proxy_client.varnish'));
-    }
-
-    public function setProxyClient(ContainerBuilder $container)
-    {
-        // Injecting our own Varnish ProxyClient instead of FOS'
-        $container->setParameter('fos_http_cache.proxy_client.varnish.class', 'EzSystems\PlatformHttpCacheBundle\ProxyClient\Varnish');
+        $container->setParameter(
+            'ezplatform.http_cache.varnish.http.base_url',
+            $baseUrl
+        );
     }
 }

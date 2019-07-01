@@ -5,8 +5,6 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\ResponseTagger;
 
-use Symfony\Component\HttpFoundation\Response;
-
 /**
  * Tags a Response based on data from a value.
  */

@@ -1,57 +1,38 @@
 <?php
 
 /**
- * File containing the VarnishProxyClientFactory class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
-namespace EzSystems\PlatformHttpCacheBundle\PurgeClient;
+declare(strict_types=1);
+
+namespace EzSystems\PlatformHttpCacheBundle\ProxyClient;
 
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\SiteAccessAware\DynamicSettingParserInterface;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
-/**
- * Factory for Varnish proxy client.
- */
-class VarnishProxyClientFactory
+class HttpDispatcherFactory
 {
-    /**
-     * @var ConfigResolverInterface
-     */
+    /** @var \eZ\Publish\Core\MVC\ConfigResolverInterface */
     private $configResolver;
 
-    /**
-     * @var DynamicSettingParserInterface
-     */
+    /** @var \eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\SiteAccessAware\DynamicSettingParserInterface */
     private $dynamicSettingParser;
 
-    /**
-     * Configured class for Varnish proxy client service.
-     *
-     * @var string
-     */
-    private $proxyClientClass;
+    /** @var string */
+    private $httpDispatcherClass;
 
     public function __construct(
         ConfigResolverInterface $configResolver,
         DynamicSettingParserInterface $dynamicSettingParser,
-        $proxyClientClass
+        string $httpDispatcherClass
     ) {
         $this->configResolver = $configResolver;
         $this->dynamicSettingParser = $dynamicSettingParser;
-        $this->proxyClientClass = $proxyClientClass;
+        $this->httpDispatcherClass = $httpDispatcherClass;
     }
 
-    /**
-     * Builds the proxy client, taking dynamically defined servers into account.
-     *
-     * @param array $servers
-     * @param string $baseUrl
-     *
-     * @return \FOS\HttpCache\ProxyClient\Varnish
-     */
-    public function buildProxyClient(array $servers, $baseUrl)
+    public function buildHttpDispatcher(array $servers, string $baseUrl = '')
     {
         $allServers = array();
         foreach ($servers as $server) {
@@ -69,8 +50,15 @@ class VarnishProxyClientFactory
             $allServers = array_merge($allServers, (array)$configuredServers);
         }
 
-        $class = $this->proxyClientClass;
+        if ($this->dynamicSettingParser->isDynamicSetting($baseUrl)) {
+            $baseUrlSettings = $this->dynamicSettingParser->parseDynamicSetting($baseUrl);
+            $baseUrl = $this->configResolver->getParameter(
+                $baseUrlSettings['param'],
+                $baseUrlSettings['namespace'],
+                $baseUrlSettings['scope']
+            );
+        }
 
-        return new $class($allServers, $baseUrl);
+        return new $this->httpDispatcherClass($allServers, $baseUrl);
     }
 }

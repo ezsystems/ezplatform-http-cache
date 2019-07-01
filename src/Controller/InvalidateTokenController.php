@@ -6,10 +6,10 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Controller;
 
+use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\IpUtils;
-use FOS\HttpCacheBundle\Handler\TagHandler;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 class InvalidateTokenController
@@ -25,7 +25,7 @@ class InvalidateTokenController
     private $ttl;
 
     /**
-     * @var FOS\HttpCacheBundle\Handler\TagHandler
+     * @var \EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
      */
     private $tagHandler;
 
@@ -33,10 +33,10 @@ class InvalidateTokenController
      * TokenController constructor.
      * @param ConfigResolverInterface $configResolver
      * @param int $ttl
-     * @param TagHandler $tagHandler
+     * @param ResponseTagger $tagHandler
      * @internal param string $invalidatetoken
      */
-    public function __construct(ConfigResolverInterface $configResolver, $ttl, TagHandler $tagHandler)
+    public function __construct(ConfigResolverInterface $configResolver, $ttl, ResponseTagger $tagHandler)
     {
         $this->configResolver = $configResolver;
         $this->ttl = $ttl;

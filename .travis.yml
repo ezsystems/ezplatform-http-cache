@@ -7,24 +7,27 @@ cache:
     directories:
         - $HOME/.composer/cache/files
 
-
 env:
   global:
     # For functional tests
     - COMPOSE_FILE="doc/docker/base-dev.yml:doc/docker/selenium.yml"
-    - SYMFONY_ENV=behat
+    - APP_ENV=behat
 
 matrix:
     fast_finish: true
     include:
-        - php: 7.1
+        - name: "CS Check"
+          php: 7.3
           env: CHECK_CS=true
-        - php: 7.2
-        # Functional
-        - php: 7.1
-          env: TEST_CMD="bin/behat --profile=rest --tags=~@broken --suite=fullJson"
-        - php: 7.2
-          env: TEST_CMD="bin/phpunit -c vendor/ezsystems/ezplatform-rest/phpunit-integration-rest.xml" SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'" PHP_IMAGE=ezsystems/php:7.2-v1
+        - name: "PHP 7.3 PHPUnit & PHPSpec"
+          php: 7.3
+        - name: "PHP 7.3 Rest Functional Tests"
+          php: 7.3
+          env:
+            - REST_TEST_CONFIG="phpunit-integration-rest.xml" TEST_CMD="./bin/.travis/run_rest_tests.sh"
+            - APP_DEBUG=1
+            - SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'"
+            - PHP_IMAGE=ezsystems/php:7.3-v1
 
 # test only master + stable (+ Pull requests)
 branches:
@@ -41,8 +44,8 @@ before_script:
     - if [ "${SYMFONY_CMD}" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user www-data app sh -c "bin/console ${SYMFONY_CMD}" ; fi
 
 script:
-    - if [ "$TEST_CMD" = "" ] ; then php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty ; fi
-    - if [ "$TEST_CMD" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user www-data app sh -c "$TEST_CMD" ; fi
+    - if [ "$TEST_CMD" = "" ] && [ "$CHECK_CS" != "true" ] ; then php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty ; fi
+    - if [ "$REST_TEST_CONFIG" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user www-data app sh -c "$TEST_CMD"  ; fi
     - if [ "$CHECK_CS" = "true" ]; then phpenv config-rm xdebug.ini && ./vendor/bin/php-cs-fixer fix -v --dry-run --diff --show-progress=estimating; fi
 
 notifications:

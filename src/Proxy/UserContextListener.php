@@ -8,7 +8,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Proxy;
 
-use FOS\HttpCache\SymfonyCache\UserContextSubscriber as BaseUserContextSubscriber;
+use FOS\HttpCache\SymfonyCache\UserContextListener as BaseUserContextListener;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * {@inheritdoc}
  */
-class UserContextSubscriber extends BaseUserContextSubscriber
+class UserContextListener extends BaseUserContextListener
 {
     protected function cleanupHashLookupRequest(Request $hashLookupRequest, Request $originalRequest)
     {

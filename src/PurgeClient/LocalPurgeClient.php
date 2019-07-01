@@ -8,8 +8,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\PurgeClient;
 
-use EzSystems\PlatformHttpCacheBundle\RequestAwarePurger;
-use Symfony\Component\HttpFoundation\Request;
+use Toflar\Psr6HttpCacheStore\Psr6StoreInterface;
 
 /**
  * LocalPurgeClient emulates an Http PURGE request to be received by the Proxy Tag cache store.
@@ -17,41 +16,21 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class LocalPurgeClient implements PurgeClientInterface
 {
-    /**
-     * @var \EzSystems\PlatformHttpCacheBundle\RequestAwarePurger
-     */
+    /** @var \Toflar\Psr6HttpCacheStore\Psr6StoreInterface */
     protected $cacheStore;
 
-    public function __construct(RequestAwarePurger $cacheStore)
+    public function __construct(Psr6StoreInterface $cacheStore)
     {
         $this->cacheStore = $cacheStore;
     }
 
-    public function purge($tags)
+    public function purge(array $tags): void
     {
-        if (empty($tags)) {
-            return;
-        }
-
-        $tags = array_map(
-            function ($tag) {
-                return is_numeric($tag) ? 'location-' . $tag : $tag;
-            },
-            (array)$tags
-        );
-
-        $purgeRequest = Request::create('http://localhost/', 'PURGE');
-        $purgeRequest->headers->set('key', implode(' ', $tags));
-        $this->cacheStore->purgeByRequest($purgeRequest);
+        $this->cacheStore->invalidateTags($tags);
     }
 
-    /**
-     * @todo Adapt RequestAwarePurger to add a purgeAll method to avoid special requests like this known by tag storage.
-     */
-    public function purgeAll()
+    public function purgeAll(): void
     {
-        $purgeRequest = Request::create('http://localhost/', 'PURGE');
-        $purgeRequest->headers->set('X-Location-Id', '*');
-        $this->cacheStore->purgeByRequest($purgeRequest);
+        $this->cacheStore->invalidateTags(['ez-all']);
     }
 }

@@ -5,9 +5,8 @@
  */
 namespace spec\EzSystems\PlatformHttpCacheBundle\Handler;
 
-use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
-
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
+use FOS\HttpCache\TagHeaderFormatter\CommaSeparatedTagHeaderFormatter;
 use FOS\HttpCacheBundle\CacheManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -18,7 +17,6 @@ class TagHandlerSpec extends ObjectBehavior
 {
     public function let(
         CacheManager $cacheManager,
-        PurgeClientInterface $purgeClient,
         Response $response,
         ResponseHeaderBag $responseHeaderBag,
         RepositoryTagPrefix $tagPrefix
@@ -26,21 +24,8 @@ class TagHandlerSpec extends ObjectBehavior
         $response->headers = $responseHeaderBag;
         $cacheManager->supports(CacheManager::INVALIDATE)->willReturn(true);
 
-        $this->beConstructedWith($cacheManager, 'xkey', $purgeClient, $tagPrefix);
-    }
-
-    public function it_calls_purge_on_invalidate()
-    {
-        $this->purge(Argument::exact(['something']));
-
-        $this->invalidateTags(['something']);
-    }
-
-    public function it_calls_purge_client_on_purge(PurgeClientInterface $purgeClient)
-    {
-        $purgeClient->purge(Argument::exact(['something']));
-
-        $this->purge(['something']);
+        $headerFormatter = new CommaSeparatedTagHeaderFormatter('xkey', ' ');
+        $this->beConstructedWith($tagPrefix, ['header_formatter' => $headerFormatter]);
     }
 
     public function it_only_tags_ez_all_when_no_tags(Response $response, ResponseHeaderBag $responseHeaderBag)
@@ -48,7 +33,7 @@ class TagHandlerSpec extends ObjectBehavior
         $responseHeaderBag->has('xkey')->willReturn(false);
         $responseHeaderBag->set('xkey', Argument::exact('ez-all'))->shouldBeCalled();
 
-        $this->tagResponse($response, false);
+        $this->tagSymfonyResponse($response, false);
     }
 
     public function it_only_tags_ez_all_when_no_tags_also_on_replace(Response $response, ResponseHeaderBag $responseHeaderBag)
@@ -56,7 +41,7 @@ class TagHandlerSpec extends ObjectBehavior
         $responseHeaderBag->has('xkey')->shouldNotBeCalled();
         $responseHeaderBag->set('xkey', Argument::exact('ez-all'))->shouldBeCalled();
 
-        $this->tagResponse($response, true);
+        $this->tagSymfonyResponse($response, true);
     }
 
     public function it_tags_with_existing_header_string(Response $response, ResponseHeaderBag $responseHeaderBag)
@@ -65,7 +50,7 @@ class TagHandlerSpec extends ObjectBehavior
         $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1,tag2 tag3']);
         $responseHeaderBag->set('xkey', Argument::exact('tag1 tag2 tag3 ez-all'))->shouldBeCalled();
 
-        $this->tagResponse($response);
+        $this->tagSymfonyResponse($response);
     }
 
     public function it_tags_with_existing_header_array(Response $response, ResponseHeaderBag $responseHeaderBag)
@@ -74,7 +59,7 @@ class TagHandlerSpec extends ObjectBehavior
         $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1', 'tag2', 'tag3']);
         $responseHeaderBag->set('xkey', Argument::exact('tag1 tag2 tag3 ez-all'))->shouldBeCalled();
 
-        $this->tagResponse($response);
+        $this->tagSymfonyResponse($response);
     }
 
     public function it_tags_with_existing_header_mixed(Response $response, ResponseHeaderBag $responseHeaderBag)
@@ -83,7 +68,7 @@ class TagHandlerSpec extends ObjectBehavior
         $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1', 'tag2,tag3']);
         $responseHeaderBag->set('xkey', Argument::exact('tag1 tag2 tag3 ez-all'))->shouldBeCalled();
 
-        $this->tagResponse($response);
+        $this->tagSymfonyResponse($response);
     }
 
     public function it_tags_all_tags_we_add(Response $response, ResponseHeaderBag $responseHeaderBag)
@@ -92,7 +77,7 @@ class TagHandlerSpec extends ObjectBehavior
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
-        $this->tagResponse($response, true);
+        $this->tagSymfonyResponse($response, true);
     }
 
     public function it_tags_all_tags_we_add_on_null_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
@@ -101,7 +86,7 @@ class TagHandlerSpec extends ObjectBehavior
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
-        $this->tagResponse($response, true);
+        $this->tagSymfonyResponse($response, true);
     }
 
     public function it_tags_all_tags_we_add_on_default_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
@@ -110,7 +95,7 @@ class TagHandlerSpec extends ObjectBehavior
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
-        $this->tagResponse($response, true);
+        $this->tagSymfonyResponse($response, true);
     }
 
     public function it_tags_all_tags_we_add_and_prefix_with_repo_id(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
@@ -120,7 +105,7 @@ class TagHandlerSpec extends ObjectBehavior
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
-        $this->tagResponse($response, true);
+        $this->tagSymfonyResponse($response, true);
     }
 
     public function it_tags_all_tags_we_add_and_prefix_with_repo_id_also_with_existing_header(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
@@ -132,6 +117,6 @@ class TagHandlerSpec extends ObjectBehavior
 
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
-        $this->tagResponse($response, false);
+        $this->tagSymfonyResponse($response, false);
     }
 }

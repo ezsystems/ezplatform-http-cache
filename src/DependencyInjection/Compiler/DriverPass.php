@@ -29,8 +29,7 @@ class DriverPass implements CompilerPassInterface
             // on to the purge client
             $configuredFosTagHandlerServiceId = 'ezplatform.http_cache.fos_tag_handler.xkey';
         }
-
-        $container->setAlias('fos_http_cache.handler.tag_handler', $configuredFosTagHandlerServiceId);
+        $container->setAlias('fos_http_cache.http.symfony_response_tagger', $configuredFosTagHandlerServiceId);
     }
 
     public static function getTaggedService(ContainerBuilder $container, $tag)
@@ -43,7 +42,7 @@ class DriverPass implements CompilerPassInterface
             $currentPurgeTypeId = null;
             $currentTagHandlerServiceId = null;
             foreach ($attributes as $attribute) {
-                if (array_key_exists('purge_type', $attribute)) {
+                if (\array_key_exists('purge_type', $attribute)) {
                     $currentPurgeTypeId = $attribute['purge_type'];
                 }
                 if ($currentPurgeTypeId !== null) {

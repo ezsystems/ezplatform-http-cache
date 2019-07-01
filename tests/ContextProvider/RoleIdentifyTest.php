@@ -50,11 +50,11 @@ class RoleIdentifyTest extends TestCase
         $this->repositoryMock
             ->expects($this->any())
             ->method('getRoleService')
-            ->will($this->returnValue($this->roleServiceMock));
+            ->willReturn($this->roleServiceMock);
         $this->repositoryMock
             ->expects($this->any())
             ->method('getPermissionResolver')
-            ->will($this->returnValue($this->getPermissionResolverMock()));
+            ->willReturn($this->getPermissionResolverMock());
     }
 
     public function testSetIdentity()
@@ -65,7 +65,7 @@ class RoleIdentifyTest extends TestCase
         $this->repositoryMock
             ->expects($this->once())
             ->method('getCurrentUser')
-            ->will($this->returnValue($user));
+            ->willReturn($user);
 
         $roleId1 = 123;
         $roleId2 = 456;
@@ -116,7 +116,7 @@ class RoleIdentifyTest extends TestCase
             ->expects($this->once())
             ->method('getRoleAssignmentsForUser')
             ->with($user, true)
-            ->will($this->returnValue($returnedRoleAssignments));
+            ->willReturn($returnedRoleAssignments);
 
         $this->assertSame(array(), $userContext->getParameters());
         $contextProvider = new RoleIdentify($this->repositoryMock);
@@ -125,8 +125,8 @@ class RoleIdentifyTest extends TestCase
         $this->assertArrayHasKey('roleIdList', $userContextParams);
         $this->assertSame(array($roleId1, $roleId2, $roleId3), $userContextParams['roleIdList']);
         $this->assertArrayHasKey('roleLimitationList', $userContextParams);
-        $limitationIdentifierForRole2 = get_class($limitationForRole2);
-        $limitationIdentifierForRole3 = get_class($limitationForRole3);
+        $limitationIdentifierForRole2 = \get_class($limitationForRole2);
+        $limitationIdentifierForRole3 = \get_class($limitationForRole3);
         $this->assertSame(
             array(
                 "$roleId2-$limitationIdentifierForRole2" => array('/1/2', '/1/2/43'),
@@ -161,7 +161,7 @@ class RoleIdentifyTest extends TestCase
         $limitationMock
             ->expects($this->any())
             ->method('getIdentifier')
-            ->will($this->returnValue(get_class($limitationMock)));
+            ->willReturn(\get_class($limitationMock));
 
         return $limitationMock;
     }

@@ -6,11 +6,9 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Handler;
 
-use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
-use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
+use FOS\HttpCacheBundle\Http\SymfonyResponseTagger;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\HttpCacheBundle\CacheManager;
 
 /**
  * This is not a full implementation of FOS TagHandler
@@ -20,43 +18,26 @@ use FOS\HttpCacheBundle\CacheManager;
  * It implements tagResponse() to make sure TagSubscriber (a FOS event listener) sends tags using the header
  * we have configured, and to be able to prefix tags with respository id in order to support multi repo setups.
  */
-class TagHandler extends FOSTagHandler
+class TagHandler extends SymfonyResponseTagger
 {
-    private $cacheManager;
-    private $purgeClient;
+    /** @var \EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix */
     private $prefixService;
-    private $tagsHeader;
 
     public function __construct(
-        CacheManager $cacheManager,
-        $tagsHeader,
-        PurgeClientInterface $purgeClient,
-        RepositoryTagPrefix $prefixService
+        RepositoryTagPrefix $prefixService,
+        array $options = []
     ) {
-        $this->cacheManager = $cacheManager;
-        $this->tagsHeader = $tagsHeader;
-        $this->purgeClient = $purgeClient;
         $this->prefixService = $prefixService;
 
-        parent::__construct($cacheManager, $tagsHeader);
+        parent::__construct($options);
         $this->addTags(['ez-all']);
     }
 
-    public function invalidateTags(array $tags)
-    {
-        $this->purge($tags);
-    }
-
-    public function purge($tags)
-    {
-        $this->purgeClient->purge($tags);
-    }
-
-    public function tagResponse(Response $response, $replace = false)
+    public function tagSymfonyResponse(Response $response, $replace = false)
     {
         $tags = [];
-        if (!$replace && $response->headers->has($this->tagsHeader)) {
-            $headers = $response->headers->get($this->tagsHeader, null, false);
+        if (!$replace && $response->headers->has($this->getTagsHeaderName())) {
+            $headers = $response->headers->get($this->getTagsHeaderName(), null, false);
             if (!empty($headers)) {
                 // handle both both comma (FOS) and space (this bundle/xkey/fastly) separated strings
                 // As there can be more requests going on, we don't add these to tag handler (ez-user-context-hash)
@@ -65,7 +46,7 @@ class TagHandler extends FOSTagHandler
         }
 
         if ($this->hasTags()) {
-            $tags = array_merge($tags, explode(',', $this->getTagsHeaderValue()));
+            $tags = array_merge($tags, preg_split("/[\s,]+/", $this->getTagsHeaderValue()));
 
             // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
             $repoPrefix = $this->prefixService->getRepositoryPrefix();
@@ -80,7 +61,12 @@ class TagHandler extends FOSTagHandler
                 $tags[] = 'ez-all';
             }
 
-            $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
+            //Clear unprefixed tags
+            $this->clear();
+
+            $this->addTags($tags);
+            $response->headers->set($this->getTagsHeaderName(), $this->getTagsHeaderValue());
+            $this->clear();
         }
 
         return $this;

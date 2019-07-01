@@ -1,27 +1,41 @@
 <?php
 
 /**
- * File containing the Varnish class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
+declare(strict_types=1);
+
 namespace EzSystems\PlatformHttpCacheBundle\ProxyClient;
 
-use FOS\HttpCache\ProxyClient\Varnish as FOSVarnish;
+use FOS\HttpCache\ProxyClient\Varnish as FosVarnish;
 
-/**
- * Class Varnish.
- *
- * We need to support https as Platform.sh uses https by default.
- */
-class Varnish extends FOSVarnish
+class Varnish extends FosVarnish
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function getAllowedSchemes()
+    public function invalidateTags(array $tags)
     {
-        return array('http', 'https');
+        $banMode = self::TAG_BAN === $this->options['tag_mode'];
+
+        if ($banMode) {
+            return parent::invalidateTags($tags);
+        }
+
+        $chunkSize = $this->determineTagsPerHeader($tags, ' ');
+
+        foreach (array_chunk($tags, $chunkSize) as $tagchunk) {
+            $this->invalidateTagsByPurge($tagchunk);
+        }
+
+        return $this;
+    }
+
+    protected function invalidateTagsByPurge(array $tagchunk)
+    {
+        $this->queueRequest(
+            FosVarnish::HTTP_METHOD_PURGE,
+            '/',
+            [$this->options['tags_header'] => implode(' ', $tagchunk)],
+            false
+        );
     }
 }

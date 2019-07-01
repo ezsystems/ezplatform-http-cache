@@ -15,14 +15,12 @@ use EzSystems\EzPlatformRest\Server\Values\ContentTypeGroupList;
 use EzSystems\EzPlatformRest\Server\Values\ContentTypeGroupRefList;
 use EzSystems\EzPlatformRest\Server\Values\RestContentType;
 use EzSystems\EzPlatformRest\Server\Values\VersionList;
+use FOS\HttpCache\ResponseTagger;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument\Token\AnyValueToken;
 use Prophecy\Argument\Token\TypeToken;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use FOS\HttpCache\Handler\TagHandler;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 class RestKernelViewSubscriberSpec extends ObjectBehavior
@@ -31,7 +29,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         GetResponseForControllerResultEvent $event,
         Request $request,
         ParameterBag $attributes,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->attributes = $attributes;
         $event->getRequest()->willReturn($request);
@@ -75,7 +73,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         Request $request,
         ParameterBag $attributes,
         Section $restValue,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
@@ -97,7 +95,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         Request $request,
         ParameterBag $attributes,
         ContentType $restValue,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
@@ -116,7 +114,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         Request $request,
         ParameterBag $attributes,
         ContentType $restValue,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
@@ -139,7 +137,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         ParameterBag $attributes,
         RestContentType $restValue,
         ContentType $contentType,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
@@ -160,7 +158,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         ParameterBag $attributes,
         RestContentType $restValue,
         ContentType $contentType,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
@@ -185,7 +183,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         ContentTypeGroupRefList $restValue,
         ContentType $contentType,
         ContentTypeGroup $contentTypeGroup,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
@@ -209,7 +207,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         ContentTypeGroupRefList $restValue,
         ContentType $contentType,
         ContentTypeGroup $contentTypeGroup,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
@@ -237,7 +235,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         ParameterBag $attributes,
         ContentTypeGroupList $restValue,
         ContentTypeGroup $contentTypeGroup,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
@@ -262,7 +260,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         VersionList $restValue,
         VersionInfo $versionInfo,
         ContentInfo $contentInfo,
-        TagHandler $tagHandler
+        ResponseTagger $tagHandler
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);

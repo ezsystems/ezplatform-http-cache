@@ -5,9 +5,8 @@
  */
 namespace spec\EzSystems\PlatformHttpCacheBundle\Handler;
 
-use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
-
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
+use FOS\HttpCache\TagHeaderFormatter\CommaSeparatedTagHeaderFormatter;
 use FOS\HttpCacheBundle\CacheManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -25,7 +24,8 @@ class TagHandlerSpec extends ObjectBehavior
         $response->headers = $responseHeaderBag;
         $cacheManager->supports(CacheManager::INVALIDATE)->willReturn(true);
 
-        $this->beConstructedWith('xkey', $tagPrefix);
+        $headerFormatter = new CommaSeparatedTagHeaderFormatter('xkey', ' ');
+        $this->beConstructedWith($tagPrefix, ['header_formatter' => $headerFormatter]);
     }
 
     public function it_only_tags_ez_all_when_no_tags(Response $response, ResponseHeaderBag $responseHeaderBag)

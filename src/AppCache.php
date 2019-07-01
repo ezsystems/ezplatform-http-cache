@@ -32,7 +32,7 @@ class AppCache extends HttpCache implements CacheInvalidation
     public function __construct(KernelInterface $kernel, $cacheDir = null)
     {
         parent::__construct($kernel, $cacheDir);
-        $this->addSubscriber(new UserContextListener(['user_hash_header'=> 'X-User-Hash', 'session_name_prefix' => 'eZSESSID']));
+        $this->addSubscriber(new UserContextListener(['user_hash_header' => 'X-User-Hash', 'session_name_prefix' => 'eZSESSID']));
         $this->addSubscriber(new PurgeTagsListener(['tags_method' => 'PURGE', 'client_ips' => $this->getInternalAllowedIPs()]));
         $this->addSubscriber(new PurgeListener(['client_ips' => $this->getInternalAllowedIPs()]));
     }

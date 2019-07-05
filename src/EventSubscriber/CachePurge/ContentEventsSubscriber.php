@@ -37,7 +37,7 @@ final class ContentEventsSubscriber extends AbstractSubscriber
 
     public function onCopyContentEvent(CopyContentEvent $event): void
     {
-        $contentId = $event->getVersionInfo()->getContentInfo()->id;
+        $contentId = $event->getContentInfo()->id;
         $parentLocationId = $event->getDestinationLocationCreateStruct()->parentLocationId;
 
         $this->purgeClient->purge([

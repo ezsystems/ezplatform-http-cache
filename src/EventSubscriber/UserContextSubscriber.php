@@ -6,6 +6,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
+use FOS\HttpCache\TagHeaderFormatter\TagHeaderFormatter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -23,10 +24,12 @@ class UserContextSubscriber implements EventSubscriberInterface
     /**
      * @var string
      */
-    private $tagHeader = 'xkey';
+    private $tagHeader;
 
-    public function __construct(RepositoryTagPrefix $prefixService, $tagHeader)
-    {
+    public function __construct(
+        RepositoryTagPrefix $prefixService,
+        string $tagHeader = TagHeaderFormatter::DEFAULT_HEADER_NAME
+    ) {
         $this->prefixService = $prefixService;
         $this->tagHeader = $tagHeader;
     }

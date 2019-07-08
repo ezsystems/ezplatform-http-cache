@@ -52,17 +52,11 @@ services:
         arguments:
             - cache_directory: '%ezplatform.http_cache.store.root%'
 
-    ezplatform.http_cache.header_formatter.purge_type_based:
-        class: FOS\HttpCache\TagHeaderFormatter\CommaSeparatedTagHeaderFormatter
-        arguments:
-            - '%ezplatform.http_cache.tags.header%'
-            - "@=parameter('ezpublish.http_cache.purge_type') == 'local' ? ',' : ' '"
-
     ezplatform.http_cache.fos_tag_handler.xkey:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
         arguments:
          - '@ezplatform.http_cache.repository_tag_prefix'
-         - header_formatter: '@ezplatform.http_cache.header_formatter.purge_type_based'
+         - header_formatter: '@fos_http_cache.tag_handler.header_formatter'
            strict: '%fos_http_cache.tag_handler.strict%'
 
     ezplatform.http_cache.user_context_provider.role_identify:

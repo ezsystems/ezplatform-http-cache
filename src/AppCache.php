@@ -11,6 +11,7 @@ use FOS\HttpCache\SymfonyCache\CacheInvalidation;
 use FOS\HttpCache\SymfonyCache\EventDispatchingHttpCache;
 use FOS\HttpCache\SymfonyCache\PurgeListener;
 use FOS\HttpCache\SymfonyCache\PurgeTagsListener;
+use FOS\HttpCache\TagHeaderFormatter\TagHeaderFormatter;
 use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +49,7 @@ class AppCache extends HttpCache implements CacheInvalidation
     protected function createStore()
     {
         return new Psr6Store([
-            'cache_tags_header' => 'xkey',
+            'cache_tags_header' => TagHeaderFormatter::DEFAULT_HEADER_NAME,
             'cache_directory' => $this->cacheDir ?: $this->kernel->getCacheDir() . '/http_cache',
         ]);
     }
@@ -85,7 +86,7 @@ class AppCache extends HttpCache implements CacheInvalidation
     protected function cleanupHeadersForProd(Response $response)
     {
         // remove headers that identify the content or internal digest info
-        $response->headers->remove('xkey');
+        $response->headers->remove(TagHeaderFormatter::DEFAULT_HEADER_NAME);
         $response->headers->remove('x-content-digest');
 
         // remove vary by X-User-Hash header

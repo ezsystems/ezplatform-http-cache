@@ -12,8 +12,3 @@ user_context:
     # NOTE: These are also defined/used in AppCache, in Varnish VCL, and Fastly VCL
     user_hash_header: X-User-Hash
     session_name_prefix: eZSESSID
-
-tags:
-    # Configure tag header for FosHttpCache
-    # See docs/using_tags.md for further info on usage
-    response_header: '%ezplatform.http_cache.tags.header%'

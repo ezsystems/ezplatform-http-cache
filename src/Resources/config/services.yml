@@ -10,19 +10,6 @@ services:
             - '@ezpublish.config.dynamic_setting.parser'
             - '%ezplatform.http_cache.proxy_client.http_dispatcher.class%'
 
-    FOS\HttpCache\ProxyClient\HttpDispatcher:
-        factory: 'EzSystems\PlatformHttpCacheBundle\ProxyClient\HttpDispatcherFactory:buildHttpDispatcher'
-        lazy: true
-        arguments:
-            - '%ezplatform.http_cache.varnish.http.servers%'
-            - '%ezplatform.http_cache.varnish.http.base_url%'
-
-    fos_http_cache.proxy_client.varnish:
-        class: EzSystems\PlatformHttpCacheBundle\ProxyClient\Varnish
-        arguments:
-            - '@FOS\HttpCache\ProxyClient\HttpDispatcher'
-            - '%fos_http_cache.proxy_client.varnish.options%'
-
     ezplatform.http_cache.purge_client:
         alias: ezplatform.http_cache.purge_client_decorator
 

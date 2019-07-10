@@ -2,6 +2,10 @@ parameters:
     ezplatform.http_cache.controller.invalidatetoken.class: EzSystems\PlatformHttpCacheBundle\Controller\InvalidateTokenController
     ezplatform.http_cache.listener.vary_header.class: EzSystems\PlatformHttpCacheBundle\EventListener\ConditionallyRemoveVaryHeaderListener
     ezplatform.http_cache.proxy_client.http_dispatcher.class: FOS\HttpCache\ProxyClient\HttpDispatcher
+    # Set in \EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler\VarnishCachePass
+    # equal to settings under fos_http_cache.proxy_client.varnish.http.servers|base_url
+    ezplatform.http_cache.varnish.http.servers: []
+    ezplatform.http_cache.varnish.http.base_url: ~
 
 services:
     EzSystems\PlatformHttpCacheBundle\ProxyClient\HttpDispatcherFactory:
@@ -9,6 +13,15 @@ services:
             - '@ezpublish.config.resolver'
             - '@ezpublish.config.dynamic_setting.parser'
             - '%ezplatform.http_cache.proxy_client.http_dispatcher.class%'
+
+    ezplatform.http_cache.proxy_client.varnish.http_dispatcher:
+        class: '%ezplatform.http_cache.proxy_client.http_dispatcher.class%'
+        decorates: fos_http_cache.proxy_client.varnish.http_dispatcher
+        lazy: true
+        factory: ['@EzSystems\PlatformHttpCacheBundle\ProxyClient\HttpDispatcherFactory', 'buildHttpDispatcher']
+        arguments:
+            $servers: '%ezplatform.http_cache.varnish.http.servers%'
+            $baseUrl: '%ezplatform.http_cache.varnish.http.base_url%'
 
     ezplatform.http_cache.purge_client:
         alias: ezplatform.http_cache.purge_client_decorator

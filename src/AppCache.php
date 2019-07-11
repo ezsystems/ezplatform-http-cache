@@ -32,7 +32,7 @@ class AppCache extends HttpCache implements CacheInvalidation
     public function __construct(KernelInterface $kernel, $cacheDir = null)
     {
         parent::__construct($kernel, $cacheDir);
-        $this->addSubscriber(new UserContextListener(['user_hash_header' => 'X-User-Hash', 'session_name_prefix' => 'eZSESSID']));
+        $this->addSubscriber(new UserContextListener(['session_name_prefix' => 'eZSESSID']));
         $this->addSubscriber(new PurgeTagsListener(['tags_method' => 'PURGE', 'client_ips' => $this->getInternalAllowedIPs()]));
         $this->addSubscriber(new PurgeListener(['client_ips' => $this->getInternalAllowedIPs()]));
     }
@@ -88,11 +88,11 @@ class AppCache extends HttpCache implements CacheInvalidation
         $response->headers->remove('xkey');
         $response->headers->remove('x-content-digest');
 
-        // remove vary by X-User-Hash header
+        // remove vary by X-User-Context-Hash header
         $varyValues = [];
         $variesByUser = false;
         foreach ($response->getVary() as $value) {
-            if ($value === 'X-User-Hash') {
+            if ($value === 'X-User-Context-Hash') {
                 $variesByUser = true;
             } else {
                 $varyValues[] = $value;

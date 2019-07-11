@@ -173,7 +173,7 @@ sub ez_user_context_hash {
     // Prevent tampering attacks on the hash mechanism
     if (req.restarts == 0
         && (req.http.accept ~ "application/vnd.fos.user-context-hash"
-            || req.http.x-user-hash
+            || req.http.x-user-context-hash
         )
     ) {
         return (synth(400));
@@ -262,7 +262,7 @@ sub vcl_deliver {
     if (req.restarts == 0
         && resp.http.content-type ~ "application/vnd.fos.user-context-hash"
     ) {
-        set req.http.x-user-hash = resp.http.x-user-hash;
+        set req.http.x-user-context-hash = resp.http.x-user-context-hash;
 
         return (restart);
     }
@@ -271,8 +271,8 @@ sub vcl_deliver {
 
     // Remove the vary on user context hash, this is nothing public. Keep all
     // other vary headers.
-    if (resp.http.Vary ~ "X-User-Hash") {
-        set resp.http.Vary = regsub(resp.http.Vary, "(?i),? *X-User-Hash *", "");
+    if (resp.http.Vary ~ "X-User-Context-Hash") {
+        set resp.http.Vary = regsub(resp.http.Vary, "(?i),? *X-User-Context-Hash *", "");
         set resp.http.Vary = regsub(resp.http.Vary, "^, *", "");
         if (resp.http.Vary == "") {
             unset resp.http.Vary;
@@ -304,6 +304,6 @@ sub vcl_deliver {
         // Remove tag headers when delivering to non debug client
         unset resp.http.xkey;
         // Sanity check to prevent ever exposing the hash to a non debug client.
-        unset resp.http.x-user-hash;
+        unset resp.http.x-user-context-hash;
     }
 }

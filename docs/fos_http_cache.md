@@ -13,7 +13,7 @@ As HttpCache in eZ Publish/Platform predates FOSHttpCache, we have own abstracti
  - App Cache: `EzSystems\PlatformHttpCacheBundle\AppCache` app cache class to extend from, this in turn extends
    `FOS\HttpCacheBundle\SymfonyCache\EventDispatchingHttpCache`, however it provides own set of request-aware purgers and
    own handling of user context hash which for BC reasons is called `X-User-Hash` in eZ.
- - From version 1.0, FosCache default is used `X-User-Context-Hash` for user context hash header name.
+ - Since version 1.0, FOSHttpCache's `X-User-Context-Hash` header is used for user context hash.
 
 _Note: Once FOSHttpCache(Bundle) has full support for tagging, a major version of this bundle might be be refactored to more
 directly reuse FOSHttpCache(Bundle). However in the meantime our abstractions have allowed us to ship features across

@@ -49,9 +49,9 @@ class LocationEventsSubscriber extends AbstractSubscriber
         $parentLocationId = $event->getLocation()->parentLocationId;
 
         $tags = array_merge(
-            $this->getContentTags($contentId),
-            $this->getLocationTags($locationId),
-            $this->getParentLocationTags($parentLocationId),
+            $this->getContentTags((int)$contentId),
+            $this->getLocationTags((int)$locationId),
+            $this->getParentLocationTags((int)$parentLocationId),
         );
 
         $this->purgeClient->purge($tags);
@@ -64,9 +64,9 @@ class LocationEventsSubscriber extends AbstractSubscriber
         $parentLocationId = $event->getLocation()->parentLocationId;
 
         $tags = array_merge(
-            $this->getContentTags($contentId),
-            $this->getLocationTags($locationId),
-            $this->getParentLocationTags($parentLocationId),
+            $this->getContentTags((int)$contentId),
+            $this->getLocationTags((int)$locationId),
+            $this->getParentLocationTags((int)$parentLocationId),
             [
                 'path-' . $locationId,
             ]
@@ -82,9 +82,9 @@ class LocationEventsSubscriber extends AbstractSubscriber
         $parentLocationId = $event->getLocation()->parentLocationId;
 
         $tags = array_merge(
-            $this->getContentTags($contentId),
-            $this->getLocationTags($locationId),
-            $this->getParentLocationTags($parentLocationId),
+            $this->getContentTags((int)$contentId),
+            $this->getLocationTags((int)$locationId),
+            $this->getParentLocationTags((int)$parentLocationId),
             [
                 'path-' . $locationId,
             ]
@@ -100,8 +100,8 @@ class LocationEventsSubscriber extends AbstractSubscriber
         $newParentLocationId = $event->getNewParentLocation()->id;
 
         $tags = array_merge(
-            $this->getParentLocationTags($oldParentLocationId),
-            $this->getParentLocationTags($newParentLocationId),
+            $this->getParentLocationTags((int)$oldParentLocationId),
+            $this->getParentLocationTags((int)$newParentLocationId),
             [
                 'path-' . $locationId,
             ]
@@ -120,8 +120,8 @@ class LocationEventsSubscriber extends AbstractSubscriber
         $targetParentLocationId = $event->getLocation2()->parentLocationId;
 
         $tags = array_merge(
-            $this->getParentLocationTags($sourceParentLocationId),
-            $this->getParentLocationTags($targetParentLocationId),
+            $this->getParentLocationTags((int)$sourceParentLocationId),
+            $this->getParentLocationTags((int)$targetParentLocationId),
             [
                 'content-' . $sourceContentId,
                 'path-' . $sourceLocationId,
@@ -140,9 +140,9 @@ class LocationEventsSubscriber extends AbstractSubscriber
         $parentLocationId = $event->getLocation()->parentLocationId;
 
         $tags = array_merge(
-            $this->getContentTags($contentId),
-            $this->getLocationTags($locationId),
-            $this->getParentLocationTags($parentLocationId),
+            $this->getContentTags((int)$contentId),
+            $this->getLocationTags((int)$locationId),
+            $this->getParentLocationTags((int)$parentLocationId),
             [
                 'path-' . $locationId,
             ]
@@ -158,9 +158,9 @@ class LocationEventsSubscriber extends AbstractSubscriber
         $parentLocationId = $event->getLocation()->parentLocationId;
 
         $tags = array_merge(
-            $this->getContentTags($contentId),
-            $this->getLocationTags($locationId),
-            $this->getParentLocationTags($parentLocationId),
+            $this->getContentTags((int)$contentId),
+            $this->getLocationTags((int)$locationId),
+            $this->getParentLocationTags((int)$parentLocationId),
             );
 
         $this->purgeClient->purge($tags);

@@ -12,7 +12,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class RequestEventSubscriber implements EventSubscriberInterface
+final class RequestEventSubscriber implements EventSubscriberInterface
 {
     /** @var string */
     private $userHashHeaderName;
@@ -22,7 +22,7 @@ class RequestEventSubscriber implements EventSubscriberInterface
         $this->userHashHeaderName = $userHashHeaderName;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [
@@ -31,7 +31,7 @@ class RequestEventSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelRequestForward(GetResponseEvent $event)
+    public function onKernelRequestForward(GetResponseEvent $event): void
     {
         if ($event->isMasterRequest()) {
             $request = $event->getRequest();
@@ -42,10 +42,8 @@ class RequestEventSubscriber implements EventSubscriberInterface
                 $request->headers->has($this->userHashHeaderName)
             ) {
                 $headersToForward = $request->attributes->get('forwardRequestHeaders', []);
-                $request->attributes->set('forwardRequestHeaders', array_merge(
-                    $headersToForward,
-                    [$this->userHashHeaderName => $request->headers->get($this->userHashHeaderName)]
-                ));
+                $headersToForward[$this->userHashHeaderName] = $request->headers->get($this->userHashHeaderName);
+                $request->attributes->set('forwardRequestHeaders', $headersToForward);
             }
         }
     }

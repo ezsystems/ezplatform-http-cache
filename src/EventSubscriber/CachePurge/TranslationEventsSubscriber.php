@@ -10,7 +10,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber\CachePurge;
 
 use eZ\Publish\API\Repository\Events\Content\DeleteTranslationEvent;
 
-class TranslationEventsSubscriber extends AbstractSubscriber
+final class TranslationEventsSubscriber extends AbstractSubscriber
 {
     public static function getSubscribedEvents(): array
     {

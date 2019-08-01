@@ -11,7 +11,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber\CachePurge;
 use eZ\Publish\API\Repository\Events\Trash\RecoverEvent;
 use eZ\Publish\API\Repository\Events\Trash\TrashEvent;
 
-class TrashEventsSubscriber extends AbstractSubscriber
+final class TrashEventsSubscriber extends AbstractSubscriber
 {
     public static function getSubscribedEvents(): array
     {

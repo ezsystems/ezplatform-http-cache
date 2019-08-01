@@ -10,7 +10,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber\CachePurge;
 
 use eZ\Publish\API\Repository\Events\ObjectState\SetContentStateEvent;
 
-class ObjectStateEventsSubscriber extends AbstractSubscriber
+final class ObjectStateEventsSubscriber extends AbstractSubscriber
 {
     public static function getSubscribedEvents(): array
     {

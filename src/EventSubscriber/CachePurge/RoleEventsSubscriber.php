@@ -17,7 +17,7 @@ use eZ\Publish\API\Repository\Events\Role\UnassignRoleFromUserEvent;
 use eZ\Publish\API\Repository\Events\Role\UnassignRoleFromUserGroupEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class RoleEventsSubscriber extends AbstractSubscriber
+final class RoleEventsSubscriber extends AbstractSubscriber
 {
     public static function getSubscribedEvents(): array
     {

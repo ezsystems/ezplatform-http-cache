@@ -15,7 +15,7 @@ use eZ\Publish\API\Repository\Events\User\UnAssignUserFromUserGroupEvent;
 use eZ\Publish\API\Repository\Events\User\UpdateUserEvent;
 use eZ\Publish\API\Repository\Events\User\UpdateUserGroupEvent;
 
-class UserEventsSubscriber extends AbstractSubscriber
+final class UserEventsSubscriber extends AbstractSubscriber
 {
     public static function getSubscribedEvents(): array
     {

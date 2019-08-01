@@ -12,7 +12,7 @@ use eZ\Publish\API\Repository\Events\Section\AssignSectionEvent;
 use eZ\Publish\API\Repository\Events\Section\DeleteSectionEvent;
 use eZ\Publish\API\Repository\Events\Section\UpdateSectionEvent;
 
-class SectionEventsSubscriber extends AbstractSubscriber
+final class SectionEventsSubscriber extends AbstractSubscriber
 {
     public static function getSubscribedEvents(): array
     {

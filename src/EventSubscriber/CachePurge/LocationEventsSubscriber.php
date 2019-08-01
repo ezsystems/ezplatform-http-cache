@@ -17,7 +17,7 @@ use eZ\Publish\API\Repository\Events\Location\SwapLocationEvent;
 use eZ\Publish\API\Repository\Events\Location\UnhideLocationEvent;
 use eZ\Publish\API\Repository\Events\Location\UpdateLocationEvent;
 
-class LocationEventsSubscriber extends AbstractSubscriber
+final class LocationEventsSubscriber extends AbstractSubscriber
 {
     public static function getSubscribedEvents(): array
     {

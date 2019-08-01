@@ -15,7 +15,7 @@ use eZ\Publish\API\Repository\Events\ContentType\PublishContentTypeDraftEvent;
 use eZ\Publish\API\Repository\Events\ContentType\UnassignContentTypeGroupEvent;
 use eZ\Publish\API\Repository\Events\ContentType\UpdateContentTypeGroupEvent;
 
-class ContentTypeEventsSubscriber extends AbstractSubscriber
+final class ContentTypeEventsSubscriber extends AbstractSubscriber
 {
     public static function getSubscribedEvents(): array
     {

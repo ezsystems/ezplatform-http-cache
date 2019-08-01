@@ -10,7 +10,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber\CachePurge;
 
 use eZ\Publish\API\Repository\Events\URL\UpdateUrlEvent;
 
-class UrlEventsSubscriber extends AbstractSubscriber
+final class UrlEventsSubscriber extends AbstractSubscriber
 {
     public static function getSubscribedEvents(): array
     {

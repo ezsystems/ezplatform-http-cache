@@ -22,16 +22,12 @@ class KernelPassSpec extends ObjectBehavior
         $container->getAlias('ezpublish.http_cache.purger')->willReturn('some_random_id');
         $container->getDefinitions()->willReturn([
             'ezpublish.http_cache.witness_service' => new Definition(),
-            'ezpublish.http_cache.signalslot.some_slot' => new Definition(),
-            'ezpublish.http_cache.signalslot.some_other_slot' => new Definition(),
             'ezpublish.cache_clear.content.some_listener' => new Definition(),
             'ezpublish.view.cache_response_listener' => new Definition(),
             'ezpublish.http_cache.purger.some_purger' => new Definition(),
             'ezpublish.http_cache.purger.some_other_purger' => new Definition(),
             'witness_service' => new Definition(),
         ]);
-        $container->removeDefinition('ezpublish.http_cache.signalslot.some_slot')->shouldBeCalled();
-        $container->removeDefinition('ezpublish.http_cache.signalslot.some_other_slot')->shouldBeCalled();
         $container->removeDefinition('ezpublish.cache_clear.content.some_listener')->shouldBeCalled();
         $container->removeDefinition('ezpublish.view.cache_response_listener')->shouldBeCalled();
         $container->removeDefinition('ezpublish.http_cache.purger.some_purger')->shouldBeCalled();

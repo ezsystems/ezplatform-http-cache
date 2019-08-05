@@ -18,8 +18,7 @@ class KernelPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         foreach ($container->getDefinitions() as $id => $definition) {
-            if ($this->isSignalSlot($id) ||
-                $this->isSmartCacheListener($id) ||
+            if ($this->isSmartCacheListener($id) ||
                 $this->isResponseCacheListener($id) ||
                 $this->isCachePurger($id)
             ) {
@@ -60,16 +59,6 @@ class KernelPass implements CompilerPassInterface
             return true;
         }));
         $container->getDefinition('fos_http_cache.user_context.hash_generator')->setArguments($arguments);
-    }
-
-    /**
-     * @param string $id
-     *
-     * @return bool
-     */
-    protected function isSignalSlot($id)
-    {
-        return strpos($id, 'ezpublish.http_cache.signalslot.') === 0;
     }
 
     /**

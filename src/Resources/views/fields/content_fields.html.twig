@@ -3,7 +3,7 @@
 {% extends "EzPublishCoreBundle::content_fields.html.twig" %}
 
 {% block ezobjectrelationlist_field %}
-    {% apply spaceless %} %}
+    {% apply spaceless %}
         {% if not ez_field_is_empty( content, field ) %}
             <ul {{ block( 'field_attributes' ) }}>
                 {% for contentId in field.value.destinationContentIds %}
@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block ezimageasset_field %}
-    {% apply spaceless %} %}
+    {% apply spaceless %}
         {% if not ez_field_is_empty(content, field) and parameters.available %}
             {{ fos_httpcache_tag('relation-' ~ field.value.destinationContentId) }}
             <div {{ block('field_attributes') }}>
@@ -38,7 +38,7 @@
 {% endblock %}
 
 {% block ezobjectrelation_field %}
-    {% apply spaceless %} %}
+    {% apply spaceless %}
         {% if not ez_field_is_empty( content, field ) and parameters.available %}
             {{ fos_httpcache_tag('relation-' ~ field.value.destinationContentId) }}
             <div {{ block( 'field_attributes' ) }}>

@@ -10,6 +10,7 @@
         }
     ],
     "require": {
+        "ezsystems/doctrine-dbal-schema": "^1.0@dev",
         "ezsystems/ezpublish-kernel": "^8.0@dev",
         "ezsystems/ezplatform-rest": "^1.0@dev",
         "friendsofsymfony/http-cache-bundle": "^2.6.1",

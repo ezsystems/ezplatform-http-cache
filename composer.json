@@ -31,8 +31,6 @@
         "friendsofphp/php-cs-fixer": "~2.15.0",
         "memio/spec-gen": "^0.9"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "EzSystems\\PlatformHttpCacheBundle\\": "src",

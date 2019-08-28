@@ -40,6 +40,12 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    EzSystems\PlatformHttpCacheBundle\EventSubscriber\RequestEventSubscriber:
+        arguments:
+            - "@=container.getParameter('fos_http_cache.event_listener.user_context.options')['user_hash_header']"
+        tags:
+            - { name: kernel.event_subscriber }
+
     # ResponseConfigurator
     ezplatform.view_cache.response_configurator:
         class: EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ConfigurableResponseCacheConfigurator

@@ -10,5 +10,4 @@ user_context:
     enabled: true
     hash_cache_ttl: 600
     # NOTE: These are also defined/used in AppCache, in Varnish VCL, and Fastly VCL
-    user_hash_header: X-User-Hash
     session_name_prefix: eZSESSID

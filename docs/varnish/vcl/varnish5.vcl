@@ -140,14 +140,14 @@ sub ez_purge {
         }
     }
 
-    if (req.method == "PURGE") {
+    if (req.method == "PURGE" || req.method == "PURGEKEYS") {
         call ez_purge_acl;
 
-        # If http header "key" is set, we assume purge is on key and you have Varnish xkey installed
-        if (req.http.key) {
+        # If http header "xkey-softpurge" is set, we assume purge is on key and you have Varnish xkey installed
+        if (req.http.xkey-softpurge) {
             # By default we recommend using soft purge to respect grace time, if you need to hard purge use:
-            # set req.http.n-gone = xkey.purge(req.http.key);
-            set req.http.n-gone = xkey.softpurge(req.http.key);
+            # set req.http.n-gone = xkey.purge(req.http.xkey-softpurge);
+            set req.http.n-gone = xkey.softpurge(req.http.xkey-softpurge);
 
             return (synth(200, "Invalidated "+req.http.n-gone+" objects"));
         }

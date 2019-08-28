@@ -1,8 +1,6 @@
 <?php
 
 /**
- * File containing the HttpCachePass class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
@@ -12,31 +10,14 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use InvalidArgumentException;
 
-/**
- * HttpCache related compiler pass.
- *
- * Ensures Varnish proxy client is correctly configured.
- */
-class HttpCachePass implements CompilerPassInterface
+class VarnishCachePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $this->processHttpDispatcher($container);
-        $this->processVarnishProxyClient($container);
+        $this->processVarnishProxyClientSettings($container);
     }
 
-    private function processHttpDispatcher(ContainerBuilder $container)
-    {
-        if (!$container->hasDefinition('fos_http_cache.proxy_client.varnish.http_dispatcher')) {
-            return;
-        }
-
-        //Remove FOS default httpDispatcher definition as it fails at validating when using dynamicSettings.
-        //Use \EzSystems\PlatformHttpCacheBundle\ProxyClient\HttpDispatcherFactory instead.
-        $container->removeDefinition('fos_http_cache.proxy_client.varnish.http_dispatcher');
-    }
-
-    private function processVarnishProxyClient(ContainerBuilder $container)
+    private function processVarnishProxyClientSettings(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('fos_http_cache.proxy_client.varnish')) {
             throw new InvalidArgumentException('Varnish proxy client must be enabled in FOSHttpCacheBundle');

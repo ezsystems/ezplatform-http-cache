@@ -6,7 +6,9 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\ContextProvider;
 
+use eZ\Publish\API\Repository\PermissionResolver;
 use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\API\Repository\UserService;
 use FOS\HttpCache\UserContext\ContextProvider;
 use FOS\HttpCache\UserContext\UserContext;
 
@@ -22,19 +24,31 @@ use FOS\HttpCache\UserContext\UserContext;
  */
 class RoleIdentify implements ContextProvider
 {
-    /**
-     * @var \eZ\Publish\Core\Repository\Repository
-     */
+    /** @var \eZ\Publish\Core\Repository\Repository */
     protected $repository;
 
-    public function __construct(Repository $repository)
-    {
+    /** @var \eZ\Publish\API\Repository\PermissionResolver */
+    private $permissionResolver;
+
+    /** @var \eZ\Publish\API\Repository\UserService */
+    private $userService;
+
+    public function __construct(
+        Repository $repository,
+        PermissionResolver $permissionResolver,
+        UserService $userService
+    ) {
         $this->repository = $repository;
+        $this->permissionResolver = $permissionResolver;
+        $this->userService = $userService;
     }
 
     public function updateUserContext(UserContext $context)
     {
-        $user = $this->repository->getCurrentUser();
+        $user = $this->userService->loadUser(
+            $this->permissionResolver->getCurrentUserReference()->getUserId()
+        );
+
         /** @var \eZ\Publish\API\Repository\Values\User\RoleAssignment[] $roleAssignments */
         $roleAssignments = $this->repository->sudo(
             function (Repository $repository) use ($user) {
@@ -42,8 +56,8 @@ class RoleIdentify implements ContextProvider
             }
         );
 
-        $roleIds = array();
-        $limitationValues = array();
+        $roleIds = [];
+        $limitationValues = [];
         /** @var \eZ\Publish\API\Repository\Values\User\UserRoleAssignment $roleAssignment */
         foreach ($roleAssignments as $roleAssignment) {
             $roleId = $roleAssignment->getRole()->id;
@@ -52,7 +66,7 @@ class RoleIdentify implements ContextProvider
             // If a limitation is present, store the limitation values by roleId
             if ($limitation !== null) {
                 $limitationValuesKey = sprintf('%s-%s', $roleId, $limitation->getIdentifier());
-                $limitationValues[$limitationValuesKey] = array();
+                $limitationValues[$limitationValuesKey] = [];
                 foreach ($limitation->limitationValues as $value) {
                     $limitationValues[$limitationValuesKey][] = $value;
                 }

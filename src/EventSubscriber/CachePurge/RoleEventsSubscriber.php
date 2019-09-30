@@ -13,7 +13,6 @@ use eZ\Publish\API\Repository\Events\Role\AssignRoleToUserGroupEvent;
 use eZ\Publish\API\Repository\Events\Role\DeleteRoleEvent;
 use eZ\Publish\API\Repository\Events\Role\PublishRoleDraftEvent;
 use eZ\Publish\API\Repository\Events\Role\RemoveRoleAssignmentEvent;
-use eZ\Publish\API\Repository\Events\Role\UnassignRoleFromUserGroupEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 
 final class RoleEventsSubscriber extends AbstractSubscriber
@@ -26,7 +25,6 @@ final class RoleEventsSubscriber extends AbstractSubscriber
             DeleteRoleEvent::class => 'clearUserContextHashCache',
             PublishRoleDraftEvent::class => 'clearUserContextHashCache',
             RemoveRoleAssignmentEvent::class => 'clearUserContextHashCache',
-            UnassignRoleFromUserGroupEvent::class => 'clearUserContextHashCache',
         ];
     }
 

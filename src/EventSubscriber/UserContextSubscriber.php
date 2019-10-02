@@ -8,7 +8,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
 use FOS\HttpCache\TagHeaderFormatter\TagHeaderFormatter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -42,9 +42,9 @@ class UserContextSubscriber implements EventSubscriberInterface
     /**
      * Tag vnd.fos.user-context-hash responses if they are set to cached.
      *
-     * @param FilterResponseEvent $event
+     * @param ResponseEvent $event
      */
-    public function tagUserContext(FilterResponseEvent $event)
+    public function tagUserContext(ResponseEvent $event)
     {
         $response = $event->getResponse();
         if (!$response->isCacheable()) {

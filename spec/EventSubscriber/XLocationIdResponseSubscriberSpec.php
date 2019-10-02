@@ -14,12 +14,12 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument\Token\AnyValueToken;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class XLocationIdResponseSubscriberSpec extends ObjectBehavior
 {
     public function let(
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         Response $response,
         ResponseTagger $tagHandler,
         Repository $repository,
@@ -32,7 +32,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
     }
 
     public function it_does_not_rewrite_header_if_there_is_none(
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseHeaderBag $responseHeaders
     ) {
         $responseHeaders->has('X-Location-Id')->willReturn(false);
@@ -42,7 +42,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
     }
 
     public function it_rewrite_header_with_location_info(
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         Response $response,
         ResponseTagger $tagHandler,
         Repository $repository,
@@ -76,7 +76,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
     }
 
     public function it_rewrite_header_on_not_found_location(
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         Response $response,
         ResponseTagger $tagHandler,
         Repository $repository,
@@ -94,7 +94,7 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
     }
 
     public function it_rewrite_header_also_in_unofficial_plural_form_and_merges_exisitng_value(
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         Response $response,
         ResponseTagger $tagHandler,
         Repository $repository,

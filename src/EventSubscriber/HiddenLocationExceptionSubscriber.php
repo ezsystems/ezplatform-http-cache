@@ -10,7 +10,7 @@ use eZ\Publish\Core\MVC\Exception\HiddenLocationException;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\ContentInfoTagger;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\LocationTagger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class HiddenLocationExceptionSubscriber implements EventSubscriberInterface
@@ -36,7 +36,7 @@ class HiddenLocationExceptionSubscriber implements EventSubscriberInterface
         return [KernelEvents::EXCEPTION => ['tagHiddenLocationExceptionResponse', 10]];
     }
 
-    public function tagHiddenLocationExceptionResponse(GetResponseForExceptionEvent $event)
+    public function tagHiddenLocationExceptionResponse(ExceptionEvent $event)
     {
         if (!$event->getException() instanceof HiddenLocationException) {
             return;

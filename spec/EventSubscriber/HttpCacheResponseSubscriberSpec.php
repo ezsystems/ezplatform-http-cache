@@ -14,12 +14,12 @@ use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class HttpCacheResponseSubscriberSpec extends ObjectBehavior
 {
     public function let(
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         Request $request,
         Response $response,
         ParameterBag $requestAttributes,
@@ -34,7 +34,7 @@ class HttpCacheResponseSubscriberSpec extends ObjectBehavior
     }
 
     public function it_does_not_enable_cache_if_the_view_is_not_a_cachableview(
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseCacheConfigurator $configurator,
         ParameterBag $requestAttributes,
         View $nonCachableView
@@ -46,7 +46,7 @@ class HttpCacheResponseSubscriberSpec extends ObjectBehavior
     }
 
     public function it_does_not_enable_cache_if_it_is_disabled_in_the_view(
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseCacheConfigurator $configurator,
         CachableView $view,
         ParameterBag $requestAttributes
@@ -59,7 +59,7 @@ class HttpCacheResponseSubscriberSpec extends ObjectBehavior
     }
 
     public function it_enables_cache(
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseCacheConfigurator $configurator,
         CachableView $view,
         ParameterBag $requestAttributes,

@@ -8,7 +8,7 @@ use EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ResponseCacheConfigur
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger;
 use eZ\Publish\Core\MVC\Symfony\View\CachableView;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -37,7 +37,7 @@ class HttpCacheResponseSubscriber implements EventSubscriberInterface
         return [KernelEvents::RESPONSE => ['configureCache', 10]];
     }
 
-    public function configureCache(FilterResponseEvent $event)
+    public function configureCache(ResponseEvent $event)
     {
         $view = $event->getRequest()->attributes->get('view');
         if (!$view instanceof CachableView || !$view->isCacheEnabled()) {

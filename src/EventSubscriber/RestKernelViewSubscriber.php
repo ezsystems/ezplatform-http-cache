@@ -15,7 +15,7 @@ use EzSystems\EzPlatformRest\Server\Values\RestContentType;
 use EzSystems\EzPlatformRest\Server\Values\VersionList;
 use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -40,7 +40,7 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
         return [KernelEvents::VIEW => ['tagUIRestResult', 10]];
     }
 
-    public function tagUIRestResult(GetResponseForControllerResultEvent $event)
+    public function tagUIRestResult(ViewEvent $event)
     {
         $request = $event->getRequest();
         if (!$request->isMethodCacheable() || !$request->attributes->get('is_rest_request')) {

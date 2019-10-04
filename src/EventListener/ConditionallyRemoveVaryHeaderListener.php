@@ -8,7 +8,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -43,9 +43,9 @@ class ConditionallyRemoveVaryHeaderListener implements EventSubscriberInterface
     /**
      * Remove Vary headers for matched routes.
      *
-     * @param FilterResponseEvent $event
+     * @param ResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(ResponseEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST != $event->getRequestType()) {
             return;

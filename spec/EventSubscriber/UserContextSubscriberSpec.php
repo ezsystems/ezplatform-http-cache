@@ -9,14 +9,14 @@ use Prophecy\Argument;
 use Prophecy\Argument\Token\AnyValueToken;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class UserContextSubscriberSpec extends ObjectBehavior
 {
     public function let(
         RepositoryTagPrefix $prefixService,
         Response $response,
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseHeaderBag $responseHeaders
     ) {
         $response->headers = $responseHeaders;
@@ -32,7 +32,7 @@ class UserContextSubscriberSpec extends ObjectBehavior
 
     public function it_does_nothing_on_uncachable_methods(
         Response $response,
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseHeaderBag $responseHeaders
     ) {
         $response->isCacheable()->willReturn(false);
@@ -46,7 +46,7 @@ class UserContextSubscriberSpec extends ObjectBehavior
 
     public function it_does_nothing_on_wrong_content_type(
         Response $response,
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseHeaderBag $responseHeaders
     ) {
         $response->isCacheable()->willReturn(true);
@@ -60,7 +60,7 @@ class UserContextSubscriberSpec extends ObjectBehavior
 
     public function it_does_nothing_on_empty_ttl(
         Response $response,
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseHeaderBag $responseHeaders
     ) {
         $response->isCacheable()->willReturn(true);
@@ -74,7 +74,7 @@ class UserContextSubscriberSpec extends ObjectBehavior
 
     public function it_tags_response_with_no_prefix(
         Response $response,
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseHeaderBag $responseHeaders,
         RepositoryTagPrefix $prefixService
     ) {
@@ -90,7 +90,7 @@ class UserContextSubscriberSpec extends ObjectBehavior
 
     public function it_tags_response_with_a_prefix(
         Response $response,
-        FilterResponseEvent $event,
+        ResponseEvent $event,
         ResponseHeaderBag $responseHeaders,
         RepositoryTagPrefix $prefixService
     ) {

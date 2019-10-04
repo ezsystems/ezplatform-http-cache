@@ -21,12 +21,12 @@ use Prophecy\Argument\Token\AnyValueToken;
 use Prophecy\Argument\Token\TypeToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 class RestKernelViewSubscriberSpec extends ObjectBehavior
 {
     public function let(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         ResponseTagger $tagHandler
@@ -38,7 +38,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
     }
 
     public function it_does_nothing_on_uncachable_methods(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes
     ) {
@@ -52,7 +52,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
     }
 
     public function it_does_nothing_on_non_rest_requests(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes
     ) {
@@ -69,7 +69,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * Section
      */
     public function it_writes_tags_on_section(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         Section $restValue,
@@ -91,7 +91,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * ContentType
      */
     public function it_does_nothing_on_content_type_draft(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         ContentType $restValue,
@@ -110,7 +110,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
     }
 
     public function it_writes_tags_on_content_type_defined(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         ContentType $restValue,
@@ -132,7 +132,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * RestContentType
      */
     public function it_does_nothing_on_rest_content_type_draft(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         RestContentType $restValue,
@@ -153,7 +153,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
     }
 
     public function it_writes_tags_on_rest_content_type_defined(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         RestContentType $restValue,
@@ -177,7 +177,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * ContentTypeGroupRefList
      */
     public function it_does_nothing_on_rest_content_type_group_ref_draft(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         ContentTypeGroupRefList $restValue,
@@ -201,7 +201,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
     }
 
     public function it_writes_tags_on_rest_content_type_group_ref_defined(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         ContentTypeGroupRefList $restValue,
@@ -230,7 +230,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * ContentTypeGroupList
      */
     public function it_writes_tags_on_rest_content_type_group_list(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         ContentTypeGroupList $restValue,
@@ -254,7 +254,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * VersionList
      */
     public function it_writes_tags_on_rest_version_list(
-        GetResponseForControllerResultEvent $event,
+        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         VersionList $restValue,

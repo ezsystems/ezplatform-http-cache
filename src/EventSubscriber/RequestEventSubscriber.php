@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 final class RequestEventSubscriber implements EventSubscriberInterface
@@ -31,7 +31,7 @@ final class RequestEventSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelRequestForward(GetResponseEvent $event): void
+    public function onKernelRequestForward(RequestEvent $event): void
     {
         if ($event->isMasterRequest()) {
             $request = $event->getRequest();

@@ -9,7 +9,7 @@ namespace spec\EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\ContentInfoTagger;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value\LocationTagger;
 use PhpSpec\ObjectBehavior;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
 use eZ\Publish\Core\MVC\Exception\HiddenLocationException;
@@ -25,7 +25,7 @@ class HiddenLocationExceptionSubscriberSpec extends ObjectBehavior
     }
 
     public function it_tags_on_hidden_location_exception(
-        GetResponseForExceptionEvent $event,
+        ExceptionEvent $event,
         LocationTagger $locationTagger,
         ContentInfoTagger $contentInfoTagger,
         Location $location,
@@ -47,7 +47,7 @@ class HiddenLocationExceptionSubscriberSpec extends ObjectBehavior
     }
 
     public function it_does_not_tag_on_other_exceptions(
-        GetResponseForExceptionEvent $event,
+        ExceptionEvent $event,
         LocationTagger $locationTagger,
         ContentInfoTagger $contentInfoTagger,
         \Exception $exception

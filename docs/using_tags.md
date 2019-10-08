@@ -238,12 +238,21 @@ code involved to see if amount of tags can be reduced.
 
 #### Limit tags header output by system
 
-Typical case with too many tags would be when inline rendering some form of embed content object.
+Typical case with too many tags would be when inline rendering a lot of embed content object.
 Normally the system will add all the tags for this content, to handle every possible scenario of updates to them.
 
-So if you embed hundreds of content on the same page _(in richtext, using relations, or using page builder)_, it will explode the tag usage.
+So if you embed hundreds of content on the same page _(i.e. in richtext, using relations, or using page builder)_, it will explode the tag usage.
 
 However if for instance you just display the content name, image attribute, and/or link, then it would be enough to:
 - Just use `r<id>` tag, or preferably the abstractions for it.
 - Optionally: Set reduced cache TTL for the given view in order to reduce remote risk of subtree operations affecting the cached page
   without correctly purging the view.
+
+If that is not an option, you can opt-in to set a  max length parameter (in bytes) and corresponding ttl (seconds)
+```yaml
+parameters:
+    # Warning, setting this means you risk losing tag information, risking stale cache. Here set below 8k:
+    ezplatform.http_cache.tags.header_max_length: 7900
+    # In order to reduce risk of stale cache issues, you should set a lower TTL here then globally (here set as 2h)
+    ezplatform.http_cache.tags.header_reduced_ttl: 7200
+```

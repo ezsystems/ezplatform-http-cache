@@ -172,4 +172,13 @@ One common issue to encounter is that the tagging headers exceed limits in Varni
 - [http_max_hdr](https://varnish-cache.org/docs/6.0/reference/varnishd.html#http-max-hdr) (e.g. 128)
 - [http_resp_size](https://varnish-cache.org/docs/6.0/reference/varnishd.html#http-resp-size) (e.g. 64k)
 
+In case you exceed the limit on Nginx, 500 error will be returned.
+Consider using fewer tags or ignore tags over the limit. It can be done by setting a max length parameter (in bytes)
+```yaml
+parameters:
+    # Warning, setting this means you risk losing tag information, which means you will end up with stale cache
+    # First tune your system if you can, i.e. nginx: proxy_buffer_size, Varnish: http_resp_hdr_len, on Fastly limit is 16k
+    ezplatform.http_cache.tags.header_max_length: 16000
+```
+
 For more up-to-date info see online doc: https://doc.ezplatform.com/en/latest/guide/http_cache/#available-tags

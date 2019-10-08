@@ -9,6 +9,7 @@ namespace EzSystems\PlatformHttpCacheBundle\Handler;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
 use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\HttpCacheBundle\CacheManager;
 
@@ -22,21 +23,27 @@ use FOS\HttpCacheBundle\CacheManager;
  */
 class TagHandler extends FOSTagHandler
 {
-    private $cacheManager;
     private $purgeClient;
     private $prefixService;
     private $tagsHeader;
+    /** @var int|null */
+    private $tagsHeaderMaxLength;
+    /** @var LoggerInterface */
+    private $logger;
 
     public function __construct(
         CacheManager $cacheManager,
         $tagsHeader,
         PurgeClientInterface $purgeClient,
-        RepositoryTagPrefix $prefixService
+        RepositoryTagPrefix $prefixService,
+        LoggerInterface $logger,
+        $maxTagsHeaderLength = null
     ) {
-        $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
         $this->prefixService = $prefixService;
+        $this->logger = $logger;
+        $this->tagsHeaderMaxLength = $maxTagsHeaderLength;
 
         parent::__construct($cacheManager, $tagsHeader);
         $this->addTags(['ez-all']);
@@ -65,7 +72,11 @@ class TagHandler extends FOSTagHandler
         }
 
         if ($this->hasTags()) {
-            $tags = array_merge($tags, explode(',', $this->getTagsHeaderValue()));
+            if ($tags) {
+                $tags = array_unique(array_merge($tags, explode(',', $this->getTagsHeaderValue())));
+            } else {
+                $tags = explode(',', $this->getTagsHeaderValue());
+            }
 
             // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
             $repoPrefix = $this->prefixService->getRepositoryPrefix();
@@ -80,7 +91,17 @@ class TagHandler extends FOSTagHandler
                 $tags[] = 'ez-all';
             }
 
-            $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
+            $tagsString = implode(' ', $tags);
+            if ($this->tagsHeaderMaxLength && strlen($tagsString) > $this->tagsHeaderMaxLength) {
+                $tagsString = trim(substr($tagsString, 0, strrpos(
+                    substr($tagsString, 0, $this->tagsHeaderMaxLength + 1), ' '
+                )));
+                $this->logger->warning(
+                    'HTTP Cache tags header max length reached and truncated to ' . $this->tagsHeaderMaxLength
+                );
+            }
+
+            $response->headers->set($this->tagsHeader, $tagsString);
         }
 
         return $this;

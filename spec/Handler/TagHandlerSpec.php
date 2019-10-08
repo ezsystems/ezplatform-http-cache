@@ -26,7 +26,7 @@ class TagHandlerSpec extends ObjectBehavior
         $response->headers = $responseHeaderBag;
         $cacheManager->supports(CacheManager::INVALIDATE)->willReturn(true);
 
-        $this->beConstructedWith($cacheManager, 'xkey', $purgeClient, $tagPrefix);
+        $this->beConstructedWith($cacheManager, 'xkey', $purgeClient, $tagPrefix, 1000);
     }
 
     public function it_calls_purge_on_invalidate()
@@ -133,5 +133,25 @@ class TagHandlerSpec extends ObjectBehavior
         $this->addTags(['location-4', 'content-4']);
         $this->addTags(['path-2']);
         $this->tagResponse($response, false);
+    }
+
+    public function it_ignores_too_long_tag_header(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
+    {
+        $underLimitTags = 'ez-all';
+        $length = 6;
+        while(true) {
+            $tag = ' content-' . $length;
+            $tagLength = strlen($tag);
+            if ($length + $tagLength  > 1000) {
+                break; // too long if we add more
+            }
+            $underLimitTags .= $tag;
+            $length += $tagLength;
+        }
+        $responseHeaderBag->set('xkey', Argument::exact($underLimitTags))->shouldBeCalled();
+
+        $this->addTags(explode(' ', $underLimitTags));
+        $this->addTags(['location-1111111', 'content-1111111']); // these tags are ignored
+        $this->tagResponse($response, true);
     }
 }

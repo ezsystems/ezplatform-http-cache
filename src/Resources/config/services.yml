@@ -1,6 +1,7 @@
 parameters:
     ezplatform.http_cache.controller.invalidatetoken.class: EzSystems\PlatformHttpCacheBundle\Controller\InvalidateTokenController
     ezplatform.http_cache.listener.vary_header.class: EzSystems\PlatformHttpCacheBundle\EventListener\ConditionallyRemoveVaryHeaderListener
+    ezplatform.http_cache.tags.header_max_length: null
 
 services:
     ezplatform.http_cache.cache_manager:
@@ -50,6 +51,8 @@ services:
          - '%ezplatform.http_cache.tags.header%'
          - '@ezplatform.http_cache.purge_client'
          - '@ezplatform.http_cache.repository_tag_prefix'
+         - '@logger'
+         - '%ezplatform.http_cache.tags.header_max_length%'
 
     ezplatform.http_cache.user_context_provider.role_identify:
         class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify

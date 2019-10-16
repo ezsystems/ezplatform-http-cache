@@ -10,14 +10,14 @@ namespace EzSystems\PlatformHttpCacheBundle\Twig;
 
 use eZ\Publish\API\Repository\Values\Content\Location;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger;
-use Twig_Extension;
-use Twig_SimpleFunction;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Twig content extension for eZ Publish specific usage.
  * Exposes helpers to play with public API objects.
  */
-class ContentTaggingExtension extends Twig_Extension
+class ContentTaggingExtension extends AbstractExtension
 {
     /** @var \EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger */
     protected $responseTagger;
@@ -28,12 +28,12 @@ class ContentTaggingExtension extends Twig_Extension
     }
 
     /**
-     * @return array|\Twig_Function[]
+     * @return array|\Twig\TwigFunction[]
      */
     public function getFunctions()
     {
         return [
-            new Twig_SimpleFunction(
+            new TwigFunction(
                 'ez_http_cache_tag_location',
                 [$this, 'tagHttpCacheForLocation']
             ),

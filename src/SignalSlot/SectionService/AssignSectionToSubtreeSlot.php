@@ -9,12 +9,12 @@
 namespace EzSystems\PlatformHttpCacheBundle\SignalSlot\SectionService;
 
 use eZ\Publish\Core\SignalSlot\Signal;
-use EzSystems\PlatformHttpCacheBundle\SignalSlot\AbstractSlot;
+use EzSystems\PlatformHttpCacheBundle\SignalSlot\AbstractContentSlot;
 
 /**
  * A slot handling AssignSectionToSubtreeSignal.
  */
-class AssignSectionToSubtreeSlot extends AbstractSlot
+class AssignSectionToSubtreeSlot extends AbstractContentSlot
 {
     /**
      * {@inheritdoc}

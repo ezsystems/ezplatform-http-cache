@@ -259,4 +259,4 @@ services:
     ezplatform.http_cache.signalslot.assign_section_to_subtree:
         class: EzSystems\PlatformHttpCacheBundle\SignalSlot\SectionService\AssignSectionToSubtreeSlot
         parent: ezplatform.http_cache.signalslot.abstract
-        tags: [{ name: ezpublish.api.slot, signal: SectionService\AssignSectionToSubtreeSignal}]
+        tags: [{ name: ezpublish.api.slot, signal: SectionService\AssignSectionToSubtreeSignal }]

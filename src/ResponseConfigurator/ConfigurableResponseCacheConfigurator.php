@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
@@ -21,6 +22,7 @@ class ConfigurableResponseCacheConfigurator implements ResponseCacheConfigurator
 
     /**
      * True if TTL cache is enabled, false if it is not.
+     *
      * @var bool
      */
     private $enableTtlCache;

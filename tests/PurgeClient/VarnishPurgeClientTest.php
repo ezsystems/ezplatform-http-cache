@@ -1,8 +1,6 @@
 <?php
 
 /**
- * File containing the FOSPurgeClientTest class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
@@ -37,12 +35,12 @@ class VarnishPurgeClientTest extends TestCase
         parent::setUp();
         $this->cacheManager = $this->getMockBuilder(CacheManager::class)
             ->setConstructorArgs(
-                array(
+                [
                     $this->createMock(ProxyClientInterface::class),
                     $this->createMock(
                         UrlGeneratorInterface::class
                     ),
-                )
+                ]
             )
             ->getMock();
         $this->configResolver = $this->createMock(ConfigResolverInterface::class);
@@ -58,7 +56,7 @@ class VarnishPurgeClientTest extends TestCase
             ->expects($this->never())
             ->method('invalidate');
 
-        $this->purgeClient->purge(array());
+        $this->purgeClient->purge([]);
     }
 
     public function testPurgeOneLocationId()
@@ -190,11 +188,11 @@ class VarnishPurgeClientTest extends TestCase
 
     public function purgeTestProvider()
     {
-        return array(
-            array(array(123)),
-            array(array(123, 456)),
-            array(array(123, 456, 789)),
-        );
+        return [
+            [[123]],
+            [[123, 456]],
+            [[123, 456, 789]],
+        ];
     }
 
     public function testPurgeAll()

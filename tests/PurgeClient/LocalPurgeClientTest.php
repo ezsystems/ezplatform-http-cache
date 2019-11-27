@@ -1,8 +1,6 @@
 <?php
 
 /**
- * File containing the LocalPurgeClientTest class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
@@ -29,7 +27,7 @@ class LocalPurgeClientTest extends TestCase
 {
     public function testPurge()
     {
-        $locationIds = array(123, 456, 789);
+        $locationIds = [123, 456, 789];
         $expectedBanRequest = Request::create('http://localhost', 'PURGE');
         $expectedBanRequest->headers->set('key', 'location-123 location-456 location-789');
 

@@ -31,6 +31,7 @@ class ConditionallyRemoveVaryHeaderListener implements EventSubscriberInterface
 
     /**
      * ConditionallyRemoveVaryHeaderListener constructor.
+     *
      * @param array $routes List of routes which will not have default vary headers
      * @param array $userIdentifierHeaders
      */
@@ -69,8 +70,8 @@ class ConditionallyRemoveVaryHeaderListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             KernelEvents::RESPONSE => 'onKernelResponse',
-        );
+        ];
     }
 }

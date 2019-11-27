@@ -18,7 +18,8 @@
         "phpunit/phpunit": "^5.7.27 || ^6.5.13",
         "matthiasnoback/symfony-dependency-injection-test": "^1.2.0 || ^2.3.1",
         "phpspec/phpspec": "^3.4.3 || ^4.3.2",
-        "friendsofphp/php-cs-fixer": "~2.7.5",
+        "ezsystems/ezplatform-code-style": "^0.1.0",
+        "friendsofphp/php-cs-fixer": "^2.16.0",
         "memio/spec-gen": "^0.6.2 || ^0.8.5"
     },
     "autoload": {

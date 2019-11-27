@@ -42,8 +42,8 @@ class RoleIdentify implements ContextProviderInterface
             }
         );
 
-        $roleIds = array();
-        $limitationValues = array();
+        $roleIds = [];
+        $limitationValues = [];
         /** @var \eZ\Publish\API\Repository\Values\User\UserRoleAssignment $roleAssignment */
         foreach ($roleAssignments as $roleAssignment) {
             $roleId = $roleAssignment->getRole()->id;
@@ -52,7 +52,7 @@ class RoleIdentify implements ContextProviderInterface
             // If a limitation is present, store the limitation values by roleId
             if ($limitation !== null) {
                 $limitationValuesKey = sprintf('%s-%s', $roleId, $limitation->getIdentifier());
-                $limitationValues[$limitationValuesKey] = array();
+                $limitationValues[$limitationValuesKey] = [];
                 foreach ($limitation->limitationValues as $value) {
                     $limitationValues[$limitationValuesKey][] = $value;
                 }

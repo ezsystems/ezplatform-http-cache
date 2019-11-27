@@ -34,7 +34,7 @@ class HttpDispatcherFactory
 
     public function buildHttpDispatcher(array $servers, string $baseUrl = '')
     {
-        $allServers = array();
+        $allServers = [];
         foreach ($servers as $server) {
             if (!$this->dynamicSettingParser->isDynamicSetting($server)) {
                 $allServers[] = $server;

@@ -28,7 +28,8 @@
         "phpunit/phpunit": "~7.5.11",
         "matthiasnoback/symfony-dependency-injection-test": "^1.2.0 || ^2.3.1",
         "phpspec/phpspec": "^5.1",
-        "friendsofphp/php-cs-fixer": "~2.15.0",
+        "ezsystems/ezplatform-code-style": "^0.1.0",
+        "friendsofphp/php-cs-fixer": "^2.16.0",
         "memio/spec-gen": "^0.9"
     },
     "minimum-stability": "dev",

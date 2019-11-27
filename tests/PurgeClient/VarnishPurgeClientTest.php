@@ -1,11 +1,10 @@
 <?php
 
 /**
- * File containing the FOSPurgeClientTest class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
+
 namespace EzSystems\PlatformHttpCacheBundle\Tests\PurgeClient;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient;
@@ -27,12 +26,12 @@ class VarnishPurgeClientTest extends TestCase
         parent::setUp();
         $this->cacheManager = $this->getMockBuilder(CacheManager::class)
             ->setConstructorArgs(
-                array(
+                [
                     $this->createMock(ProxyClient::class),
                     $this->createMock(
                         UrlGeneratorInterface::class
                     ),
-                )
+                ]
             )
             ->getMock();
 

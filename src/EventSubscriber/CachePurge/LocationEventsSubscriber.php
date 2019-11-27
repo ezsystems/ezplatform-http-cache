@@ -16,6 +16,7 @@ use eZ\Publish\API\Repository\Events\Location\MoveSubtreeEvent;
 use eZ\Publish\API\Repository\Events\Location\SwapLocationEvent;
 use eZ\Publish\API\Repository\Events\Location\UnhideLocationEvent;
 use eZ\Publish\API\Repository\Events\Location\UpdateLocationEvent;
+use eZ\Publish\API\Repository\Events\Section\AssignSectionToSubtreeEvent;
 
 final class LocationEventsSubscriber extends AbstractSubscriber
 {
@@ -30,6 +31,7 @@ final class LocationEventsSubscriber extends AbstractSubscriber
             SwapLocationEvent::class => 'onSwapLocation',
             UnhideLocationEvent::class => 'onUnhideLocation',
             UpdateLocationEvent::class => 'onUpdateLocation',
+            AssignSectionToSubtreeEvent::class => 'onAssignSectionToSubtree',
         ];
     }
 
@@ -161,7 +163,23 @@ final class LocationEventsSubscriber extends AbstractSubscriber
             $this->getContentTags((int)$contentId),
             $this->getLocationTags((int)$locationId),
             $this->getParentLocationTags((int)$parentLocationId),
-            );
+        );
+
+        $this->purgeClient->purge($tags);
+    }
+
+    public function onAssignSectionToSubtree(AssignSectionToSubtreeEvent $event): void
+    {
+        $location = $event->getLocation();
+
+        $tags = array_merge(
+            $this->getContentTags($location->contentId),
+            $this->getLocationTags($location->id),
+            $this->getParentLocationTags($location->parentLocationId),
+            [
+                'path-' . $location->id,
+            ]
+        );
 
         $this->purgeClient->purge($tags);
     }

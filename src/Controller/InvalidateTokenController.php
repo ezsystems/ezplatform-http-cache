@@ -31,9 +31,11 @@ class InvalidateTokenController
 
     /**
      * TokenController constructor.
+     *
      * @param ConfigResolverInterface $configResolver
      * @param int $ttl
      * @param TagHandler $tagHandler
+     *
      * @internal param string $invalidatetoken
      */
     public function __construct(ConfigResolverInterface $configResolver, $ttl, TagHandler $tagHandler)
@@ -47,6 +49,7 @@ class InvalidateTokenController
      * Request::isFromTrustedProxy is private in Symfony <3.1, so this is a re-implementation of it.
      *
      * @param Request $request
+     *
      * @return bool
      */
     private function isFromTrustedProxy(Request $request)
@@ -56,6 +59,7 @@ class InvalidateTokenController
 
     /**
      * @param Request $request
+     *
      * @return Response
      */
     public function tokenAction(Request $request)

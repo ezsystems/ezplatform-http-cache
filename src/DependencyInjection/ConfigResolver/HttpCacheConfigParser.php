@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
@@ -30,7 +31,7 @@ class HttpCacheConfigParser implements ParserInterface
                 ->children()
                     ->arrayNode('purge_servers')
                         ->info('Servers to use for Http PURGE (will NOT be used if ezpublish.http_cache.purge_type is "local").')
-                        ->example(array('http://localhost/', 'http://another.server/'))
+                        ->example(['http://localhost/', 'http://another.server/'])
                         ->requiresAtLeastOneElement()
                         ->prototype('scalar')->end()
                     ->end()

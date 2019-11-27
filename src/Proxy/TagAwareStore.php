@@ -1,8 +1,6 @@
 <?php
 
 /**
- * File containing the TagAwareStore class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
@@ -97,7 +95,7 @@ class TagAwareStore extends Store implements RequestAwarePurger
      */
     private function saveTag($tag, $digest)
     {
-        $path = $this->getTagPath($tag) . DIRECTORY_SEPARATOR . $digest;
+        $path = $this->getTagPath($tag) . \DIRECTORY_SEPARATOR . $digest;
         if (!is_dir(dirname($path)) && false === @mkdir(dirname($path), 0777, true) && !is_dir(dirname($path))) {
             return false;
         }
@@ -152,7 +150,7 @@ class TagAwareStore extends Store implements RequestAwarePurger
                 explode('|', substr($locationId, 1, -1))
             );
         } else {
-            $tags = array('location-' . $locationId);
+            $tags = ['location-' . $locationId];
         }
 
         if (empty($tags)) {
@@ -211,12 +209,12 @@ class TagAwareStore extends Store implements RequestAwarePurger
      */
     public function getTagPath($tag = null)
     {
-        $path = $this->root . DIRECTORY_SEPARATOR . static::TAG_CACHE_DIR;
+        $path = $this->root . \DIRECTORY_SEPARATOR . static::TAG_CACHE_DIR;
         if ($tag) {
             // Flip the tag so we put id first so it gets sliced into folders.
             // (otherwise we would easily reach inode limits on file system)
             $tag = strrev($tag);
-            $path .= DIRECTORY_SEPARATOR . substr($tag, 0, 2) . DIRECTORY_SEPARATOR . substr($tag, 2, 2) . DIRECTORY_SEPARATOR . substr($tag, 4);
+            $path .= \DIRECTORY_SEPARATOR . substr($tag, 0, 2) . \DIRECTORY_SEPARATOR . substr($tag, 2, 2) . \DIRECTORY_SEPARATOR . substr($tag, 4);
         }
 
         return $path;

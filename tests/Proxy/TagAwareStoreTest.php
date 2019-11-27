@@ -1,8 +1,6 @@
 <?php
 
 /**
- * File containing the TagAwareStoreTest class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
@@ -34,8 +32,8 @@ class TagAwareStoreTest extends TestCase
 
     public function testGetPath()
     {
-        $path = $this->store->getTagPath('location-123') . DIRECTORY_SEPARATOR . 'en' . sha1('someContent');
-        $this->assertStringStartsWith(__DIR__ . DIRECTORY_SEPARATOR . 'ez' . DIRECTORY_SEPARATOR . '32' . DIRECTORY_SEPARATOR . '1-' . DIRECTORY_SEPARATOR . 'noitacol', $path);
+        $path = $this->store->getTagPath('location-123') . \DIRECTORY_SEPARATOR . 'en' . sha1('someContent');
+        $this->assertStringStartsWith(__DIR__ . \DIRECTORY_SEPARATOR . 'ez' . \DIRECTORY_SEPARATOR . '32' . \DIRECTORY_SEPARATOR . '1-' . \DIRECTORY_SEPARATOR . 'noitacol', $path);
     }
 
     public function testGetStalePath()
@@ -43,13 +41,13 @@ class TagAwareStoreTest extends TestCase
         $this->markTestIncomplete('@todo Stale handling removed, needs adjustments once it is re added in new form');
         // Generate the lock file to force using the stale cache dir
         $locationId = 123;
-        $prefix = TagAwareStore::TAG_CACHE_DIR . DIRECTORY_SEPARATOR . $locationId;
-        $prefixStale = TagAwareStore::TAG_CACHE_DIR . DIRECTORY_SEPARATOR . $locationId;
+        $prefix = TagAwareStore::TAG_CACHE_DIR . \DIRECTORY_SEPARATOR . $locationId;
+        $prefixStale = TagAwareStore::TAG_CACHE_DIR . \DIRECTORY_SEPARATOR . $locationId;
         $lockFile = $this->store->getLocationCacheLockName($locationId);
         file_put_contents($lockFile, getmypid());
 
-        $path = $this->store->getPath($prefix . DIRECTORY_SEPARATOR . 'en' . sha1('someContent'));
-        $this->assertStringStartsWith(__DIR__ . DIRECTORY_SEPARATOR . $prefixStale, $path);
+        $path = $this->store->getPath($prefix . \DIRECTORY_SEPARATOR . 'en' . sha1('someContent'));
+        $this->assertStringStartsWith(__DIR__ . \DIRECTORY_SEPARATOR . $prefixStale, $path);
         @unlink($lockFile);
     }
 
@@ -115,7 +113,7 @@ class TagAwareStoreTest extends TestCase
         $this->markTestIncomplete('@todo needs adjustments for new impl on top of tags');
         $fs = $this->getFilesystemMock();
         $this->store->setFilesystem($fs);
-        $locationIds = array(123, 456, 789);
+        $locationIds = [123, 456, 789];
         $i = 0;
         foreach ($locationIds as $locationId) {
             $locationCacheDir = $this->store->getTagPath('location-' . $locationId);

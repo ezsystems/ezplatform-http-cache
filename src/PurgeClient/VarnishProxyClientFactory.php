@@ -1,8 +1,6 @@
 <?php
 
 /**
- * File containing the VarnishProxyClientFactory class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
@@ -53,7 +51,7 @@ class VarnishProxyClientFactory
      */
     public function buildProxyClient(array $servers, $baseUrl)
     {
-        $allServers = array();
+        $allServers = [];
         foreach ($servers as $server) {
             if (!$this->dynamicSettingParser->isDynamicSetting($server)) {
                 $allServers[] = $server;

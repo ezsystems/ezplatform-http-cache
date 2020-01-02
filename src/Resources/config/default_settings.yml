@@ -3,5 +3,5 @@ parameters:
     ezplatform.http_cache.tags.header: 'xkey'
     ezplatform.http_cache.invalidate_token.ttl: 86400
     ezplatform.http_cache.no_vary.routes: ['ezplatform.httpcache.invalidatetoken']
-    # If enabled this hashes tags with hash('crc32b', $tag) in order to make sure tags are short
-    ezplatform.http_cache.tags.shorten_with_hash: "@=parameter('kernel.debug') ? false : true"
+    # Hashes tags with hash('crc32b', $tag) in order to make sure tags are short, by default used when !kernel.debug
+    ezplatform.http_cache.tags.shorten_with_hash: true

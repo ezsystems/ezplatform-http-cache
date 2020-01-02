@@ -19,7 +19,7 @@ services:
         arguments:
             - '@ezplatform.http_cache.purge_client_internal'
             - '@ezplatform.http_cache.repository_tag_prefix'
-            - '%ezplatform.http_cache.tags.shorten_with_hash%'
+            - "@=container.getParameter('kernel.debug') ? false : parameter('ezplatform.http_cache.tags.shorten_with_hash')"
 
     ezplatform.http_cache.purge_client_internal:
         alias: ezplatform.http_cache.purge_client.local
@@ -53,7 +53,7 @@ services:
          - '%ezplatform.http_cache.tags.header%'
          - '@ezplatform.http_cache.purge_client'
          - '@ezplatform.http_cache.repository_tag_prefix'
-         - '%ezplatform.http_cache.tags.shorten_with_hash%'
+         - "@=container.getParameter('kernel.debug') ? false : parameter('ezplatform.http_cache.tags.shorten_with_hash')"
 
     ezplatform.http_cache.user_context_provider.role_identify:
         class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify

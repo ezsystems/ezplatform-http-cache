@@ -26,29 +26,36 @@ class TagHandler extends FOSTagHandler
     private $purgeClient;
     private $prefixService;
     private $tagsHeader;
+    private $hashTags;
 
     public function __construct(
         CacheManager $cacheManager,
         $tagsHeader,
         PurgeClientInterface $purgeClient,
-        RepositoryTagPrefix $prefixService
+        RepositoryTagPrefix $prefixService,
+        $hashTags = false
     ) {
         $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
         $this->prefixService = $prefixService;
+        $this->hashTags = $hashTags;
 
         parent::__construct($cacheManager, $tagsHeader);
         $this->addTags(['ez-all']);
     }
 
-    public function invalidateTags(array $tags)
-    {
-        $this->purge($tags);
-    }
-
+    /**
+     * @deprecated Just an BC alias for invalidateTags().
+     */
     public function purge($tags)
     {
+        $this->invalidateTags($tags);
+    }
+
+    public function invalidateTags(array $tags)
+    {
+        // We don't hash tags here as it's done in PurgeClient\RepositoryPrefixDecorator
         $this->purgeClient->purge($tags);
     }
 
@@ -64,21 +71,28 @@ class TagHandler extends FOSTagHandler
             }
         }
 
+        // Should always be true due to "$this->addTags(['ez-all'])" in __construct().
         if ($this->hasTags()) {
             $tags = array_merge($tags, explode(',', $this->getTagsHeaderValue()));
 
-            // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
+            // Adapt tags like PurgeClient\RepositoryPrefixDecorator does:
+            // - Prefix tags with repository prefix (to be able to support several repositories on one proxy)
+            // - hash tags if enabled (in prod), in order to keep them short (8 characters)
             $repoPrefix = $this->prefixService->getRepositoryPrefix();
-            if (!empty($repoPrefix)) {
-                $tags = array_map(
-                    static function ($tag) use ($repoPrefix) {
-                        return $repoPrefix . $tag;
-                    },
-                    $tags
-                );
-                // Also add a un-prefixed `ez-all` in order to be able to purge all across repos
-                $tags[] = 'ez-all';
-            }
+            $hashTags = $this->hashTags;
+            $tags = array_map(
+                static function ($tag) use ($repoPrefix, $hashTags) {
+                    if ($hashTags) {
+                        return hash('crc32b', $repoPrefix . $tag);
+                    }
+
+                    return $repoPrefix . $tag;
+                },
+                $tags
+            );
+
+            // Also add a un-prefixed `ez-all` and un-hashed ez-all
+            $tags[] = 'ez-all';
 
             $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
         }

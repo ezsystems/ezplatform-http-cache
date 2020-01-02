@@ -16,7 +16,10 @@ services:
 
     ezplatform.http_cache.purge_client_decorator:
         class: EzSystems\PlatformHttpCacheBundle\PurgeClient\RepositoryPrefixDecorator
-        arguments: ['@ezplatform.http_cache.purge_client_internal', '@ezplatform.http_cache.repository_tag_prefix']
+        arguments:
+            - '@ezplatform.http_cache.purge_client_internal'
+            - '@ezplatform.http_cache.repository_tag_prefix'
+            - '%ezplatform.http_cache.tags.shorten_with_hash%'
 
     ezplatform.http_cache.purge_client_internal:
         alias: ezplatform.http_cache.purge_client.local
@@ -50,6 +53,7 @@ services:
          - '%ezplatform.http_cache.tags.header%'
          - '@ezplatform.http_cache.purge_client'
          - '@ezplatform.http_cache.repository_tag_prefix'
+         - '%ezplatform.http_cache.tags.shorten_with_hash%'
 
     ezplatform.http_cache.user_context_provider.role_identify:
         class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify

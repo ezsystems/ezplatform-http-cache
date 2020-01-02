@@ -29,16 +29,16 @@ class TagHandlerSpec extends ObjectBehavior
         $this->beConstructedWith($cacheManager, 'xkey', $purgeClient, $tagPrefix);
     }
 
-    public function it_calls_purge_on_invalidate()
+    public function it_calls_purge_client_on_invalidate(PurgeClientInterface $purgeClient)
     {
-        $this->purge(Argument::exact(['something']));
+        $purgeClient->purge(Argument::exact(['something']))->shouldBeCalled();
 
         $this->invalidateTags(['something']);
     }
 
     public function it_calls_purge_client_on_purge(PurgeClientInterface $purgeClient)
     {
-        $purgeClient->purge(Argument::exact(['something']));
+        $purgeClient->purge(Argument::exact(['something']))->shouldBeCalled();
 
         $this->purge(['something']);
     }

@@ -50,4 +50,9 @@ script:
     - if [ "$CHECK_CS" = "true" ]; then phpenv config-rm xdebug.ini && ./vendor/bin/php-cs-fixer fix -v --dry-run --diff --show-progress=estimating; fi
 
 notifications:
-    email: false
+  slack:
+    rooms:
+      - secure: KR/LU//zh93mD8VERbBCU9NWxQmH9QI9NudhII9prcEey41lXXFMVhiSRPL6RHVinvSGVq5JKfxPB6Q+nVjpBJ+lyywV/PfPWPN6iXjYZPVLlk6tzXWj+FpKYBGkBoKLRZqt9xGqRj/yLJLbrZoMELvS+6tR8Jqn+ccKOHU04sPYCEHhkUI6Iiuc5eRjnHUbsYSPMfsT7Qv1yD3TzJLJOjgl9WjUSwBBW4s9rYIPTflhBjFlkAtO45icee6TrDoeO4PGdVE2fBz/tBvCEUTqte1lFDUFA3mbdEVlzlYekO/712YaMZFWOoA2aO/sTozYF+9UXxrAA1xRInBvxcHg8gK4Nt5bTmBcFYKcsNRBJfWxeBvBBwcTIhn6aAIaBsRU/1kY4c2/oTd4jeO5SF60N4RbAqxZ2a0WZR2X4xHimejYXxG+MslnTYkBdIom4rqHFYl1T2q23aVR2u6GOVGaiye0C14ob3iZjRikuRaabThnTHFSa9LoRCzgtpE3h0w+FBWxWPJWYl46xLWxNUcsplg5KNC0vAK7qIIbhj/l2zGnQKON+QqCL/sRY8ge5Nb2FXPrWA4bEfBXU3f44EsyYGFLEQ3v1UM03LAdCCm2qkTyxWgNcHtXaI/7s+McwCeRy6aireZZ7AMJ58rqu/OkPQLpjBGhTyRht4qtYZfHk+4=
+    on_success: change
+    on_failure: always
+    on_pull_requests: false

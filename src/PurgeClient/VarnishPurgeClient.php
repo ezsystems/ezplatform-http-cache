@@ -90,9 +90,8 @@ class VarnishPurgeClient implements PurgeClientInterface
     {
         $server = $this->configResolver->getParameter('http_cache.purge_servers')[0];
         $host = parse_url($server, PHP_URL_HOST);
-        if ($host) {
-            $headers['Host'] = $host;
-        }
+
+        $headers['Host'] = $host ?: $_SERVER['SERVER_NAME'];
 
         return $headers;
     }

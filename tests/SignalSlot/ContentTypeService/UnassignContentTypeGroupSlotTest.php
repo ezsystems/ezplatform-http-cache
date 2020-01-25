@@ -21,7 +21,7 @@ class UnassignContentTypeGroupSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
-        return ['type-group-4'];
+        return ['tg4'];
     }
 
     public function getReceivedSignalClasses()

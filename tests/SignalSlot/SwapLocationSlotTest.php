@@ -32,14 +32,14 @@ class SwapLocationSlotTest extends AbstractContentSlotTest
     public function generateTags()
     {
         return [
-            'content-' . $this->contentId,
-            'path-' . $this->locationId,
-            'location-' . $this->parentLocationId,
-            'parent-' . $this->parentLocationId,
-            'content-' . $this->swapContentId,
-            'path-' . $this->swapLocationId,
-            'location-' . $this->swapParentLocationId,
-            'parent-' . $this->swapParentLocationId,
+            'c' . $this->contentId,
+            'p' . $this->locationId,
+            'l' . $this->parentLocationId,
+            'pl' . $this->parentLocationId,
+            'c' . $this->swapContentId,
+            'p' . $this->swapLocationId,
+            'l' . $this->swapParentLocationId,
+            'pl' . $this->swapParentLocationId,
         ];
     }
 

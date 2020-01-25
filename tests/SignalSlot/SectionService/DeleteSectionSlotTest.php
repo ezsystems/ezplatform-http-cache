@@ -21,7 +21,7 @@ class DeleteSectionSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
-        return ['section-2'];
+        return ['s2'];
     }
 
     public function getReceivedSignalClasses()

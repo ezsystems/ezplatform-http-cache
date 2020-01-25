@@ -88,50 +88,32 @@ class TagHandlerSpec extends ObjectBehavior
 
     public function it_tags_all_tags_we_add(Response $response, ResponseHeaderBag $responseHeaderBag)
     {
-        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
+        $responseHeaderBag->set('xkey', Argument::exact('ez-all l4 c4 p2'))->shouldBeCalled();
 
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
-        $this->tagResponse($response, true);
-    }
-
-    public function it_tags_all_tags_we_add_on_null_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
-    {
-        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
-
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
-        $this->tagResponse($response, true);
-    }
-
-    public function it_tags_all_tags_we_add_on_default_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
-    {
-        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
-
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
+        $this->addTags(['l4', 'c4']);
+        $this->addTags(['p2']);
         $this->tagResponse($response, true);
     }
 
     public function it_tags_all_tags_we_add_and_prefix_with_repo_id(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
     {
-        $tagPrefix->getRepositoryPrefix()->willReturn('intranet_');
-        $responseHeaderBag->set('xkey', Argument::exact('intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2 ez-all'))->shouldBeCalled();
+        $tagPrefix->getRepositoryPrefix()->willReturn('0');
+        $responseHeaderBag->set('xkey', Argument::exact('0ez-all 0l4 0c4 0p2 ez-all'))->shouldBeCalled();
 
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
+        $this->addTags(['l4', 'c4']);
+        $this->addTags(['p2']);
         $this->tagResponse($response, true);
     }
 
     public function it_tags_all_tags_we_add_and_prefix_with_repo_id_also_with_existing_header(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
     {
-        $tagPrefix->getRepositoryPrefix()->willReturn('intranet_');
+        $tagPrefix->getRepositoryPrefix()->willReturn('2');
         $responseHeaderBag->has('xkey')->willReturn(true);
         $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1']);
-        $responseHeaderBag->set('xkey', Argument::exact('intranet_tag1 intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2 ez-all'))->shouldBeCalled();
+        $responseHeaderBag->set('xkey', Argument::exact('2tag1 2ez-all 2l4 2c4 2p2 ez-all'))->shouldBeCalled();
 
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
+        $this->addTags(['l4', 'c4']);
+        $this->addTags(['p2']);
         $this->tagResponse($response, false);
     }
 }

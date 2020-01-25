@@ -19,7 +19,7 @@ class UpdateContentSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
-        return ['content-versions-55'];
+        return ['cv55'];
     }
 
     public function getSlotClass()

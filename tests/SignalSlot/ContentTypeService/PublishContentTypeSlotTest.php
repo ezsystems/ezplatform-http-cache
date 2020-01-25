@@ -21,7 +21,7 @@ class PublishContentTypeSlotTest extends AbstractSlotTest
 
     public function generateTags()
     {
-        return ['content-type-4', 'type-4'];
+        return ['ct4', 't4'];
     }
 
     public function getReceivedSignalClasses()

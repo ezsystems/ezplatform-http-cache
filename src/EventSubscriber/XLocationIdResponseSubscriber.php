@@ -60,27 +60,27 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
             $id = trim($id);
             try {
                 /** @var $location \eZ\Publish\API\Repository\Values\Content\Location */
-                $location = $this->repository->sudo(function (Repository $repository) use ($id) {
+                $location = $this->repository->sudo(static function (Repository $repository) use ($id) {
                     return $repository->getLocationService()->loadLocation($id);
                 });
 
-                $tags[] = 'location-' . $location->id;
-                $tags[] = 'parent-' . $location->parentLocationId;
+                $tags[] = 'l' . $location->id;
+                $tags[] = 'pl' . $location->parentLocationId;
 
                 foreach ($location->path as $pathItem) {
-                    $tags[] = 'path-' . $pathItem;
+                    $tags[] = 'p' . $pathItem;
                 }
 
                 $contentInfo = $location->getContentInfo();
-                $tags[] = 'content-' . $contentInfo->id;
-                $tags[] = 'content-type-' . $contentInfo->contentTypeId;
+                $tags[] = 'c' . $contentInfo->id;
+                $tags[] = 'ct' . $contentInfo->contentTypeId;
 
                 if ($contentInfo->mainLocationId !== $location->id) {
-                    $tags[] = 'location-' . $contentInfo->mainLocationId;
+                    $tags[] = 'l' . $contentInfo->mainLocationId;
                 }
             } catch (NotFoundException $e) {
-                $tags[] = "location-$id";
-                $tags[] = "path-$id";
+                $tags[] = "l$id";
+                $tags[] = "p$id";
             }
         }
 

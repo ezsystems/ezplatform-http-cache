@@ -19,23 +19,23 @@ abstract class AbstractContentSlotTest extends AbstractSlotTest
     {
         $tags = [];
         if ($this->contentId) {
-            $tags = ['content-' . $this->contentId, 'relation-' . $this->contentId];
+            $tags = ['c' . $this->contentId, 'r' . $this->contentId];
         }
 
         if ($this->locationId) {
             // self(s)
-            $tags[] = 'location-' . $this->locationId;
+            $tags[] = 'l' . $this->locationId;
             // children
-            $tags[] = 'parent-' . $this->locationId;
+            $tags[] = 'pl' . $this->locationId;
             // reverse location relations
-            $tags[] = 'relation-location-' . $this->locationId;
+            $tags[] = 'rl' . $this->locationId;
         }
 
         if ($this->parentLocationId) {
             // parent(s)
-            $tags[] = 'location-' . $this->parentLocationId;
+            $tags[] = 'l' . $this->parentLocationId;
             // siblings
-            $tags[] = 'parent-' . $this->parentLocationId;
+            $tags[] = 'pl' . $this->parentLocationId;
         }
 
         return $tags;

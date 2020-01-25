@@ -146,11 +146,11 @@ class TagAwareStore extends Store implements RequestAwarePurger
         } elseif ($locationId[0] === '(' && substr($locationId, -1) === ')') {
             // Deprecated: (123|456|789) => Purge for #123, #456 and #789 location IDs.
             $tags = array_map(
-                function ($id) {return 'location-' . $id;},
+                static function ($id) {return 'l' . $id;},
                 explode('|', substr($locationId, 1, -1))
             );
         } else {
-            $tags = ['location-' . $locationId];
+            $tags = ['l' . $locationId];
         }
 
         if (empty($tags)) {
@@ -214,7 +214,16 @@ class TagAwareStore extends Store implements RequestAwarePurger
             // Flip the tag so we put id first so it gets sliced into folders.
             // (otherwise we would easily reach inode limits on file system)
             $tag = strrev($tag);
-            $path .= \DIRECTORY_SEPARATOR . substr($tag, 0, 2) . \DIRECTORY_SEPARATOR . substr($tag, 2, 2) . \DIRECTORY_SEPARATOR . substr($tag, 4);
+            $length = strlen($tag);
+            $path .= \DIRECTORY_SEPARATOR . substr($tag, 0, 2);
+
+            if ($length > 2) {
+                $path .= \DIRECTORY_SEPARATOR . substr($tag, 2, 2);
+            }
+
+            if ($length > 4) {
+                $path .= \DIRECTORY_SEPARATOR . substr($tag, 4);
+            }
         }
 
         return $path;

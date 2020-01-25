@@ -27,10 +27,10 @@ class RecoverSlotTest extends AbstractContentSlotTest
     public function generateTags()
     {
         return [
-            'content-' . $this->contentId,
-            'relation-' . $this->contentId,
-            'location-' . $this->parentLocationId,
-            'parent-' . $this->parentLocationId,
+            'c' . $this->contentId,
+            'r' . $this->contentId,
+            'l' . $this->parentLocationId,
+            'pl' . $this->parentLocationId,
         ];
     }
 

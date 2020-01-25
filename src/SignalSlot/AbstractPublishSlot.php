@@ -42,22 +42,22 @@ abstract class AbstractPublishSlot extends AbstractContentSlot
 
         $tags = [
             // self in all forms (also without locations)
-            'content-' . $contentId,
+            'c' . $contentId,
             // reverse relations
-            'relation-' . $contentId,
+            'r' . $contentId,
         ];
 
         foreach ($this->locationHandler->loadLocationsByContent($contentId) as $location) {
             // self
-            $tags[] = 'location-' . $location->id;
+            $tags[] = 'l' . $location->id;
             // children
-            $tags[] = 'parent-' . $location->id;
+            $tags[] = 'pl' . $location->id;
             // reverse location relations
-            $tags[] = 'relation-location-' . $location->id;
+            $tags[] = 'rl' . $location->id;
             // parent
-            $tags[] = 'location-' . $location->parentId;
+            $tags[] = 'l' . $location->parentId;
             // siblings
-            $tags[] = 'parent-' . $location->parentId;
+            $tags[] = 'pl' . $location->parentId;
         }
 
         return $tags;

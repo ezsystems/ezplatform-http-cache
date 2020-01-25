@@ -66,7 +66,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost']);
+            ->with('/', ['key' => "l$locationId", 'Host' => 'varnishpurgehost']);
 
         $this->configResolver
             ->expects($this->exactly(1))
@@ -92,7 +92,7 @@ class VarnishPurgeClientTest extends TestCase
         $this->cacheManager
             ->expects($this->once())
             ->method('invalidatePath')
-            ->with('/', ['key' => "location-$locationId", 'Host' => 'varnishpurgehost', $tokenName => $token]);
+            ->with('/', ['key' => "l$locationId", 'Host' => 'varnishpurgehost', $tokenName => $token]);
 
         $this->configResolver
             ->expects($this->exactly(1))
@@ -133,7 +133,7 @@ class VarnishPurgeClientTest extends TestCase
             ->willReturn(null);
 
         $keys = array_map(static function ($id) {
-            return "location-$id";
+            return "l$id";
         },
             $locationIds
         );
@@ -173,7 +173,7 @@ class VarnishPurgeClientTest extends TestCase
             ->willReturn($token);
 
         $keys = array_map(static function ($id) {
-            return "location-$id";
+            return "l$id";
         },
             $locationIds
         );

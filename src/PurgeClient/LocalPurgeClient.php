@@ -32,8 +32,8 @@ class LocalPurgeClient implements PurgeClientInterface
         }
 
         $tags = array_map(
-            function ($tag) {
-                return is_numeric($tag) ? 'location-' . $tag : $tag;
+            static function ($tag) {
+                return is_numeric($tag) ? 'l' . $tag : $tag;
             },
             (array)$tags
         );

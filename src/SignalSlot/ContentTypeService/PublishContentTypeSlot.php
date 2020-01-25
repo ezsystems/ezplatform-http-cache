@@ -24,6 +24,6 @@ class PublishContentTypeSlot extends AbstractSlot
      */
     protected function generateTags(Signal $signal)
     {
-        return ['content-type-' . $signal->contentTypeDraftId, 'type-' . $signal->contentTypeDraftId];
+        return ['ct' . $signal->contentTypeDraftId, 't' . $signal->contentTypeDraftId];
     }
 }

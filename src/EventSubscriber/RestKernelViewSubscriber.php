@@ -71,23 +71,23 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
         $tags = [];
         switch ($value) {
             case $value instanceof VersionList && !empty($value->versions):
-                $tags[] = 'content-' . $value->versions[0]->contentInfo->id;
-                $tags[] = 'content-versions-' . $value->versions[0]->contentInfo->id;
+                $tags[] = 'c' . $value->versions[0]->contentInfo->id;
+                $tags[] = 'cv' . $value->versions[0]->contentInfo->id;
 
                 break;
 
             case $value instanceof Section:
-                $tags[] = 'section-' . $value->id;
+                $tags[] = 's' . $value->id;
                 break;
 
             case $value instanceof ContentTypeGroupRefList:
                 if ($value->contentType->status !== ContentType::STATUS_DEFINED) {
                     return [];
                 }
-                $tags[] = 'type-' . $value->contentType->id;
+                $tags[] = 't' . $value->contentType->id;
             case $value instanceof ContentTypeGroupList:
                 foreach ($value->contentTypeGroups as $contentTypeGroup) {
-                    $tags[] = 'type-group-' . $contentTypeGroup->id;
+                    $tags[] = 'tg' . $contentTypeGroup->id;
                 }
                 break;
 
@@ -97,7 +97,7 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
                 if ($value->status !== ContentType::STATUS_DEFINED) {
                     return [];
                 }
-                $tags[] = 'type-' . $value->id;
+                $tags[] = 't' . $value->id;
                 break;
 
             case $value instanceof Root:
@@ -106,19 +106,19 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
 
                 // @deprecated The following logic is 1.x specific, and should be removed before a 1.0 version
             case $value instanceof PermissionReport:
-                // We requrie v0.1.5 with added location property to be able to add tags
+                // We require v0.1.5 with added location property to be able to add tags
                 if (!isset($value->parentLocation)) {
                     return [];
                 }
 
                 // In case of for instance location swap where content type might change affecting allowed content types
-                $tags[] = 'content-' . $value->parentLocation->contentId;
-                $tags[] = 'content-type-' . $value->parentLocation->contentInfo->contentTypeId;
-                $tags[] = 'location-' . $value->parentLocation->id;
+                $tags[] = 'c' . $value->parentLocation->contentId;
+                $tags[] = 'ct' . $value->parentLocation->contentInfo->contentTypeId;
+                $tags[] = 'l' . $value->parentLocation->id;
 
                 // In case of permissions assigned by subtree, so if path changes affecting this (move subtree operation)
                 foreach ($value->parentLocation->path as $pathItem) {
-                    $tags[] = 'path-' . $pathItem;
+                    $tags[] = 'p' . $pathItem;
                 }
                 break;
         }

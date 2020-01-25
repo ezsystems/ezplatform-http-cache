@@ -32,7 +32,7 @@ class ContentInfoTaggerSpec extends ObjectBehavior
 
         $this->tag($value);
 
-        $tagHandler->addTags(['content-123', 'content-type-987'])->shouldHaveBeenCalled();
+        $tagHandler->addTags(['c123', 'ct987'])->shouldHaveBeenCalled();
     }
 
     public function it_tags_with_location_id_if_one_is_set(TagHandler $tagHandler)
@@ -41,6 +41,6 @@ class ContentInfoTaggerSpec extends ObjectBehavior
 
         $this->tag($value);
 
-        $tagHandler->addTags(['location-456'])->shouldHaveBeenCalled();
+        $tagHandler->addTags(['l456'])->shouldHaveBeenCalled();
     }
 }

@@ -17,14 +17,14 @@ class LocationTagger extends AbstractValueTagger
         }
 
         if ($value->id !== $value->contentInfo->mainLocationId) {
-            $this->tagHandler->addTags(['location-' . $value->id]);
+            $this->tagHandler->addTags(['l' . $value->id]);
         }
 
-        $this->tagHandler->addTags(['parent-' . $value->parentLocationId]);
+        $this->tagHandler->addTags(['pl' . $value->parentLocationId]);
         $this->tagHandler->addTags(
             array_map(
-                function ($pathItem) {
-                    return 'path-' . $pathItem;
+                static function ($pathItem) {
+                    return 'p' . $pathItem;
                 },
                 $value->path
             )

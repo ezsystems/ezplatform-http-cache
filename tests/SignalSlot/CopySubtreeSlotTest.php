@@ -27,8 +27,8 @@ class CopySubtreeSlotTest extends AbstractContentSlotTest
     public function generateTags()
     {
         return [
-            'location-' . $this->targetParentLocationId,
-            'parent-' . $this->targetParentLocationId,
+            'l' . $this->targetParentLocationId,
+            'pl' . $this->targetParentLocationId,
         ];
     }
 

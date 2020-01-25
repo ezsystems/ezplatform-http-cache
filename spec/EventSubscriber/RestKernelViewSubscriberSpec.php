@@ -83,7 +83,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         $restValue->beConstructedWith([['id' => 5]]);
         $event->getControllerResult()->willReturn($restValue);
 
-        $tagHandler->addTags(['section-5'])->shouldBecalled();
+        $tagHandler->addTags(['s5'])->shouldBecalled();
         $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
 
         $this->tagUIRestResult($event);
@@ -124,7 +124,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         $restValue->beConstructedWith([['id' => 4, 'status' => ContentType::STATUS_DEFINED]]);
         $event->getControllerResult()->willReturn($restValue);
 
-        $tagHandler->addTags(['type-4'])->shouldBecalled();
+        $tagHandler->addTags(['t4'])->shouldBecalled();
         $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
 
         $this->tagUIRestResult($event);
@@ -169,7 +169,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         $restValue->contentType = $contentType;
         $event->getControllerResult()->willReturn($restValue);
 
-        $tagHandler->addTags(['type-4'])->shouldBecalled();
+        $tagHandler->addTags(['t4'])->shouldBecalled();
         $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
 
         $this->tagUIRestResult($event);
@@ -222,7 +222,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
 
         $event->getControllerResult()->willReturn($restValue);
 
-        $tagHandler->addTags(['type-4', 'type-group-2'])->shouldBecalled();
+        $tagHandler->addTags(['t4', 'tg2'])->shouldBecalled();
         $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
 
         $this->tagUIRestResult($event);
@@ -246,7 +246,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         $restValue->contentTypeGroups = [$contentTypeGroup];
         $event->getControllerResult()->willReturn($restValue);
 
-        $tagHandler->addTags(['type-group-2'])->shouldBecalled();
+        $tagHandler->addTags(['tg2'])->shouldBecalled();
         $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
 
         $this->tagUIRestResult($event);
@@ -272,7 +272,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         $restValue->versions = [$versionInfo];
         $event->getControllerResult()->willReturn($restValue);
 
-        $tagHandler->addTags(['content-33', 'content-versions-33'])->shouldBecalled();
+        $tagHandler->addTags(['c33', 'cv33'])->shouldBecalled();
         $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
 
         $this->tagUIRestResult($event);

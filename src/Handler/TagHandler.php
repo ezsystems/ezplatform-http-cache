@@ -22,7 +22,6 @@ use FOS\HttpCacheBundle\CacheManager;
  */
 class TagHandler extends FOSTagHandler
 {
-    private $cacheManager;
     private $purgeClient;
     private $prefixService;
     private $tagsHeader;
@@ -33,7 +32,6 @@ class TagHandler extends FOSTagHandler
         PurgeClientInterface $purgeClient,
         RepositoryTagPrefix $prefixService
     ) {
-        $this->cacheManager = $cacheManager;
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
         $this->prefixService = $prefixService;
@@ -69,16 +67,14 @@ class TagHandler extends FOSTagHandler
 
             // Prefix tags with repository prefix (to be able to support several repositories on one proxy)
             $repoPrefix = $this->prefixService->getRepositoryPrefix();
-            if (!empty($repoPrefix)) {
-                $tags = array_map(
-                    static function ($tag) use ($repoPrefix) {
-                        return $repoPrefix . $tag;
-                    },
-                    $tags
-                );
-                // Also add a un-prefixed `ez-all` in order to be able to purge all across repos
-                $tags[] = 'ez-all';
-            }
+            $tags = array_map(
+                static function ($tag) use ($repoPrefix) {
+                    return $repoPrefix . $tag;
+                },
+                $tags
+            );
+            // Also add a un-prefixed `ez-all` in order to be able to purge all across repos
+            $tags[] = 'ez-all';
 
             $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
         }

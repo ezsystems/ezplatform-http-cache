@@ -29,7 +29,7 @@ class LocalPurgeClientTest extends TestCase
     {
         $locationIds = [123, 456, 789];
         $expectedBanRequest = Request::create('http://localhost', 'PURGE');
-        $expectedBanRequest->headers->set('key', 'location-123 location-456 location-789');
+        $expectedBanRequest->headers->set('key', 'l123 l456 l789');
 
         $cacheStore = $this->createMock(RequestAwarePurger::class);
         $cacheStore

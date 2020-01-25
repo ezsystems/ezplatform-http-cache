@@ -38,7 +38,7 @@ class UpdateUrlSlot extends AbstractContentSlot
     {
         if ($signal->urlChanged) {
             return array_map(function ($contentId) {
-                return 'content-' . $contentId;
+                return 'c' . $contentId;
             }, $this->urlHandler->findUsages($signal->urlId));
         }
 

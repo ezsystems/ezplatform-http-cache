@@ -18,9 +18,9 @@ class CopySubtreeSlot extends AbstractContentSlot
         /** @var \eZ\Publish\Core\SignalSlot\Signal\LocationService\CopySubtreeSignal $signal */
         return [
             // parent of the new copied tree
-            'location-' . $signal->targetParentLocationId,
+            'l' . $signal->targetParentLocationId,
             // siblings of the new copied tree
-            'parent-' . $signal->targetParentLocationId,
+            'pl' . $signal->targetParentLocationId,
         ];
     }
 

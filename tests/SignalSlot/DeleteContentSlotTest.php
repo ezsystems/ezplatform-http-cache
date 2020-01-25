@@ -18,8 +18,8 @@ class DeleteContentSlotTest extends AbstractContentSlotTest
     public function generateTags()
     {
         $tags = parent::generateTags();
-        $tags[] = 'path-45';
-        $tags[] = 'path-55';
+        $tags[] = 'p45';
+        $tags[] = 'p55';
 
         return $tags;
     }

@@ -24,6 +24,6 @@ class UnassignContentTypeGroupSlot extends AbstractSlot
      */
     protected function generateTags(Signal $signal)
     {
-        return ['type-group-' . $signal->contentTypeGroupId];
+        return ['tg' . $signal->contentTypeGroupId];
     }
 }

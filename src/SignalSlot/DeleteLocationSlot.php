@@ -19,7 +19,7 @@ class DeleteLocationSlot extends AbstractContentSlot
     protected function generateTags(Signal $signal)
     {
         $tags = parent::generateTags($signal);
-        $tags[] = 'path-' . $signal->locationId;
+        $tags[] = 'p' . $signal->locationId;
 
         return $tags;
     }

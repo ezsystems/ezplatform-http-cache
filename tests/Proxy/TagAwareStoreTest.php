@@ -32,8 +32,15 @@ class TagAwareStoreTest extends TestCase
 
     public function testGetPath()
     {
-        $path = $this->store->getTagPath('location-123') . \DIRECTORY_SEPARATOR . 'en' . sha1('someContent');
-        $this->assertStringStartsWith(__DIR__ . \DIRECTORY_SEPARATOR . 'ez' . \DIRECTORY_SEPARATOR . '32' . \DIRECTORY_SEPARATOR . '1-' . \DIRECTORY_SEPARATOR . 'noitacol', $path);
+        // Test different tag lengths and how it affects paths
+        $path = $this->store->getTagPath('l1');
+        $this->assertEquals(__DIR__ . \DIRECTORY_SEPARATOR . 'ez' . \DIRECTORY_SEPARATOR . '1l', $path);
+
+        $path = $this->store->getTagPath('l123');
+        $this->assertEquals(__DIR__ . \DIRECTORY_SEPARATOR . 'ez' . \DIRECTORY_SEPARATOR . '32' . \DIRECTORY_SEPARATOR . '1l', $path);
+
+        $path = $this->store->getTagPath('0l1234');
+        $this->assertEquals(__DIR__ . \DIRECTORY_SEPARATOR . 'ez' . \DIRECTORY_SEPARATOR . '43' . \DIRECTORY_SEPARATOR . '21' . \DIRECTORY_SEPARATOR . 'l0', $path);
     }
 
     public function testGetStalePath()
@@ -82,7 +89,7 @@ class TagAwareStoreTest extends TestCase
         $fs = $this->getFilesystemMock();
         $this->store->setFilesystem($fs);
         $locationId = 123;
-        $locationCacheDir = $this->store->getTagPath('location-' . $locationId);
+        $locationCacheDir = $this->store->getTagPath('l' . $locationId);
         $staleCacheDir = str_replace(TagAwareStore::TAG_CACHE_DIR, TagAwareStore::TAG_CACHE_DIR, $locationCacheDir);
 
         $fs
@@ -116,7 +123,7 @@ class TagAwareStoreTest extends TestCase
         $locationIds = [123, 456, 789];
         $i = 0;
         foreach ($locationIds as $locationId) {
-            $locationCacheDir = $this->store->getTagPath('location-' . $locationId);
+            $locationCacheDir = $this->store->getTagPath('l' . $locationId);
             $staleCacheDir = str_replace(TagAwareStore::TAG_CACHE_DIR, TagAwareStore::TAG_CACHE_DIR, $locationCacheDir);
 
             $fs

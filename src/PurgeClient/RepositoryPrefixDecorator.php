@@ -38,7 +38,7 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
         $tags = array_map(
             static function ($tag) use ($repoPrefix) {
                 // Obsolete: for BC with older purge calls for BAN based HttpCache impl
-                $tag = is_numeric($tag) ? 'location-' . $tag : $tag;
+                $tag = is_numeric($tag) ? 'l' . $tag : $tag;
 
                 // Prefix tags with repository prefix
                 return $repoPrefix . $tag;
@@ -51,6 +51,7 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
 
     public function purgeAll()
     {
+        //  No prefix here, this on purpose clears all as use case is deployment of whole install.
         $this->purgeClient->purgeAll();
     }
 }

@@ -23,6 +23,6 @@ class UpdateContentSlot extends AbstractSlot
      */
     protected function generateTags(Signal $signal)
     {
-        return ['content-versions-' . $signal->contentId];
+        return ['cv' . $signal->contentId];
     }
 }

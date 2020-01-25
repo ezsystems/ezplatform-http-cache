@@ -57,7 +57,7 @@ class UpdateUrlSlotTest extends AbstractSlotTest
     public function generateTags()
     {
         return array_map(function ($id) {
-            return 'content-' . $id;
+            return 'c' . $id;
         }, self::CONTENT_IDS);
     }
 

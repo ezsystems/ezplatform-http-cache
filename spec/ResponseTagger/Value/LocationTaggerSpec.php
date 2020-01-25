@@ -33,7 +33,7 @@ class LocationTaggerSpec extends ObjectBehavior
         $value = new Location(['id' => 123, 'contentInfo' => new ContentInfo(['mainLocationId' => 321])]);
         $this->tag($value);
 
-        $tagHandler->addTags(['location-123'])->shouldHaveBeenCalled();
+        $tagHandler->addTags(['l123'])->shouldHaveBeenCalled();
     }
 
     public function it_tags_with_parent_location_id(TagHandler $tagHandler)
@@ -42,7 +42,7 @@ class LocationTaggerSpec extends ObjectBehavior
 
         $this->tag($value);
 
-        $tagHandler->addTags(['parent-123'])->shouldHaveBeenCalled();
+        $tagHandler->addTags(['pl123'])->shouldHaveBeenCalled();
     }
 
     public function it_tags_with_path_items(TagHandler $tagHandler)
@@ -51,6 +51,6 @@ class LocationTaggerSpec extends ObjectBehavior
 
         $this->tag($value);
 
-        $tagHandler->addTags(['path-1', 'path-2', 'path-123'])->shouldHaveBeenCalled();
+        $tagHandler->addTags(['p1', 'p2', 'p123'])->shouldHaveBeenCalled();
     }
 }

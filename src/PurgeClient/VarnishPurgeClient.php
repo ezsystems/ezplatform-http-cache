@@ -48,7 +48,7 @@ class VarnishPurgeClient implements PurgeClientInterface
 
         // For 5.4/1.x BC make sure to map any int to location id tag
         $tags = array_unique(array_map(static function ($tag) {
-            return is_numeric($tag) ? 'location-' . $tag : $tag;
+            return is_numeric($tag) ? 'l' . $tag : $tag;
         },
             (array)$tags
         ));
@@ -56,7 +56,7 @@ class VarnishPurgeClient implements PurgeClientInterface
         $headers = $this->getPurgeHeaders();
         $chunkSize = $this->determineTagsPerHeader($tags);
 
-        // NB! This requries varnish-modules 0.10.2, if you need support for varnish-modules 0.9.x, use ezplatform-http-cache 0.8.x
+        // NB! This requires varnish-modules 0.10.2, if you need support for varnish-modules 0.9.x, use ezplatform-http-cache 0.8.x
         foreach (array_chunk($tags, $chunkSize) as $tagchunk) {
             $headers['key'] = implode(' ', $tagchunk);
             $this->cacheManager->invalidatePath(

@@ -19,7 +19,15 @@ class CopyContentSlotTest extends AbstractContentSlotTest
 
     public function generateTags()
     {
-        return ['c' . $this->contentId, 'l' . $this->parentLocationId, 'p' . $this->parentLocationId];
+        return [
+            'c' . $this->contentId,
+            'l' . $this->parentLocationId,
+            'p' . $this->parentLocationId,
+
+            'content-' . $this->contentId,
+            'location-' . $this->parentLocationId,
+            'path-' . $this->parentLocationId,
+        ];
     }
 
     public function getSlotClass()

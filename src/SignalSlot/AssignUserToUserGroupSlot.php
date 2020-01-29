@@ -18,7 +18,15 @@ class AssignUserToUserGroupSlot extends AbstractContentSlot
      */
     protected function generateTags(Signal $signal)
     {
-        return ['c' . $signal->userId, 'c' . $signal->userGroupId, 'ez-user-context-hash'];
+        return [
+            'c' . $signal->userId,
+            'c' . $signal->userGroupId,
+            'ez-user-context-hash',
+
+            // deprecated
+            'content-' . $signal->userId,
+            'content-' . $signal->userGroupId,
+        ];
     }
 
     protected function supports(Signal $signal)

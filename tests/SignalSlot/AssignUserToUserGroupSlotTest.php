@@ -18,7 +18,13 @@ class AssignUserToUserGroupSlotTest extends AbstractContentSlotTest
 
     public function generateTags()
     {
-        return ['c' . $this->contentId, 'c99', 'ez-user-context-hash'];
+        return [
+            'c' . $this->contentId,
+            'c99',
+            'ez-user-context-hash',
+            'content-' . $this->contentId,
+            'content-99',
+        ];
     }
 
     public function getSlotClass()

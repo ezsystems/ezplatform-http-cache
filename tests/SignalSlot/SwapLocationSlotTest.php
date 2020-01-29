@@ -40,6 +40,16 @@ class SwapLocationSlotTest extends AbstractContentSlotTest
             'p' . $this->swapLocationId,
             'l' . $this->swapParentLocationId,
             'pl' . $this->swapParentLocationId,
+
+            // deprecated
+            'content-' . $this->contentId,
+            'path-' . $this->locationId,
+            'location-' . $this->parentLocationId,
+            'parent-' . $this->parentLocationId,
+            'content-' . $this->swapContentId,
+            'path-' . $this->swapLocationId,
+            'location-' . $this->swapParentLocationId,
+            'parent-' . $this->swapParentLocationId,
         ];
     }
 

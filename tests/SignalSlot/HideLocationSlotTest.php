@@ -26,6 +26,7 @@ class HideLocationSlotTest extends AbstractContentSlotTest
     {
         $tags = parent::generateTags();
         $tags[] = 'p' . $this->locationId;
+        $tags[] = 'path-' . $this->locationId;
 
         return $tags;
     }

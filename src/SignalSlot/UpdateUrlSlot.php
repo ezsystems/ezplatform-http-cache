@@ -37,7 +37,7 @@ class UpdateUrlSlot extends AbstractContentSlot
     public function generateTags(Signal $signal)
     {
         if ($signal->urlChanged) {
-            return array_map(function ($contentId) {
+            return array_map(static function ($contentId) {
                 return 'c' . $contentId;
             }, $this->urlHandler->findUsages($signal->urlId));
         }

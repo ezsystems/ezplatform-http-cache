@@ -45,6 +45,10 @@ abstract class AbstractPublishSlot extends AbstractContentSlot
             'c' . $contentId,
             // reverse relations
             'r' . $contentId,
+
+            // deprecated
+            'content-' . $contentId,
+            'relation-' . $contentId,
         ];
 
         foreach ($this->locationHandler->loadLocationsByContent($contentId) as $location) {
@@ -54,10 +58,20 @@ abstract class AbstractPublishSlot extends AbstractContentSlot
             $tags[] = 'pl' . $location->id;
             // reverse location relations
             $tags[] = 'rl' . $location->id;
+
+            // deprecated
+            $tags[] = 'location-' . $location->id;
+            $tags[] = 'parent-' . $location->id;
+            $tags[] = 'relation-location-' . $location->id;
+
             // parent
             $tags[] = 'l' . $location->parentId;
             // siblings
             $tags[] = 'pl' . $location->parentId;
+
+            // deprecated
+            $tags[] = 'location-' . $location->parentId;
+            $tags[] = 'parent-' . $location->parentId;
         }
 
         return $tags;

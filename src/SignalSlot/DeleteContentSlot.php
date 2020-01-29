@@ -24,6 +24,8 @@ class DeleteContentSlot extends AbstractContentSlot
         $tags = parent::generateTags($signal);
         foreach ($signal->affectedLocationIds as $locationId) {
             $tags[] = 'p' . $locationId;
+            // deprecated
+            $tags[] = 'path-' . $locationId;
         }
 
         return $tags;

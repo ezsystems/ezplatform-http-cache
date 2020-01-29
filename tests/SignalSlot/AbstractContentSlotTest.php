@@ -19,7 +19,14 @@ abstract class AbstractContentSlotTest extends AbstractSlotTest
     {
         $tags = [];
         if ($this->contentId) {
-            $tags = ['c' . $this->contentId, 'r' . $this->contentId];
+            // self in all forms (also without locations)
+            $tags[] = 'c' . $this->contentId;
+            // reverse relations
+            $tags[] = 'r' . $this->contentId;
+
+            // deprecated
+            $tags[] = 'content-' . $this->contentId;
+            $tags[] = 'relation-' . $this->contentId;
         }
 
         if ($this->locationId) {
@@ -29,6 +36,11 @@ abstract class AbstractContentSlotTest extends AbstractSlotTest
             $tags[] = 'pl' . $this->locationId;
             // reverse location relations
             $tags[] = 'rl' . $this->locationId;
+
+            // deprecated
+            $tags[] = 'location-' . $this->locationId;
+            $tags[] = 'parent-' . $this->locationId;
+            $tags[] = 'relation-location-' . $this->locationId;
         }
 
         if ($this->parentLocationId) {
@@ -36,6 +48,10 @@ abstract class AbstractContentSlotTest extends AbstractSlotTest
             $tags[] = 'l' . $this->parentLocationId;
             // siblings
             $tags[] = 'pl' . $this->parentLocationId;
+
+            // deprecated
+            $tags[] = 'location-' . $this->parentLocationId;
+            $tags[] = 'parent-' . $this->parentLocationId;
         }
 
         return $tags;

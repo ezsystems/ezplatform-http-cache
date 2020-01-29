@@ -21,6 +21,10 @@ class CopySubtreeSlot extends AbstractContentSlot
             'l' . $signal->targetParentLocationId,
             // siblings of the new copied tree
             'pl' . $signal->targetParentLocationId,
+
+            // deprecated
+            'location-' . $signal->targetParentLocationId,
+            'parent-' . $signal->targetParentLocationId,
         ];
     }
 

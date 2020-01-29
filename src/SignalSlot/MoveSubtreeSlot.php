@@ -29,6 +29,13 @@ class MoveSubtreeSlot extends AbstractContentSlot
             'l' . $signal->newParentLocationId,
             // new siblings
             'pl' . $signal->newParentLocationId,
+
+            // deprecated
+            'path-' . $signal->locationId,
+            'location-' . $signal->oldParentLocationId,
+            'parent-' . $signal->oldParentLocationId,
+            'location-' . $signal->newParentLocationId,
+            'parent-' . $signal->newParentLocationId,
         ];
     }
 

@@ -26,6 +26,8 @@ class UnhideLocationSlotTest extends AbstractContentSlotTest
     {
         $tags = parent::generateTags();
         $tags[] = 'p' . $this->locationId;
+        // deprecated
+        $tags[] = 'path-' . $this->locationId;
 
         return $tags;
     }

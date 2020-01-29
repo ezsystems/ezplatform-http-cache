@@ -34,6 +34,10 @@ abstract class AbstractContentSlot extends AbstractSlot
             $tags[] = 'c' . $signal->contentId;
             // reverse relations
             $tags[] = 'r' . $signal->contentId;
+
+            // deprecated
+            $tags[] = 'content-' . $signal->contentId;
+            $tags[] = 'relation-' . $signal->contentId;
         }
 
         if (isset($signal->locationId)) {
@@ -43,6 +47,11 @@ abstract class AbstractContentSlot extends AbstractSlot
             $tags[] = 'pl' . $signal->locationId;
             // reverse location relations
             $tags[] = 'rl' . $signal->locationId;
+
+            // deprecated
+            $tags[] = 'location-' . $signal->locationId;
+            $tags[] = 'parent-' . $signal->locationId;
+            $tags[] = 'relation-location-' . $signal->locationId;
         }
 
         if (isset($signal->parentLocationId)) {
@@ -50,6 +59,10 @@ abstract class AbstractContentSlot extends AbstractSlot
             $tags[] = 'l' . $signal->parentLocationId;
             // direct siblings
             $tags[] = 'pl' . $signal->parentLocationId;
+
+            // deprecated
+            $tags[] = 'location-' . $signal->parentLocationId;
+            $tags[] = 'parent-' . $signal->parentLocationId;
         }
 
         return $tags;

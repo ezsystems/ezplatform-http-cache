@@ -22,6 +22,10 @@ class RecoverSlot extends AbstractContentSlot
         $tags[] = 'l' . $signal->newParentLocationId;
         $tags[] = 'pl' . $signal->newParentLocationId;
 
+        // deprecated
+        $tags[] = 'location-' . $signal->newParentLocationId;
+        $tags[] = 'parent-' . $signal->newParentLocationId;
+
         return $tags;
     }
 

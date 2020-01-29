@@ -29,8 +29,12 @@ class RecoverSlotTest extends AbstractContentSlotTest
         return [
             'c' . $this->contentId,
             'r' . $this->contentId,
+            'content-' . $this->contentId,
+            'relation-' . $this->contentId,
             'l' . $this->parentLocationId,
             'pl' . $this->parentLocationId,
+            'location-' . $this->parentLocationId,
+            'parent-' . $this->parentLocationId,
         ];
     }
 

@@ -29,6 +29,8 @@ class CopySubtreeSlotTest extends AbstractContentSlotTest
         return [
             'l' . $this->targetParentLocationId,
             'pl' . $this->targetParentLocationId,
+            'location-' . $this->targetParentLocationId,
+            'parent-' . $this->targetParentLocationId,
         ];
     }
 

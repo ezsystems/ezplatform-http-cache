@@ -20,7 +20,7 @@ use FOS\HttpCacheBundle\CacheManager;
  * It implements tagResponse() to make sure TagSubscriber (a FOS event listener) sends tags using the header
  * we have configured, and to be able to prefix tags with respository id in order to support multi repo setups.
  */
-class TagHandler extends FOSTagHandler
+class TagHandler extends FOSTagHandler implements ContentTagInterface
 {
     private $cacheManager;
     private $purgeClient;
@@ -84,5 +84,55 @@ class TagHandler extends FOSTagHandler
         }
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addContentTags(array $contentIds)
+    {
+        $this->addTags(array_map(static function ($contentId) {
+            return 'content-' . $contentId;
+        }, $contentIds));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addLocationTags(array $locationIds)
+    {
+        $this->addTags(array_map(static function ($locationId) {
+            return 'location-' . $locationId;
+        }, $locationIds));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addPathTags(array $locationIds)
+    {
+        $this->addTags(array_map(static function ($locationId) {
+            return 'path-' . $locationId;
+        }, $locationIds));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addRelationTags(array $contentIds)
+    {
+        $this->addTags(array_map(static function ($contentId) {
+            return 'relation-' . $contentId;
+        }, $contentIds));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addRelationLocationTags(array $locationIds)
+    {
+        $this->addTags(array_map(static function ($locationId) {
+            return 'relation-location-' . $locationId;
+        }, $locationIds));
     }
 }

@@ -6,6 +6,7 @@
  */
 namespace EzSystems\PlatformHttpCacheBundle\Twig;
 
+use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger;
 use Twig_Extension;

@@ -47,21 +47,21 @@ Varnish or Fastly are highly recommended for medium to large traffic needs. Besi
    _For use when updates affect all their reverse relations. ezplatform-http-cache does not add this tag to responses
    automatically, just purges on it if present, response tagging with this is currently done inline in template logic / views
    where relation is actually used for rendering (when using ESI, if inline it's own tags will be added to response).
-   ezpublish-kernel add these as of v6.13.2/v7.1.0 on default relation templates)_
+   These differs from `content-` and `location-` by _only_ being purged when relation itself is removed or otherwise affected._
 
 ### Tags for Section responses
 
 - `section-<section-id>` :
-  _For use when section changes affecting section reponses (i.e. REST)._
+  _For use when section changes affecting section responses (i.e. REST)._
 
 
 ### Tags for ContenType responses
 
 - `type-<content-type-id>` :
-  _For use when content type changes affecting content type reponses (i.e. REST)._
+  _For use when content type changes affecting content type responses (i.e. REST)._
 
 - `type-group-<content-type-id>` :
-  _For use when content type group changes affecting content type group reponses (i.e. REST)._
+  _For use when content type group changes affecting content type group responses (i.e. REST)._
 
 ### Misc
 

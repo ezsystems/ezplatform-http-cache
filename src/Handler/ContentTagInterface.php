@@ -11,6 +11,14 @@ namespace EzSystems\PlatformHttpCacheBundle\Handler;
  */
 interface ContentTagInterface
 {
+    const CONTENT_PREFIX = 'content-';
+    const LOCATION_PREFIX = 'location-';
+    const PARENT_LOCATION_PREFIX = 'parent-';
+    const PATH_PREFIX = 'path-';
+    const RELATION_PREFIX = 'relation-';
+    const RELATION_LOCATION_PREFIX = 'relation-location-';
+    const CONTENT_TYPE_PREFIX = 'content-type-';
+
     /**
      * Low level tag method to add content tag.
      *
@@ -26,6 +34,14 @@ interface ContentTagInterface
      * @param array $locationIds
      */
     public function addLocationTags(array $locationIds);
+
+    /**
+     * Low level tag method to add parent location tag.
+     *
+     * @see "docs/using_tags.md"
+     * @param array $parentLocationIds
+     */
+    public function addParentLocationTags(array $parentLocationIds);
 
     /**
      * Low level tag method to add location path tag.
@@ -50,4 +66,12 @@ interface ContentTagInterface
      * @param array $locationIds
      */
     public function addRelationLocationTags(array $locationIds);
+
+    /**
+     * Low level tag method to add relation location tag.
+     *
+     * @see "docs/using_tags.md"
+     * @param array $contentTypeIds
+     */
+    public function addContentTypeTags(array $contentTypeIds);
 }

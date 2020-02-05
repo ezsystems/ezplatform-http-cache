@@ -18,7 +18,7 @@ use FOS\HttpCacheBundle\CacheManager;
  * php app/console fos:httpcache:invalidate:tag <tag>.
  *
  * It implements tagResponse() to make sure TagSubscriber (a FOS event listener) sends tags using the header
- * we have configured, and to be able to prefix tags with respository id in order to support multi repo setups.
+ * we have configured, and to be able to prefix tags with repository id in order to support multi repo setups.
  */
 class TagHandler extends FOSTagHandler implements ContentTagInterface
 {
@@ -92,7 +92,7 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     public function addContentTags(array $contentIds)
     {
         $this->addTags(array_map(static function ($contentId) {
-            return 'content-' . $contentId;
+            return ContentTagInterface::CONTENT_PREFIX . $contentId;
         }, $contentIds));
     }
 
@@ -102,8 +102,18 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     public function addLocationTags(array $locationIds)
     {
         $this->addTags(array_map(static function ($locationId) {
-            return 'location-' . $locationId;
+            return ContentTagInterface::LOCATION_PREFIX . $locationId;
         }, $locationIds));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addParentLocationTags(array $parentLocationIds)
+    {
+        $this->addTags(array_map(static function ($parentLocationId) {
+            return ContentTagInterface::PARENT_LOCATION_PREFIX . $parentLocationId;
+        }, $parentLocationIds));
     }
 
     /**
@@ -112,7 +122,7 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     public function addPathTags(array $locationIds)
     {
         $this->addTags(array_map(static function ($locationId) {
-            return 'path-' . $locationId;
+            return ContentTagInterface::PATH_PREFIX  . $locationId;
         }, $locationIds));
     }
 
@@ -122,7 +132,7 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     public function addRelationTags(array $contentIds)
     {
         $this->addTags(array_map(static function ($contentId) {
-            return 'relation-' . $contentId;
+            return ContentTagInterface::RELATION_PREFIX . $contentId;
         }, $contentIds));
     }
 
@@ -132,7 +142,17 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     public function addRelationLocationTags(array $locationIds)
     {
         $this->addTags(array_map(static function ($locationId) {
-            return 'relation-location-' . $locationId;
+            return ContentTagInterface::RELATION_LOCATION_PREFIX . $locationId;
         }, $locationIds));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addContentTypeTags(array $contentTypeIds)
+    {
+        $this->addTags(array_map(static function ($contentTypeId) {
+            return ContentTagInterface::CONTENT_TYPE_PREFIX . $contentTypeId;
+        }, $contentTypeIds));
     }
 }

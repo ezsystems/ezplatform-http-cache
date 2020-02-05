@@ -87,7 +87,7 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addContentTags(array $contentIds)
     {
@@ -97,7 +97,7 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addLocationTags(array $locationIds)
     {
@@ -107,7 +107,7 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addParentLocationTags(array $parentLocationIds)
     {
@@ -117,17 +117,17 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addPathTags(array $locationIds)
     {
         $this->addTags(array_map(static function ($locationId) {
-            return ContentTagInterface::PATH_PREFIX  . $locationId;
+            return ContentTagInterface::PATH_PREFIX . $locationId;
         }, $locationIds));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addRelationTags(array $contentIds)
     {
@@ -137,7 +137,7 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addRelationLocationTags(array $locationIds)
     {
@@ -147,7 +147,7 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addContentTypeTags(array $contentTypeIds)
     {

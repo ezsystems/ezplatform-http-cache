@@ -23,6 +23,7 @@ interface ContentTagInterface
      * Low level tag method to add content tag.
      *
      * @see "docs/using_tags.md"
+     *
      * @param array $contentIds
      */
     public function addContentTags(array $contentIds);
@@ -31,6 +32,7 @@ interface ContentTagInterface
      * Low level tag method to add location tag.
      *
      * @see "docs/using_tags.md"
+     *
      * @param array $locationIds
      */
     public function addLocationTags(array $locationIds);
@@ -39,6 +41,7 @@ interface ContentTagInterface
      * Low level tag method to add parent location tag.
      *
      * @see "docs/using_tags.md"
+     *
      * @param array $parentLocationIds
      */
     public function addParentLocationTags(array $parentLocationIds);
@@ -47,6 +50,7 @@ interface ContentTagInterface
      * Low level tag method to add location path tag.
      *
      * @see "docs/using_tags.md"
+     *
      * @param array $locationIds
      */
     public function addPathTags(array $locationIds);
@@ -55,6 +59,7 @@ interface ContentTagInterface
      * Low level tag method to add relation tag.
      *
      * @see "docs/using_tags.md"
+     *
      * @param array $contentIds
      */
     public function addRelationTags(array $contentIds);
@@ -63,6 +68,7 @@ interface ContentTagInterface
      * Low level tag method to add relation location tag.
      *
      * @see "docs/using_tags.md"
+     *
      * @param array $locationIds
      */
     public function addRelationLocationTags(array $locationIds);
@@ -71,6 +77,7 @@ interface ContentTagInterface
      * Low level tag method to add relation location tag.
      *
      * @see "docs/using_tags.md"
+     *
      * @param array $contentTypeIds
      */
     public function addContentTypeTags(array $contentTypeIds);

@@ -19,7 +19,7 @@ class ContentInfoTagger extends AbstractValueTagger
 
         $this->tagHandler->addTags([
             ContentTagInterface::CONTENT_PREFIX . $value->id,
-            ContentTagInterface::CONTENT_TYPE_PREFIX . $value->contentTypeId
+            ContentTagInterface::CONTENT_TYPE_PREFIX . $value->contentTypeId,
         ]);
 
         if ($value->mainLocationId) {

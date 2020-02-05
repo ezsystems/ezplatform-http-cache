@@ -12,6 +12,7 @@ env:
     # For functional tests
     - COMPOSE_FILE="doc/docker/base-dev.yml:doc/docker/selenium.yml"
     - APP_ENV=behat
+    - USER_RUNNING_TESTS=www-data
 
 matrix:
     fast_finish: true
@@ -27,6 +28,7 @@ matrix:
             - TEST_CMD="./bin/.travis/run_rest_tests.sh"
             - APP_DEBUG=1
             - SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'"
+            - USER_RUNNING_TESTS=root
             - PHP_IMAGE=ezsystems/php:7.3-v1
         - name: "PHP 7.3 Symfony Cache tests"
           php: 7.3
@@ -50,7 +52,7 @@ before_script:
 
 script:
     - if [ "$TEST_CMD" = "" ] && [ "$CHECK_CS" != "true" ] ; then php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty ; fi
-    - if [ "$TEST_CMD" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user www-data app sh -c "$TEST_CMD"  ; fi
+    - if [ "$TEST_CMD" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user "$USER_RUNNING_TESTS" app sh -c "$TEST_CMD"  ; fi
     - if [ "$CHECK_CS" = "true" ]; then phpenv config-rm xdebug.ini && ./vendor/bin/php-cs-fixer fix -v --dry-run --diff --show-progress=estimating; fi
 
 notifications:

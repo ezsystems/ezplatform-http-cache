@@ -69,6 +69,21 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
             $repoPrefix = $this->prefixService->getRepositoryPrefix();
             $tags = array_map(
                 static function ($tag) use ($repoPrefix) {
+                    // Deprecated, map content tags from old to new format to make sure we get only short + unique tags
+                    $tag = str_replace(
+                        ['content-', 'location-', 'path-', 'parent-', 'relation-', 'relation-location-', 'content-type-'],
+                        [
+                            ContentTagInterface::CONTENT_PREFIX,
+                            ContentTagInterface::LOCATION_PREFIX,
+                            ContentTagInterface::PATH_PREFIX,
+                            ContentTagInterface::PARENT_LOCATION_PREFIX,
+                            ContentTagInterface::RELATION_PREFIX,
+                            ContentTagInterface::RELATION_LOCATION_PREFIX,
+                            ContentTagInterface::CONTENT_TYPE_PREFIX,
+                        ],
+                        $tag
+                    );
+
                     return $repoPrefix . $tag;
                 },
                 $tags

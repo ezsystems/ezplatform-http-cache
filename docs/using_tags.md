@@ -55,7 +55,8 @@ content while it's refreshed in the background on-demand, leading to more stable
   `r<content-id>` & `rl<location-id>`:
    _For use when updates affect all their reverse relations. ezplatform-http-cache does not add this tag to responses
    automatically, just purges on it if present, response tagging with this is currently done inline in template logic / views
-   where relation is actually used for rendering (when using ESI, if inline the Content own tags should be added to response instead)._
+   where relation is actually used for rendering (when using ESI, if inline the Content own tags should be added to response instead, unless you are hitting tag header limits)._
+   These differs from `content-` and `location-` by _only_ being purged when relation itself is removed or otherwise affected._
 
 ### Tags for Section responses
 
@@ -128,10 +129,27 @@ For twig usage, you can make sure response is tagged correctly by using the foll
 
 See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#tagging-from-twig-templates
 
-Alternatively if you have a location(s) that you render inline & want invalidated on any kind of change:
+
+However for relations, which you typically used prior to a ESI include for some content, rather use one of:
+```twig
+    {# As of v0.9.3 two twig functions for relation use cases was added, both handling single and array values #}
+    {# First one is for relation(s) for Content, as shown by it's id #}
+    {{ ez_http_tag_relation_ids(relation_content.id) }}
+
+    {# Second one for relation locations, here shown using array of location id's #}
+    {{ ez_http_tag_relation_location_ids(relation_location_ids) }}
+```
+
+
+Alternatively if you have a location(s) that you render _inline_ & want invalidated on any kind of change:
 ```twig
     {{ ez_http_tag_location( location ) }}
 ```
+
+TIP: Don't use `ez_http_tag_location` when you are rendering a large amount of content/location items, it will cause tag
+     header to become to large. Consider using less tags with for instance `ez_http_tag_relation_(location_)ids`, and account for
+     possible stale cache by reducing cache ttl for the given response.
+     Also strongly consider to upgrade to ezplatform-http-cache 1.0 or higher which reduces cache tag size.
 
 #### PHP use
 
@@ -139,6 +157,12 @@ Fo PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service 
 ```php
     /** @var \FOS\HttpCache\Handler\TagHandler $tagHandler */
     $tagHandler->addTags(['r33', 'r44']);
+
+    /** Better option in order to be more future proof, exposed on the same service as above:
+     *
+     * @var \EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface $tagHandler
+     */
+    $tagHandler->addRelationTags([33, 44]);
 ```
 
 See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#tagging-from-code
@@ -153,6 +177,8 @@ operation triggers expiry on a specific tag or set of tags.
 
 E.g. on Move Location signal the following tags will be purged:
 ```php
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
+
     /**
      * @param \eZ\Publish\Core\SignalSlot\Signal\LocationService\MoveSubtreeSignal $signal
      */
@@ -160,15 +186,15 @@ E.g. on Move Location signal the following tags will be purged:
     {
         return [
             // The tree itself being moved (all children will have this tag)
-            'p' . $signal->locationId,
+            ContentTagInterface::PATH_PREFIX . $signal->locationId,
             // old parent
-            'l' . $signal->oldParentLocationId,
+            ContentTagInterface::LOCATION_PREFIX . $signal->oldParentLocationId,
             // old siblings
-            'pl' . $signal->oldParentLocationId,
+            ContentTagInterface::PARENT_LOCATION_PREFIX . $signal->oldParentLocationId,
             // new parent
-            'l' . $signal->newParentLocationId,
+            ContentTagInterface::LOCATION_PREFIX . $signal->newParentLocationId,
             // new siblings
-            'pl' . $signal->newParentLocationId,
+            ContentTagInterface::PARENT_LOCATION_PREFIX . $signal->newParentLocationId,
         ];
     }
 ```
@@ -218,6 +244,6 @@ Normally the system will add all the tags for this content, to handle every poss
 So if you embed hundreds of content on the same page _(in richtext, using relations, or using page builder)_, it will explode the tag usage.
 
 However if for instance you just display the content name, image attribute, and/or link, then it would be enough to:
-- Just use `r<id>` tag
+- Just use `r<id>` tag, or preferably the abstractions for it.
 - Optionally: Set reduced cache TTL for the given view in order to reduce remote risk of subtree operations affecting the cached page
   without correctly purging the view.

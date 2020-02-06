@@ -7,6 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value;
 
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
 
 class ContentInfoTagger extends AbstractValueTagger
 {
@@ -16,10 +17,13 @@ class ContentInfoTagger extends AbstractValueTagger
             return $this;
         }
 
-        $this->tagHandler->addTags(['c' . $value->id, 'ct' . $value->contentTypeId]);
+        $this->tagHandler->addTags([
+            ContentTagInterface::CONTENT_PREFIX . $value->id,
+            ContentTagInterface::CONTENT_TYPE_PREFIX . $value->contentTypeId,
+        ]);
 
         if ($value->mainLocationId) {
-            $this->tagHandler->addTags(['l' . $value->mainLocationId]);
+            $this->tagHandler->addTags([ContentTagInterface::LOCATION_PREFIX . $value->mainLocationId]);
         }
     }
 }

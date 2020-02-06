@@ -7,6 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\ResponseTagger\Value;
 
 use eZ\Publish\API\Repository\Values\Content\Location;
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
 
 class LocationTagger extends AbstractValueTagger
 {
@@ -17,14 +18,14 @@ class LocationTagger extends AbstractValueTagger
         }
 
         if ($value->id !== $value->contentInfo->mainLocationId) {
-            $this->tagHandler->addTags(['l' . $value->id]);
+            $this->tagHandler->addTags([ContentTagInterface::LOCATION_PREFIX . $value->id]);
         }
 
-        $this->tagHandler->addTags(['pl' . $value->parentLocationId]);
+        $this->tagHandler->addTags([ContentTagInterface::PARENT_LOCATION_PREFIX . $value->parentLocationId]);
         $this->tagHandler->addTags(
             array_map(
                 static function ($pathItem) {
-                    return 'p' . $pathItem;
+                    return ContentTagInterface::PATH_PREFIX . $pathItem;
                 },
                 $value->path
             )

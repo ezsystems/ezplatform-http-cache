@@ -28,6 +28,8 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     private $tagsHeader;
     /** @var int|null */
     private $tagsHeaderMaxLength;
+    /** @var int|null */
+    private $tagsHeaderReducedTTl;
     /** @var LoggerInterface */
     private $logger;
 
@@ -37,13 +39,15 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
         PurgeClientInterface $purgeClient,
         RepositoryTagPrefix $prefixService,
         LoggerInterface $logger,
-        $maxTagsHeaderLength = null
+        $maxTagsHeaderLength = null,
+        $tagsHeaderReducedTTl = null
     ) {
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
         $this->prefixService = $prefixService;
         $this->logger = $logger;
         $this->tagsHeaderMaxLength = $maxTagsHeaderLength;
+        $this->tagsHeaderReducedTTl = $tagsHeaderReducedTTl;
 
         parent::__construct($cacheManager, $tagsHeader);
         $this->addTags(['ez-all']);
@@ -106,6 +110,16 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
                 $tagsString = trim(substr($tagsString, 0, strrpos(
                     substr($tagsString, 0, $this->tagsHeaderMaxLength + 1), ' '
                 )));
+
+                $responseSharedMaxAge = $response->headers->getCacheControlDirective('s-maxage');
+                if (
+                    $this->tagsHeaderReducedTTl &&
+                    $responseSharedMaxAge &&
+                    $this->tagsHeaderReducedTTl < $responseSharedMaxAge
+                ) {
+                    $response->setSharedMaxAge($this->tagsHeaderReducedTTl);
+                }
+
                 $this->logger->warning(
                     'HTTP Cache tags header max length reached and truncated to ' . $this->tagsHeaderMaxLength
                 );

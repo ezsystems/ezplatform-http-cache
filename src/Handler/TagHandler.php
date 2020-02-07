@@ -26,12 +26,15 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     private $purgeClient;
     private $prefixService;
     private $tagsHeader;
+
+    /** @var \Psr\Log\LoggerInterface */
+    private $logger;
+
     /** @var int|null */
     private $tagsHeaderMaxLength;
+
     /** @var int|null */
     private $tagsHeaderReducedTTl;
-    /** @var LoggerInterface */
-    private $logger;
 
     public function __construct(
         CacheManager $cacheManager,
@@ -102,14 +105,20 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
                 $tags
             );
 
-            // Also add a un-prefixed `ez-all` in order to be able to purge all across repos
-            $tags[] = 'ez-all';
+            if ($repoPrefix !== '') {
+                // An un-prefixed `ez-all` for purging across repos, add to start of array to avoid being truncated
+                array_unshift($tags, 'ez-all');
+            }
 
             $tagsString = implode(' ', array_unique($tags));
-            if ($this->tagsHeaderMaxLength && strlen($tagsString) > $this->tagsHeaderMaxLength) {
-                $tagsString = trim(substr($tagsString, 0, strrpos(
-                    substr($tagsString, 0, $this->tagsHeaderMaxLength + 1), ' '
-                )));
+            $tagsLength = strlen($tagsString);
+            if ($this->tagsHeaderMaxLength && $tagsLength > $this->tagsHeaderMaxLength) {
+                $tagsString = substr(
+                    $tagsString,
+                    0,
+                    // Seek backwards from point of max length using negative offset
+                    strrpos($tagsString, ' ', $this->tagsHeaderMaxLength - $tagsLength)
+                );
 
                 $responseSharedMaxAge = $response->headers->getCacheControlDirective('s-maxage');
                 if (

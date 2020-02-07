@@ -248,7 +248,7 @@ However if for instance you just display the content name, image attribute, and/
 - Optionally: Set reduced cache TTL for the given view in order to reduce remote risk of subtree operations affecting the cached page
   without correctly purging the view.
 
-If that is not an option, you can opt-in to set a  max length parameter (in bytes) and corresponding ttl (seconds)
+If that is not an option, you can opt-in to set a max length parameter (in bytes) and corresponding ttl (in seconds):
 ```yaml
 parameters:
     # Warning, setting this means you risk losing tag information, risking stale cache. Here set below 8k:

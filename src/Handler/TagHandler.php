@@ -100,7 +100,12 @@ class TagHandler extends FOSTagHandler
                 $tagsString = trim(substr($tagsString, 0, strrpos(
                     substr($tagsString, 0, $this->tagsHeaderMaxLength + 1), ' '
                 )));
-                if ($this->tagsHeaderReducedTTl && !$response->headers->getCacheControlDirective('s-maxage')) {
+                $responseSharedMaxAge = $response->headers->getCacheControlDirective('s-maxage');
+                if (
+                    $this->tagsHeaderReducedTTl &&
+                    $responseSharedMaxAge && 
+                    $this->tagsHeaderReducedTTl < $responseSharedMaxAge
+                ) {
                     $response->setSharedMaxAge($this->tagsHeaderReducedTTl);
                 }
                 $this->logger->warning(

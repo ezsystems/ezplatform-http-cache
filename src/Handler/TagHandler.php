@@ -26,12 +26,12 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     private $purgeClient;
     private $prefixService;
     private $tagsHeader;
+    /** @var LoggerInterface */
+    private $logger;
     /** @var int|null */
     private $tagsHeaderMaxLength;
     /** @var int|null */
     private $tagsHeaderReducedTTl;
-    /** @var LoggerInterface */
-    private $logger;
 
     public function __construct(
         CacheManager $cacheManager,
@@ -106,10 +106,14 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
             $tags[] = 'ez-all';
 
             $tagsString = implode(' ', array_unique($tags));
-            if ($this->tagsHeaderMaxLength && strlen($tagsString) > $this->tagsHeaderMaxLength) {
-                $tagsString = trim(substr($tagsString, 0, strrpos(
-                    substr($tagsString, 0, $this->tagsHeaderMaxLength + 1), ' '
-                )));
+            $tagsLength = strlen($tagsString);
+            if ($this->tagsHeaderMaxLength && $tagsLength > $this->tagsHeaderMaxLength) {
+                $tagsString = substr(
+                    $tagsString,
+                    0,
+                    // Seek backwards from point of max length using negative offset
+                    strrpos($tagsString, ' ', $this->tagsHeaderMaxLength - $tagsLength)
+                );
 
                 $responseSharedMaxAge = $response->headers->getCacheControlDirective('s-maxage');
                 if (

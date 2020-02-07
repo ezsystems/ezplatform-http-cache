@@ -11,6 +11,7 @@ use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
 use FOS\HttpCacheBundle\CacheManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -21,12 +22,13 @@ class TagHandlerSpec extends ObjectBehavior
         PurgeClientInterface $purgeClient,
         Response $response,
         ResponseHeaderBag $responseHeaderBag,
-        RepositoryTagPrefix $tagPrefix
+        RepositoryTagPrefix $tagPrefix,
+        LoggerInterface $logger
     ) {
         $response->headers = $responseHeaderBag;
         $cacheManager->supports(CacheManager::INVALIDATE)->willReturn(true);
 
-        $this->beConstructedWith($cacheManager, 'xkey', $purgeClient, $tagPrefix, 1000);
+        $this->beConstructedWith($cacheManager, 'xkey', $purgeClient, $tagPrefix, $logger, 1000, 300);
     }
 
     public function it_calls_purge_on_invalidate()
@@ -117,12 +119,12 @@ class TagHandlerSpec extends ObjectBehavior
         $this->tagResponse($response, false);
     }
 
-    public function it_ignores_too_long_tag_header(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
+    public function it_ignores_too_long_tag_header(Response $response, ResponseHeaderBag $responseHeaderBag, LoggerInterface $logger)
     {
         $underLimitTags = 'ez-all';
         $length = 6;
         while(true) {
-            $tag = ' content-' . $length;
+            $tag = ' c' . $length;
             $tagLength = strlen($tag);
             if ($length + $tagLength  > 1000) {
                 break; // too long if we add more
@@ -130,10 +132,35 @@ class TagHandlerSpec extends ObjectBehavior
             $underLimitTags .= $tag;
             $length += $tagLength;
         }
+        $responseHeaderBag->getCacheControlDirective('s-maxage')->shouldBeCalled()->willReturn(200);
+        $response->setSharedMaxAge(300)->shouldNotBeCalled();
+        $logger->warning(Argument::containingString('HTTP Cache tags header max length reached and truncated to'))->shouldBeCalled();
         $responseHeaderBag->set('xkey', Argument::exact($underLimitTags))->shouldBeCalled();
 
         $this->addTags(explode(' ', $underLimitTags));
-        $this->addTags(['location-1111111', 'content-1111111']); // these tags are ignored
+        $this->addTags(['l1111111', 'c1111111']); // these tags are ignored
+        $this->tagResponse($response, true);
+    }
+
+    public function it_ignores_too_long_tag_header_and_reduces_ttl(Response $response, ResponseHeaderBag $responseHeaderBag)
+    {
+        $underLimitTags = 'ez-all';
+        $length = 6;
+        while(true) {
+            $tag = ' c' . $length;
+            $tagLength = strlen($tag);
+            if ($length + $tagLength  > 1000) {
+                break; // too long if we add more
+            }
+            $underLimitTags .= $tag;
+            $length += $tagLength;
+        }
+        $responseHeaderBag->getCacheControlDirective('s-maxage')->shouldBeCalled()->willReturn(500);
+        $response->setSharedMaxAge(300)->shouldBeCalled();
+        $responseHeaderBag->set('xkey', Argument::exact($underLimitTags))->shouldBeCalled();
+
+        $this->addTags(explode(' ', $underLimitTags));
+        $this->addTags(['l1111111', 'c1111111']); // these tags are ignored
         $this->tagResponse($response, true);
     }
 }

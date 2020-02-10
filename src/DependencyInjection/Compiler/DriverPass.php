@@ -35,6 +35,7 @@ class DriverPass implements CompilerPassInterface
         }
 
         $container->setAlias('fos_http_cache.handler.tag_handler', $configuredFosTagHandlerServiceId);
+        $container->setAlias('EzSystems\PlatformHttpCacheBundle\Handler\TagHandler', $configuredFosTagHandlerServiceId);
     }
 
     public static function getTaggedService(ContainerBuilder $container, $tag)

@@ -26,7 +26,7 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     private $purgeClient;
     private $prefixService;
     private $tagsHeader;
-    /** @var LoggerInterface */
+    /** @var \Psr\Log\LoggerInterface */
     private $logger;
     /** @var int|null */
     private $tagsHeaderMaxLength;
@@ -102,8 +102,10 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
                 $tags
             );
 
-            // Also add a un-prefixed `ez-all` in order to be able to purge all across repos
-            $tags[] = 'ez-all';
+            if ($repoPrefix !== '') {
+                // An un-prefixed `ez-all` for purging across repos, add to start of array to avoid being truncated
+                array_unshift($tags, 'ez-all');
+            }
 
             $tagsString = implode(' ', array_unique($tags));
             $tagsLength = strlen($tagsString);

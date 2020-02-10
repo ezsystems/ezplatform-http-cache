@@ -8,6 +8,7 @@ namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use EzSystems\PlatformHttpCacheBundle\Handler\TagHandler;
 
 /**
  * We support http cache drivers to be provided by 3rd party bundles.
@@ -35,7 +36,7 @@ class DriverPass implements CompilerPassInterface
         }
 
         $container->setAlias('fos_http_cache.handler.tag_handler', $configuredFosTagHandlerServiceId);
-        $container->setAlias('EzSystems\PlatformHttpCacheBundle\Handler\TagHandler', $configuredFosTagHandlerServiceId);
+        $container->setAlias(TagHandler::class, $configuredFosTagHandlerServiceId);
     }
 
     public static function getTaggedService(ContainerBuilder $container, $tag)

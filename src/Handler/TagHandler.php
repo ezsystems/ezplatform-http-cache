@@ -26,10 +26,13 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     private $purgeClient;
     private $prefixService;
     private $tagsHeader;
+
     /** @var \Psr\Log\LoggerInterface */
     private $logger;
+
     /** @var int|null */
     private $tagsHeaderMaxLength;
+
     /** @var int|null */
     private $tagsHeaderReducedTTl;
 

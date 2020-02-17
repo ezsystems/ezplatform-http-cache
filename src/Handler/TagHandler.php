@@ -9,6 +9,7 @@ namespace EzSystems\PlatformHttpCacheBundle\Handler;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
 use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\HttpCacheBundle\CacheManager;
 
@@ -26,15 +27,30 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
     private $prefixService;
     private $tagsHeader;
 
+    /** @var \Psr\Log\LoggerInterface */
+    private $logger;
+
+    /** @var int|null */
+    private $tagsHeaderMaxLength;
+
+    /** @var int|null */
+    private $tagsHeaderReducedTTl;
+
     public function __construct(
         CacheManager $cacheManager,
         $tagsHeader,
         PurgeClientInterface $purgeClient,
-        RepositoryTagPrefix $prefixService
+        RepositoryTagPrefix $prefixService,
+        LoggerInterface $logger,
+        $maxTagsHeaderLength = null,
+        $tagsHeaderReducedTTl = null
     ) {
         $this->tagsHeader = $tagsHeader;
         $this->purgeClient = $purgeClient;
         $this->prefixService = $prefixService;
+        $this->logger = $logger;
+        $this->tagsHeaderMaxLength = $maxTagsHeaderLength;
+        $this->tagsHeaderReducedTTl = $tagsHeaderReducedTTl;
 
         parent::__construct($cacheManager, $tagsHeader);
         $this->addTags(['ez-all']);
@@ -88,10 +104,37 @@ class TagHandler extends FOSTagHandler implements ContentTagInterface
                 },
                 $tags
             );
-            // Also add a un-prefixed `ez-all` in order to be able to purge all across repos
-            $tags[] = 'ez-all';
 
-            $response->headers->set($this->tagsHeader, implode(' ', array_unique($tags)));
+            if ($repoPrefix !== '') {
+                // An un-prefixed `ez-all` for purging across repos, add to start of array to avoid being truncated
+                array_unshift($tags, 'ez-all');
+            }
+
+            $tagsString = implode(' ', array_unique($tags));
+            $tagsLength = strlen($tagsString);
+            if ($this->tagsHeaderMaxLength && $tagsLength > $this->tagsHeaderMaxLength) {
+                $tagsString = substr(
+                    $tagsString,
+                    0,
+                    // Seek backwards from point of max length using negative offset
+                    strrpos($tagsString, ' ', $this->tagsHeaderMaxLength - $tagsLength)
+                );
+
+                $responseSharedMaxAge = $response->headers->getCacheControlDirective('s-maxage');
+                if (
+                    $this->tagsHeaderReducedTTl &&
+                    $responseSharedMaxAge &&
+                    $this->tagsHeaderReducedTTl < $responseSharedMaxAge
+                ) {
+                    $response->setSharedMaxAge($this->tagsHeaderReducedTTl);
+                }
+
+                $this->logger->warning(
+                    'HTTP Cache tags header max length reached and truncated to ' . $this->tagsHeaderMaxLength
+                );
+            }
+
+            $response->headers->set($this->tagsHeader, $tagsString);
         }
 
         return $this;

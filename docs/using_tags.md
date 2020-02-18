@@ -13,7 +13,7 @@ It works across all supported proxies _(see ["drivers"](drivers.md))_ by eZ Plat
 - [Fastly](https://www.fastly.com/) _(High performance reverse proxy, originally based on Varnish, worldwide as a CDN, driver available in eZ Platform Enterprise)_
 
 _In order to support several repositories on one installation, tags will be prefixed by
-repository index in use. I.e. 0p1", where "0" is the repository prefix._
+repository index in use. I.e. "0p1", where "0" is the repository prefix._
 
 Varnish or Fastly are highly recommended for medium to large traffic needs. Besides being able to handle much more traffic,
 supported for use in cluster setup, they also both support soft purge _(by tags)_, meaning they are able to serve stale

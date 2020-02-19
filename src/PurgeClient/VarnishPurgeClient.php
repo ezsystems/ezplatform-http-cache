@@ -84,8 +84,11 @@ class VarnishPurgeClient implements PurgeClientInterface
      */
     private function getPurgeHeaders()
     {
+        $host = parse_url($this->configResolver->getParameter('http_cache.purge_servers')[0], PHP_URL_HOST);
+        $fallbackHost = $_SERVER['SERVER_NAME'] ?? 'localhost';
+
         $headers = [
-            'Host' => $this->getPurgeHost(),
+            'Host' => $host ?: $fallbackHost,
         ];
 
         if ($this->configResolver->hasParameter(self::INVALIDATE_TOKEN_PARAM)
@@ -95,27 +98,6 @@ class VarnishPurgeClient implements PurgeClientInterface
         }
 
         return $headers;
-    }
-
-    /**
-     * Extracts the value for Host header for Purge.
-     *
-     * @return string
-     */
-    private function getPurgeHost()
-    {
-        $purgeServers = $this->configResolver->hasParameter('http_cache.purge_servers')
-            ? $this->configResolver->getParameter('http_cache.purge_servers')
-            : [];
-
-        if (is_array($purgeServers) && count($purgeServers)) {
-            $configHost = parse_url($purgeServers[0], PHP_URL_HOST);
-            if ($configHost) {
-                return $configHost;
-            }
-        }
-
-        return $_SERVER['SERVER_NAME'];
     }
 
     /**

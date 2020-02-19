@@ -84,8 +84,10 @@ class VarnishPurgeClient implements PurgeClientInterface
      */
     private function getPurgeHeaders()
     {
+        $host = parse_url($this->configResolver->getParameter('http_cache.purge_servers')[0], PHP_URL_HOST);
+
         $headers = [
-            'Host' => empty($_SERVER['SERVER_NAME']) ? parse_url($this->configResolver->getParameter('http_cache.purge_servers')[0], PHP_URL_HOST) : $_SERVER['SERVER_NAME'],
+            'Host' => $host ?: $_SERVER['SERVER_NAME'],
         ];
 
         if ($this->configResolver->hasParameter(self::INVALIDATE_TOKEN_PARAM)

@@ -228,8 +228,12 @@ sub ez_invalidate_token {
         return (synth(400));
     }
 
-    if (req.restarts == 0 && req.method == "PURGE" && req.http.x-invalidate-token) {
+    if (req.restarts == 0 && (req.method == "PURGE" || req.method == "PURGEKEYS") && req.http.x-invalidate-token) {
         set req.http.accept = "application/vnd.ezplatform.invalidate-token";
+
+        // Backup original http properties
+        set req.http.x-fos-token-url = req.url;
+        set req.http.x-fos-token-method = req.method;
 
         set req.url = "/_ez_http_invalidatetoken";
 
@@ -241,8 +245,10 @@ sub ez_invalidate_token {
     if (req.restarts > 0
         && req.http.accept == "application/vnd.ezplatform.invalidate-token"
     ) {
-        set req.url = "/";
-        set req.method = "PURGE";
+        set req.url = req.http.x-fos-token-url;
+        set req.method = req.http.x-fos-token-method;
+        unset req.http.x-fos-token-url;
+        unset req.http.x-fos-token-method;
         unset req.http.accept;
     }
 }

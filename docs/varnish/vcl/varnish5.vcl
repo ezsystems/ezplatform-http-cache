@@ -127,32 +127,33 @@ sub ez_purge {
     // Retrieve purge token, needs to be here due to restart, match for PURGE method done within
     call ez_invalidate_token;
 
-    # Support how purging was done in earlier versions, this is deprecated and here just for BC for code still using it
-    if (req.method == "BAN") {
+    # Adapted with acl from vendor/friendsofsymfony/http-cache/resources/config/varnish/fos_tags_xkey.vcl
+    if (req.method == "PURGEKEYS") {
         call ez_purge_acl;
 
-        if (req.http.X-Location-Id) {
-            ban("obj.http.X-Location-Id ~ " + req.http.X-Location-Id);
-            if (client.ip ~ debuggers) {
-                set req.http.X-Debug = "Ban done for content connected to LocationId " + req.http.X-Location-Id;
-            }
-            return (synth(200, "Banned"));
+        # If neither of the headers are provided we return 400 to simplify detecting wrong configuration
+        if (!req.http.xkey-purge && !req.http.xkey-softpurge) {
+            return (synth(400, "Neither header XKey-Purge or XKey-SoftPurge set"));
         }
+
+        # Based on provided header invalidate (purge) and/or expire (softpurge) the tagged content
+        set req.http.n-gone = 0;
+        set req.http.n-softgone = 0;
+        if (req.http.xkey-purge) {
+            set req.http.n-gone = xkey.purge(req.http.xkey-purge);
+        }
+
+        if (req.http.xkey-softpurge) {
+            set req.http.n-softgone = xkey.softpurge(req.http.xkey-softpurge);
+        }
+
+        return (synth(200, "Purged "+req.http.n-gone+" objects, expired "+req.http.n-softgone+" objects"));
     }
 
-    if (req.method == "PURGE" || req.method == "PURGEKEYS") {
+    # Adapted with acl from vendor/friendsofsymfony/http-cache/resources/config/varnish/fos_purge.vcl
+    if (req.method == "PURGE") {
         call ez_purge_acl;
 
-        # If http header "xkey-softpurge" is set, we assume purge is on key and you have Varnish xkey installed
-        if (req.http.xkey-softpurge) {
-            # By default we recommend using soft purge to respect grace time, if you need to hard purge use:
-            # set req.http.n-gone = xkey.purge(req.http.xkey-softpurge);
-            set req.http.n-gone = xkey.softpurge(req.http.xkey-softpurge);
-
-            return (synth(200, "Invalidated "+req.http.n-gone+" objects"));
-        }
-
-        # if not, then this is a normal purge by url
         return (purge);
     }
 }
@@ -227,8 +228,12 @@ sub ez_invalidate_token {
         return (synth(400));
     }
 
-    if (req.restarts == 0 && req.method == "PURGE" && req.http.x-invalidate-token) {
+    if (req.restarts == 0 && (req.method == "PURGE" || req.method == "PURGEKEYS") && req.http.x-invalidate-token) {
         set req.http.accept = "application/vnd.ezplatform.invalidate-token";
+
+        // Backup original http properties
+        set req.http.x-fos-token-url = req.url;
+        set req.http.x-fos-token-method = req.method;
 
         set req.url = "/_ez_http_invalidatetoken";
 
@@ -240,8 +245,10 @@ sub ez_invalidate_token {
     if (req.restarts > 0
         && req.http.accept == "application/vnd.ezplatform.invalidate-token"
     ) {
-        set req.url = "/";
-        set req.method = "PURGE";
+        set req.url = req.http.x-fos-token-url;
+        set req.method = req.http.x-fos-token-method;
+        unset req.http.x-fos-token-url;
+        unset req.http.x-fos-token-method;
         unset req.http.accept;
     }
 }

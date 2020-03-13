@@ -1,7 +1,7 @@
 // Varnish VCL for:
-// - Varnish 5.1 or higher (6.0LTS recommended, and is what we mainly test against)
+// - Varnish 6.0 or higher (6.0LTS recommended, and is what we mainly test against)
 //   - Varnish xkey vmod (via varnish-modules package 0.10.2 or higher, or via Varnish Plus)
-// - eZ Platform 2.5LTS or higher with ezplatform-http-cache (this) bundle
+// - eZ Platform 3.x or higher with ezplatform-http-cache (this) bundle
 //
 // Make sure to at least adjust default parameters.yml, defaults there reflect our testing needs with docker.
 
@@ -118,6 +118,19 @@ sub vcl_backend_response {
 
     // Make Varnish keep all objects for up to 1 hour beyond their TTL, see vcl_hit for Request logic on this
     set beresp.grace = 1h;
+
+    // Compressing the content
+    if (beresp.http.Content-Type ~ "application/javascript"
+        || beresp.http.Content-Type ~ "application/json"
+        || beresp.http.Content-Type ~ "application/vnd.ms-fontobject"
+        || beresp.http.Content-Type ~ "application/vnd.ez.api"
+        || beresp.http.Content-Type ~ "application/x-font-ttf"
+        || beresp.http.Content-Type ~ "image/svg+xml"
+        || beresp.http.Content-Type ~ "text/css"
+        || beresp.http.Content-Type ~ "text/plain"
+    ) {
+        set beresp.do_gzip = true;
+    }
 }
 
 // Handle purge

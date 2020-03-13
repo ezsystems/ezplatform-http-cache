@@ -16,6 +16,7 @@ use eZ\Publish\API\Repository\Events\Location\MoveSubtreeEvent;
 use eZ\Publish\API\Repository\Events\Location\SwapLocationEvent;
 use eZ\Publish\API\Repository\Events\Location\UnhideLocationEvent;
 use eZ\Publish\API\Repository\Events\Location\UpdateLocationEvent;
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
 
 final class LocationEventsSubscriber extends AbstractSubscriber
 {
@@ -68,7 +69,7 @@ final class LocationEventsSubscriber extends AbstractSubscriber
             $this->getLocationTags((int)$locationId),
             $this->getParentLocationTags((int)$parentLocationId),
             [
-                'path-' . $locationId,
+                ContentTagInterface::PATH_PREFIX . $locationId,
             ]
         );
 
@@ -86,7 +87,7 @@ final class LocationEventsSubscriber extends AbstractSubscriber
             $this->getLocationTags((int)$locationId),
             $this->getParentLocationTags((int)$parentLocationId),
             [
-                'path-' . $locationId,
+                ContentTagInterface::PATH_PREFIX . $locationId,
             ]
         );
 
@@ -103,7 +104,7 @@ final class LocationEventsSubscriber extends AbstractSubscriber
             $this->getParentLocationTags((int)$oldParentLocationId),
             $this->getParentLocationTags((int)$newParentLocationId),
             [
-                'path-' . $locationId,
+                ContentTagInterface::PATH_PREFIX . $locationId,
             ]
         );
 
@@ -123,10 +124,10 @@ final class LocationEventsSubscriber extends AbstractSubscriber
             $this->getParentLocationTags((int)$sourceParentLocationId),
             $this->getParentLocationTags((int)$targetParentLocationId),
             [
-                'content-' . $sourceContentId,
-                'path-' . $sourceLocationId,
-                'content-' . $targetContentId,
-                'path-' . $targetLocationId,
+                ContentTagInterface::CONTENT_PREFIX . $sourceContentId,
+                ContentTagInterface::PATH_PREFIX . $sourceLocationId,
+                ContentTagInterface::CONTENT_PREFIX . $targetContentId,
+                ContentTagInterface::PATH_PREFIX . $targetLocationId,
             ]
         );
 
@@ -144,7 +145,7 @@ final class LocationEventsSubscriber extends AbstractSubscriber
             $this->getLocationTags((int)$locationId),
             $this->getParentLocationTags((int)$parentLocationId),
             [
-                'path-' . $locationId,
+                ContentTagInterface::PATH_PREFIX . $locationId,
             ]
         );
 

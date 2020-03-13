@@ -3,7 +3,7 @@
 //   - Varnish xkey vmod (via varnish-modules package 0.10.2 or higher, or via Varnish Plus)
 // - eZ Platform 3.x or higher with ezplatform-http-cache (this) bundle
 //
-// Make sure to at least adjust default parameters.yml, defaults there reflect our testing needs with docker.
+// Make sure to at least adjust default parameters.vcl, defaults there reflect our testing needs with docker.
 
 vcl 4.1;
 import std;

@@ -8,6 +8,7 @@ namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber;
 
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\Repository;
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
 use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -60,27 +61,27 @@ class XLocationIdResponseSubscriber implements EventSubscriberInterface
             $id = trim($id);
             try {
                 /** @var $location \eZ\Publish\API\Repository\Values\Content\Location */
-                $location = $this->repository->sudo(function (Repository $repository) use ($id) {
+                $location = $this->repository->sudo(static function (Repository $repository) use ($id) {
                     return $repository->getLocationService()->loadLocation($id);
                 });
 
-                $tags[] = 'location-' . $location->id;
-                $tags[] = 'parent-' . $location->parentLocationId;
+                $tags[] = ContentTagInterface::LOCATION_PREFIX . $location->id;
+                $tags[] = ContentTagInterface::PARENT_LOCATION_PREFIX . $location->parentLocationId;
 
                 foreach ($location->path as $pathItem) {
-                    $tags[] = 'path-' . $pathItem;
+                    $tags[] = ContentTagInterface::PATH_PREFIX . $pathItem;
                 }
 
                 $contentInfo = $location->getContentInfo();
-                $tags[] = 'content-' . $contentInfo->id;
-                $tags[] = 'content-type-' . $contentInfo->contentTypeId;
+                $tags[] = ContentTagInterface::CONTENT_PREFIX . $contentInfo->id;
+                $tags[] = ContentTagInterface::CONTENT_TYPE_PREFIX . $contentInfo->contentTypeId;
 
                 if ($contentInfo->mainLocationId !== $location->id) {
-                    $tags[] = 'location-' . $contentInfo->mainLocationId;
+                    $tags[] = ContentTagInterface::LOCATION_PREFIX . $contentInfo->mainLocationId;
                 }
             } catch (NotFoundException $e) {
-                $tags[] = "location-$id";
-                $tags[] = "path-$id";
+                $tags[] = ContentTagInterface::LOCATION_PREFIX . $id;
+                $tags[] = ContentTagInterface::PATH_PREFIX . $id;
             }
         }
 

@@ -10,6 +10,7 @@ use FOS\HttpCache\TagHeaderFormatter\CommaSeparatedTagHeaderFormatter;
 use FOS\HttpCacheBundle\CacheManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -19,13 +20,20 @@ class TagHandlerSpec extends ObjectBehavior
         CacheManager $cacheManager,
         Response $response,
         ResponseHeaderBag $responseHeaderBag,
-        RepositoryTagPrefix $tagPrefix
+        RepositoryTagPrefix $tagPrefix,
+        LoggerInterface $logger
     ) {
         $response->headers = $responseHeaderBag;
         $cacheManager->supports(CacheManager::INVALIDATE)->willReturn(true);
 
         $headerFormatter = new CommaSeparatedTagHeaderFormatter('xkey', ' ');
-        $this->beConstructedWith($tagPrefix, ['header_formatter' => $headerFormatter]);
+        $this->beConstructedWith($tagPrefix, $logger, [
+            'header_formatter' => $headerFormatter,
+            'tag_max_length' => 1000,
+            'tag_max_length_ttl' => 300,
+        ]);
+
+        $tagPrefix->getRepositoryPrefix()->willReturn('');
     }
 
     public function it_only_tags_ez_all_when_no_tags(Response $response, ResponseHeaderBag $responseHeaderBag)
@@ -73,50 +81,77 @@ class TagHandlerSpec extends ObjectBehavior
 
     public function it_tags_all_tags_we_add(Response $response, ResponseHeaderBag $responseHeaderBag)
     {
-        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
+        $responseHeaderBag->set('xkey', Argument::exact('ez-all l4 c4 p2'))->shouldBeCalled();
 
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
-        $this->tagSymfonyResponse($response, true);
-    }
-
-    public function it_tags_all_tags_we_add_on_null_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
-    {
-        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
-
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
-        $this->tagSymfonyResponse($response, true);
-    }
-
-    public function it_tags_all_tags_we_add_on_default_RepositoryId(Response $response, ResponseHeaderBag $responseHeaderBag)
-    {
-        $responseHeaderBag->set('xkey', Argument::exact('ez-all location-4 content-4 path-2'))->shouldBeCalled();
-
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
+        $this->addTags(['l4', 'c4']);
+        $this->addTags(['p2']);
         $this->tagSymfonyResponse($response, true);
     }
 
     public function it_tags_all_tags_we_add_and_prefix_with_repo_id(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
     {
-        $tagPrefix->getRepositoryPrefix()->willReturn('intranet_');
-        $responseHeaderBag->set('xkey', Argument::exact('intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2 ez-all'))->shouldBeCalled();
+        $tagPrefix->getRepositoryPrefix()->willReturn('0');
+        $responseHeaderBag->set('xkey', Argument::exact('ez-all 0ez-all 0l4 0c4 0p2'))->shouldBeCalled();
 
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
+        $this->addTags(['l4', 'c4']);
+        $this->addTags(['p2']);
         $this->tagSymfonyResponse($response, true);
     }
 
     public function it_tags_all_tags_we_add_and_prefix_with_repo_id_also_with_existing_header(Response $response, ResponseHeaderBag $responseHeaderBag, RepositoryTagPrefix $tagPrefix)
     {
-        $tagPrefix->getRepositoryPrefix()->willReturn('intranet_');
+        $tagPrefix->getRepositoryPrefix()->willReturn('2');
         $responseHeaderBag->has('xkey')->willReturn(true);
         $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1']);
-        $responseHeaderBag->set('xkey', Argument::exact('intranet_tag1 intranet_ez-all intranet_location-4 intranet_content-4 intranet_path-2 ez-all'))->shouldBeCalled();
+        $responseHeaderBag->set('xkey', Argument::exact('ez-all 2tag1 2ez-all 2l4 2c4 2p2'))->shouldBeCalled();
 
-        $this->addTags(['location-4', 'content-4']);
-        $this->addTags(['path-2']);
+        $this->addTags(['l4', 'c4']);
+        $this->addTags(['p2']);
         $this->tagSymfonyResponse($response, false);
+    }
+
+    public function it_ignores_too_long_tag_header(Response $response, ResponseHeaderBag $responseHeaderBag, LoggerInterface $logger)
+    {
+        $underLimitTags = 'ez-all';
+        $length = 6;
+        while(true) {
+            $tag = ' c' . $length;
+            $tagLength = strlen($tag);
+            if ($length + $tagLength  > 1000) {
+                break; // too long if we add more
+            }
+            $underLimitTags .= $tag;
+            $length += $tagLength;
+        }
+        $responseHeaderBag->getCacheControlDirective('s-maxage')->shouldBeCalled()->willReturn(200);
+        $response->setSharedMaxAge(300)->shouldNotBeCalled();
+        $logger->warning(Argument::containingString('HTTP Cache tags header max length reached and truncated to'))->shouldBeCalled();
+        $responseHeaderBag->set('xkey', Argument::exact($underLimitTags))->shouldBeCalled();
+
+        $this->addTags(explode(' ', $underLimitTags));
+        $this->addTags(['l1111111', 'c1111111']); // these tags are ignored
+        $this->tagSymfonyResponse($response, true);
+    }
+
+    public function it_ignores_too_long_tag_header_and_reduces_ttl(Response $response, ResponseHeaderBag $responseHeaderBag)
+    {
+        $underLimitTags = 'ez-all';
+        $length = 6;
+        while(true) {
+            $tag = ' c' . $length;
+            $tagLength = strlen($tag);
+            if ($length + $tagLength  > 1000) {
+                break; // too long if we add more
+            }
+            $underLimitTags .= $tag;
+            $length += $tagLength;
+        }
+        $responseHeaderBag->getCacheControlDirective('s-maxage')->shouldBeCalled()->willReturn(500);
+        $response->setSharedMaxAge(300)->shouldBeCalled();
+        $responseHeaderBag->set('xkey', Argument::exact($underLimitTags))->shouldBeCalled();
+
+        $this->addTags(explode(' ', $underLimitTags));
+        $this->addTags(['l1111111', 'c1111111']); // these tags are ignored
+        $this->tagSymfonyResponse($response, true);
     }
 }

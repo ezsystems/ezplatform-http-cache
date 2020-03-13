@@ -14,9 +14,13 @@ use eZ\Publish\API\Repository\Events\ContentType\DeleteContentTypeGroupEvent;
 use eZ\Publish\API\Repository\Events\ContentType\PublishContentTypeDraftEvent;
 use eZ\Publish\API\Repository\Events\ContentType\UnassignContentTypeGroupEvent;
 use eZ\Publish\API\Repository\Events\ContentType\UpdateContentTypeGroupEvent;
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
 
 final class ContentTypeEventsSubscriber extends AbstractSubscriber
 {
+    private const TYPE_TAG_PREFIX = 't';
+    private const TYPE_GROUP_TAG_PREFIX = 't';
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -34,7 +38,7 @@ final class ContentTypeEventsSubscriber extends AbstractSubscriber
         $contentTypeGroupId = $event->getContentTypeGroup()->id;
 
         $this->purgeClient->purge([
-            'type-group-' . $contentTypeGroupId,
+            self::TYPE_GROUP_TAG_PREFIX . $contentTypeGroupId,
         ]);
     }
 
@@ -43,7 +47,7 @@ final class ContentTypeEventsSubscriber extends AbstractSubscriber
         $contentTypeGroupId = $event->getContentTypeGroup()->id;
 
         $this->purgeClient->purge([
-            'type-group-' . $contentTypeGroupId,
+            self::TYPE_GROUP_TAG_PREFIX . $contentTypeGroupId,
         ]);
     }
 
@@ -52,8 +56,8 @@ final class ContentTypeEventsSubscriber extends AbstractSubscriber
         $contentTypeId = $event->getContentType()->id;
 
         $this->purgeClient->purge([
-            'content-type-' . $contentTypeId,
-            'type-' . $contentTypeId,
+            ContentTagInterface::CONTENT_TYPE_PREFIX . $contentTypeId,
+            self::TYPE_TAG_PREFIX . $contentTypeId,
         ]);
     }
 
@@ -62,8 +66,8 @@ final class ContentTypeEventsSubscriber extends AbstractSubscriber
         $contentTypeId = $event->getContentTypeDraft()->id;
 
         $this->purgeClient->purge([
-            'content-type-' . $contentTypeId,
-            'type-' . $contentTypeId,
+            ContentTagInterface::CONTENT_TYPE_PREFIX . $contentTypeId,
+            self::TYPE_TAG_PREFIX . $contentTypeId,
         ]);
     }
 
@@ -72,7 +76,7 @@ final class ContentTypeEventsSubscriber extends AbstractSubscriber
         $contentTypeGroupId = $event->getContentTypeGroup()->id;
 
         $this->purgeClient->purge([
-            'type-group-' . $contentTypeGroupId,
+            self::TYPE_GROUP_TAG_PREFIX . $contentTypeGroupId,
         ]);
     }
 
@@ -81,7 +85,7 @@ final class ContentTypeEventsSubscriber extends AbstractSubscriber
         $contentTypeGroupId = $event->getContentTypeGroup()->id;
 
         $this->purgeClient->purge([
-            'type-group-' . $contentTypeGroupId,
+            self::TYPE_GROUP_TAG_PREFIX . $contentTypeGroupId,
         ]);
     }
 }

@@ -6,6 +6,11 @@ parameters:
     # equal to settings under fos_http_cache.proxy_client.varnish.http.servers|base_url
     ezplatform.http_cache.varnish.http.servers: []
     ezplatform.http_cache.varnish.http.base_url: ~
+    # Optional settings to set a max length parameter (in bytes, eg 7900) and corresponding ttl (in seconds, eg 3600)
+    # Set  ttl to a low number as removing tags involves risk of stale responses (as it won't be purged on the tags removed)
+    # NOTE: System will log warning when this happens so you can fix the given response to avoid the issue.
+    ezplatform.http_cache.tags.header_max_length: null
+    ezplatform.http_cache.tags.header_reduced_ttl: null
 
 services:
     EzSystems\PlatformHttpCacheBundle\ProxyClient\HttpDispatcherFactory:
@@ -56,8 +61,12 @@ services:
         class: EzSystems\PlatformHttpCacheBundle\Handler\TagHandler
         arguments:
          - '@ezplatform.http_cache.repository_tag_prefix'
+         - '@logger'
          - header_formatter: '@fos_http_cache.tag_handler.header_formatter'
            strict: '%fos_http_cache.tag_handler.strict%'
+           # Custom eZ options (todo: Port to FOS)
+           tag_max_length: '%ezplatform.http_cache.tags.header_max_length%'
+           tag_max_length_ttl: '%ezplatform.http_cache.tags.header_reduced_ttl%'
 
     ezplatform.http_cache.user_context_provider.role_identify:
         class: EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify

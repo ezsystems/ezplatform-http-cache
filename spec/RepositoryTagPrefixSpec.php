@@ -11,7 +11,7 @@ class RepositoryTagPrefixSpec extends ObjectBehavior
 {
     public function let(ConfigResolverInterface $resolver)
     {
-        $this->beConstructedWith($resolver, ['default' => [], 'intra' => []]);
+        $this->beConstructedWith($resolver, ['default' => [], 'intra' => [], 'site' => []]);
     }
 
     function it_is_initializable()
@@ -37,13 +37,13 @@ class RepositoryTagPrefixSpec extends ObjectBehavior
     {
         $resolver->getParameter(Argument::exact('repository'))->willReturn('intra');
 
-        $this->getRepositoryPrefix()->shouldReturn('intra_');
+        $this->getRepositoryPrefix()->shouldReturn('1');
     }
 
     public function it_returns_value_on_non_default_cross_check(ConfigResolverInterface $resolver)
     {
         $resolver->getParameter(Argument::exact('repository'))->willReturn('site');
 
-        $this->getRepositoryPrefix()->shouldReturn('site_');
+        $this->getRepositoryPrefix()->shouldReturn('2');
     }
 }

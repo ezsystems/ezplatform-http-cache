@@ -12,37 +12,47 @@ use eZ\Publish\Core\Repository\Values\Content\Location;
 use FOS\HttpCache\ResponseTagger;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument\Token\AnyValueToken;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class XLocationIdResponseSubscriberSpec extends ObjectBehavior
 {
     public function let(
-        ResponseEvent $event,
         Response $response,
         ResponseTagger $tagHandler,
         Repository $repository,
         ResponseHeaderBag $responseHeaders
     ) {
         $response->headers = $responseHeaders;
-        $event->getResponse()->willReturn($response);
 
         $this->beConstructedWith($tagHandler, $repository);
     }
 
     public function it_does_not_rewrite_header_if_there_is_none(
-        ResponseEvent $event,
+        HttpKernelInterface $kernel,
+        Request $request,
+        Response $response,
         ResponseHeaderBag $responseHeaders
     ) {
         $responseHeaders->has('X-Location-Id')->willReturn(false);
         $responseHeaders->set()->shouldNotBecalled();
 
+        $event = new ResponseEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response->getWrappedObject()
+        );
+
         $this->rewriteCacheHeader($event);
     }
 
     public function it_rewrite_header_with_location_info(
-        ResponseEvent $event,
+        HttpKernelInterface $kernel,
+        Request $request,
         Response $response,
         ResponseTagger $tagHandler,
         Repository $repository,
@@ -72,11 +82,19 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
         ])->shouldBecalled();
         $responseHeaders->remove('X-Location-Id')->shouldBecalled();
 
+        $event = new ResponseEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response->getWrappedObject()
+        );
+
         $this->rewriteCacheHeader($event);
     }
 
     public function it_rewrite_header_on_not_found_location(
-        ResponseEvent $event,
+        HttpKernelInterface $kernel,
+        Request $request,
         Response $response,
         ResponseTagger $tagHandler,
         Repository $repository,
@@ -90,11 +108,19 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
         $tagHandler->addTags(['l123', 'p123'])->shouldBecalled();
         $responseHeaders->remove('X-Location-Id')->shouldBecalled();
 
+        $event = new ResponseEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response->getWrappedObject()
+        );
+
         $this->rewriteCacheHeader($event);
     }
 
     public function it_rewrite_header_also_in_unofficial_plural_form_and_merges_exisitng_value(
-        ResponseEvent $event,
+        HttpKernelInterface $kernel,
+        Request $request,
         Response $response,
         ResponseTagger $tagHandler,
         Repository $repository,
@@ -105,8 +131,15 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
 
         $repository->sudo(new AnyValueToken())->willThrow(new NotFoundException('id', 123));
 
-        $tagHandler->addTags(['l123', 'p123', 'l34', 'p34'])->shouldBecalled();
-        $responseHeaders->remove('X-Location-Id')->shouldBecalled();
+        $tagHandler->addTags(['l123', 'p123', 'l34', 'p34'])->shouldBeCalled();
+        $responseHeaders->remove('X-Location-Id')->shouldBeCalled();
+
+        $event = new ResponseEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response->getWrappedObject()
+        );
 
         $this->rewriteCacheHeader($event);
     }

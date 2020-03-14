@@ -21,46 +21,57 @@ use Prophecy\Argument\Token\AnyValueToken;
 use Prophecy\Argument\Token\TypeToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class RestKernelViewSubscriberSpec extends ObjectBehavior
 {
     public function let(
-        ViewEvent $event,
         Request $request,
         ParameterBag $attributes,
         ResponseTagger $tagHandler
     ) {
         $request->attributes = $attributes;
-        $event->getRequest()->willReturn($request);
 
         $this->beConstructedWith($tagHandler);
     }
 
     public function it_does_nothing_on_uncachable_methods(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
+        Response $response,
         ParameterBag $attributes
     ) {
         $request->isMethodCacheable()->willReturn(false);
+        $attributes->get(new AnyValueToken())->shouldNotBeCalled();
 
-        $attributes->get(new AnyValueToken())->shouldNotBecalled();
-        $event->getControllerResult()->shouldNotBecalled();
-        $event->setControllerResult()->shouldNotBecalled();
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
 
     public function it_does_nothing_on_non_rest_requests(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
+        Response $response,
         ParameterBag $attributes
     ) {
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(false);
 
-        $event->getControllerResult()->shouldNotBecalled();
-        $event->setControllerResult()->shouldNotBecalled();
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
@@ -69,20 +80,25 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * Section
      */
     public function it_writes_tags_on_section(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
         ParameterBag $attributes,
         Section $restValue,
         ResponseTagger $tagHandler
     ) {
+        $restValue->beConstructedWith([['id' => 5]]);
+
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
 
-        $restValue->beConstructedWith([['id' => 5]]);
-        $event->getControllerResult()->willReturn($restValue);
+        $tagHandler->addTags(['s5'])->shouldBeCalled();
 
-        $tagHandler->addTags(['s5'])->shouldBecalled();
-        $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $restValue->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
@@ -91,39 +107,50 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * ContentType
      */
     public function it_does_nothing_on_content_type_draft(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
+        Response $response,
         ParameterBag $attributes,
         ContentType $restValue,
         ResponseTagger $tagHandler
     ) {
+        $restValue->beConstructedWith([['status' => ContentType::STATUS_DRAFT]]);
+
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
 
-        $restValue->beConstructedWith([['status' => ContentType::STATUS_DRAFT]]);
-        $event->getControllerResult()->willReturn($restValue);
+        $tagHandler->addTags(new AnyValueToken())->shouldNotBeCalled();
 
-        $tagHandler->addTags(new AnyValueToken())->shouldNotBecalled();
-        $event->setControllerResult()->shouldNotBecalled();
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $restValue->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
 
     public function it_writes_tags_on_content_type_defined(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
         ParameterBag $attributes,
         ContentType $restValue,
         ResponseTagger $tagHandler
     ) {
+        $restValue->beConstructedWith([['id' => 4, 'status' => ContentType::STATUS_DEFINED]]);
+
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
 
-        $restValue->beConstructedWith([['id' => 4, 'status' => ContentType::STATUS_DEFINED]]);
-        $event->getControllerResult()->willReturn($restValue);
+        $tagHandler->addTags(['t4'])->shouldBeCalled();
 
-        $tagHandler->addTags(['t4'])->shouldBecalled();
-        $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $restValue->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
@@ -132,43 +159,52 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * RestContentType
      */
     public function it_does_nothing_on_rest_content_type_draft(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
         ParameterBag $attributes,
         RestContentType $restValue,
         ContentType $contentType,
         ResponseTagger $tagHandler
     ) {
+        $contentType->beConstructedWith([['status' => ContentType::STATUS_DRAFT]]);
+        $restValue->contentType = $contentType;
+
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
 
-        $contentType->beConstructedWith([['status' => ContentType::STATUS_DRAFT]]);
-        $restValue->contentType = $contentType;
-        $event->getControllerResult()->willReturn($restValue);
+        $tagHandler->addTags(new AnyValueToken())->shouldNotBeCalled();
 
-        $tagHandler->addTags(new AnyValueToken())->shouldNotBecalled();
-        $event->setControllerResult()->shouldNotBecalled();
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $restValue->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
 
     public function it_writes_tags_on_rest_content_type_defined(
-        ViewEvent $event,
-        Request $request,
-        ParameterBag $attributes,
+        HttpKernelInterface $kernel,
+        Request $request,        ParameterBag $attributes,
         RestContentType $restValue,
         ContentType $contentType,
         ResponseTagger $tagHandler
     ) {
+        $contentType->beConstructedWith([['id' => 4, 'status' => ContentType::STATUS_DEFINED]]);
+        $restValue->contentType = $contentType;
+
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
 
-        $contentType->beConstructedWith([['id' => 4, 'status' => ContentType::STATUS_DEFINED]]);
-        $restValue->contentType = $contentType;
-        $event->getControllerResult()->willReturn($restValue);
+        $tagHandler->addTags(['t4'])->shouldBeCalled();
 
-        $tagHandler->addTags(['t4'])->shouldBecalled();
-        $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $restValue->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
@@ -177,7 +213,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * ContentTypeGroupRefList
      */
     public function it_does_nothing_on_rest_content_type_group_ref_draft(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
         ParameterBag $attributes,
         ContentTypeGroupRefList $restValue,
@@ -185,23 +221,27 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         ContentTypeGroup $contentTypeGroup,
         ResponseTagger $tagHandler
     ) {
-        $request->isMethodCacheable()->willReturn(true);
-        $attributes->get('is_rest_request')->willReturn(true);
-
         $contentType->beConstructedWith([['status' => ContentType::STATUS_DRAFT]]);
         $restValue->contentType = $contentType;
         $restValue->contentTypeGroups = [$contentTypeGroup];
 
-        $event->getControllerResult()->willReturn($restValue);
+        $request->isMethodCacheable()->willReturn(true);
+        $attributes->get('is_rest_request')->willReturn(true);
 
-        $tagHandler->addTags(new AnyValueToken())->shouldNotBecalled();
-        $event->setControllerResult()->shouldNotBecalled();
+        $tagHandler->addTags(new AnyValueToken())->shouldNotBeCalled();
+
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $restValue->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
 
     public function it_writes_tags_on_rest_content_type_group_ref_defined(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
         ParameterBag $attributes,
         ContentTypeGroupRefList $restValue,
@@ -209,19 +249,23 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         ContentTypeGroup $contentTypeGroup,
         ResponseTagger $tagHandler
     ) {
-        $request->isMethodCacheable()->willReturn(true);
-        $attributes->get('is_rest_request')->willReturn(true);
-
         $contentType->beConstructedWith([['id' => 4, 'status' => ContentType::STATUS_DEFINED]]);
         $restValue->contentType = $contentType;
 
         $contentTypeGroup->beConstructedWith([['id' => 2]]);
         $restValue->contentTypeGroups = [$contentTypeGroup];
 
-        $event->getControllerResult()->willReturn($restValue);
+        $request->isMethodCacheable()->willReturn(true);
+        $attributes->get('is_rest_request')->willReturn(true);
 
-        $tagHandler->addTags(['t4', 'tg2'])->shouldBecalled();
-        $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
+        $tagHandler->addTags(['t4', 'tg2'])->shouldBeCalled();
+
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $restValue->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
@@ -230,22 +274,27 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * ContentTypeGroupList
      */
     public function it_writes_tags_on_rest_content_type_group_list(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
         ParameterBag $attributes,
         ContentTypeGroupList $restValue,
         ContentTypeGroup $contentTypeGroup,
         ResponseTagger $tagHandler
     ) {
+        $contentTypeGroup->beConstructedWith([['id' => 2]]);
+        $restValue->contentTypeGroups = [$contentTypeGroup];
+
         $request->isMethodCacheable()->willReturn(true);
         $attributes->get('is_rest_request')->willReturn(true);
 
-        $contentTypeGroup->beConstructedWith([['id' => 2]]);
-        $restValue->contentTypeGroups = [$contentTypeGroup];
-        $event->getControllerResult()->willReturn($restValue);
+        $tagHandler->addTags(['tg2'])->shouldBeCalled();
 
-        $tagHandler->addTags(['tg2'])->shouldBecalled();
-        $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $restValue->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }
@@ -254,7 +303,7 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
      * VersionList
      */
     public function it_writes_tags_on_rest_version_list(
-        ViewEvent $event,
+        HttpKernelInterface $kernel,
         Request $request,
         ParameterBag $attributes,
         VersionList $restValue,
@@ -262,16 +311,21 @@ class RestKernelViewSubscriberSpec extends ObjectBehavior
         ContentInfo $contentInfo,
         ResponseTagger $tagHandler
     ) {
-        $request->isMethodCacheable()->willReturn(true);
-        $attributes->get('is_rest_request')->willReturn(true);
-
         $contentInfo->beConstructedWith([['id' => 33]]);
         $versionInfo->beConstructedWith([['contentInfo' => $contentInfo]]);
         $restValue->versions = [$versionInfo];
-        $event->getControllerResult()->willReturn($restValue);
 
-        $tagHandler->addTags(['c33', 'cv33'])->shouldBecalled();
-        $event->setControllerResult(new TypeToken(CachedValue::class))->shouldBecalled();
+        $request->isMethodCacheable()->willReturn(true);
+        $attributes->get('is_rest_request')->willReturn(true);
+
+        $tagHandler->addTags(['c33', 'cv33'])->shouldBeCalled();
+
+        $event = new ViewEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $restValue->getWrappedObject()
+        );
 
         $this->tagUIRestResult($event);
     }

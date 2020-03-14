@@ -27,7 +27,7 @@ class LocalPurgeClientTest extends TestCase
     /** @var \PHPUnit\Framework\MockObject\MockObject|\Toflar\Psr6HttpCacheStore\Psr6StoreInterface */
     private $store;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->store = $this->createMock(Psr6StoreInterface::class);

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber\CachePurge;
 
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use eZ\Publish\SPI\Persistence\Content\Location\Handler as LocationHandler;
@@ -40,25 +41,25 @@ abstract class AbstractSubscriber implements EventSubscriberInterface
     public function getContentTags(int $contentId): array
     {
         return [
-            'content-' . $contentId,
-            'relation-' . $contentId,
+            ContentTagInterface::CONTENT_PREFIX . $contentId,
+            ContentTagInterface::RELATION_PREFIX . $contentId,
         ];
     }
 
     public function getLocationTags(int $locationId): array
     {
         return [
-            'location-' . $locationId,
-            'parent-' . $locationId,
-            'relation-location-' . $locationId,
+            ContentTagInterface::LOCATION_PREFIX . $locationId,
+            ContentTagInterface::PARENT_LOCATION_PREFIX . $locationId,
+            ContentTagInterface::RELATION_LOCATION_PREFIX . $locationId,
         ];
     }
 
     public function getParentLocationTags(int $locationId): array
     {
         return [
-            'location-' . $locationId,
-            'parent-' . $locationId,
+            ContentTagInterface::LOCATION_PREFIX . $locationId,
+            ContentTagInterface::PARENT_LOCATION_PREFIX . $locationId,
         ];
     }
 
@@ -86,7 +87,7 @@ abstract class AbstractSubscriber implements EventSubscriberInterface
         $contentIds = $this->urlHandler->findUsages($urlId);
 
         foreach ($contentIds as $contentId) {
-            $tags[] = 'content-' . $contentId;
+            $tags[] = ContentTagInterface::CONTENT_PREFIX . $contentId;
         }
 
         return $tags;

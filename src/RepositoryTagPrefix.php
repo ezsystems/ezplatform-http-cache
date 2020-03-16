@@ -21,24 +21,26 @@ class RepositoryTagPrefix
     private $resolver;
 
     /**
-     * @var string
+     * @var int[<string>]
      */
-    private $defaultRepository = '';
+    private $repositoryMap = [];
 
     public function __construct(ConfigResolverInterface $resolver, array $repositories)
     {
         $this->resolver = $resolver;
 
-        // First repositories is the default one, foreach is apparently the fastest way to get it.
-        foreach ($repositories as $repositoryId => $value) {
-            $this->defaultRepository = $repositoryId;
-
-            break;
+        // Build a map of repository identifier <> array index, as we will return the latter as prefix
+        $i = 0;
+        foreach ($repositories as $repositoryIdentifier => $value) {
+            $this->repositoryMap[$repositoryIdentifier] = $i === 0 ? '' : $i;
+            ++$i;
         }
     }
 
     /**
-     * Return repository prefix, either '' if default or '<repositoryId>_' if not default repository.
+     * Return repository prefix, specifically the index number in the array of repositories.
+     *
+     * Example: Default repository (first one), will return value ""
      *
      * WARNING: Must be called on-demand and not in constructors to avoid any issues with SiteAccess scope changes.
      *
@@ -46,8 +48,8 @@ class RepositoryTagPrefix
      */
     public function getRepositoryPrefix()
     {
-        $repositoryId = $this->resolver->getParameter('repository');
+        $repositoryIdentifier = $this->resolver->getParameter('repository');
 
-        return empty($repositoryId) || $repositoryId === $this->defaultRepository ? '' : $repositoryId . '_';
+        return (string) (empty($repositoryIdentifier) ? '' : $this->repositoryMap[$repositoryIdentifier]);
     }
 }

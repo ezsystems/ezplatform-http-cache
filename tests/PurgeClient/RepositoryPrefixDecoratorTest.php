@@ -49,14 +49,14 @@ class RepositoryPrefixDecoratorTest extends TestCase
         $this->purgeClientMock
             ->expects($this->once())
             ->method('purge')
-            ->with($this->equalTo(['location-123', 'content-44', 'ez-all']));
+            ->with($this->equalTo(['l123', 'c44', 'ez-all']));
 
         $this->tagPrefixMock
             ->expects($this->once())
             ->method('getRepositoryPrefix')
             ->willReturn('');
 
-        $this->prefixDecorator->purge(['location-123', 'content-44', 'ez-all']);
+        $this->prefixDecorator->purge(['l123', 'c44', 'ez-all']);
     }
 
     public function testPurgeWithPrefix()
@@ -64,14 +64,14 @@ class RepositoryPrefixDecoratorTest extends TestCase
         $this->purgeClientMock
             ->expects($this->once())
             ->method('purge')
-            ->with($this->equalTo(['intranet_location-123', 'intranet_content-44', 'intranet_ez-all']));
+            ->with($this->equalTo(['0l123', '0c44', '0ez-all']));
 
         $this->tagPrefixMock
             ->expects($this->once())
             ->method('getRepositoryPrefix')
-            ->willReturn('intranet_');
+            ->willReturn('0');
 
-        $this->prefixDecorator->purge(['location-123', 'content-44', 'ez-all']);
+        $this->prefixDecorator->purge(['l123', 'c44', 'ez-all']);
     }
 
     public function testPurgeAll()

@@ -14,6 +14,7 @@ use eZ\Publish\API\Repository\Events\User\CreateUserGroupEvent;
 use eZ\Publish\API\Repository\Events\User\UnAssignUserFromUserGroupEvent;
 use eZ\Publish\API\Repository\Events\User\UpdateUserEvent;
 use eZ\Publish\API\Repository\Events\User\UpdateUserGroupEvent;
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
 
 final class UserEventsSubscriber extends AbstractSubscriber
 {
@@ -35,8 +36,8 @@ final class UserEventsSubscriber extends AbstractSubscriber
         $userGroupId = $event->getUserGroup()->id;
 
         $this->purgeClient->purge([
-            'content-' . $userId,
-            'content-' . $userGroupId,
+            ContentTagInterface::CONTENT_PREFIX . $userId,
+            ContentTagInterface::CONTENT_PREFIX . $userGroupId,
             'ez-user-context-hash',
         ]);
     }
@@ -71,8 +72,8 @@ final class UserEventsSubscriber extends AbstractSubscriber
         $userGroupId = $event->getUserGroup()->id;
 
         $this->purgeClient->purge([
-            'content-' . $userId,
-            'content-' . $userGroupId,
+            ContentTagInterface::CONTENT_PREFIX . $userId,
+            ContentTagInterface::CONTENT_PREFIX . $userGroupId,
             'ez-user-context-hash',
         ]);
     }

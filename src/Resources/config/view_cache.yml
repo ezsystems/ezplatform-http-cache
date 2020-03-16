@@ -95,6 +95,8 @@ services:
     # Twig
     ezplatform.view_cache.twig_extension:
         class: EzSystems\PlatformHttpCacheBundle\Twig\ContentTaggingExtension
-        arguments: ['@ezplatform.view_cache.response_tagger.dispatcher']
+        arguments:
+            - '@ezplatform.view_cache.response_tagger.dispatcher'
+            - '@fos_http_cache.http.symfony_response_tagger'
         tags:
             - {name: twig.extension}

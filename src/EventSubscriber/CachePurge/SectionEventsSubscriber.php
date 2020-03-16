@@ -14,6 +14,8 @@ use eZ\Publish\API\Repository\Events\Section\UpdateSectionEvent;
 
 final class SectionEventsSubscriber extends AbstractSubscriber
 {
+    private const SECTION_TAG_PREFIX = 's';
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -40,7 +42,7 @@ final class SectionEventsSubscriber extends AbstractSubscriber
         $sectionId = $event->getSection()->id;
 
         $this->purgeClient->purge([
-           'section-' . $sectionId,
+           self::SECTION_TAG_PREFIX . $sectionId,
         ]);
     }
 
@@ -49,7 +51,7 @@ final class SectionEventsSubscriber extends AbstractSubscriber
         $sectionId = $event->getSection()->id;
 
         $this->purgeClient->purge([
-            'section-' . $sectionId,
+            self::SECTION_TAG_PREFIX . $sectionId,
         ]);
     }
 }

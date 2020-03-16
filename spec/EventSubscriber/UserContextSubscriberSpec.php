@@ -98,8 +98,8 @@ class UserContextSubscriberSpec extends ObjectBehavior
         $responseHeaders->get(Argument::exact('Content-Type'))->willReturn('application/vnd.fos.user-context-hash');
         $response->getTtl()->willReturn(100);
 
-        $prefixService->getRepositoryPrefix()->willReturn('intra_');
-        $responseHeaders->set(Argument::exact('xkey'), Argument::exact('intra_ez-user-context-hash'))->willReturn(null);
+        $prefixService->getRepositoryPrefix()->willReturn('1');
+        $responseHeaders->set(Argument::exact('xkey'), Argument::exact('1ez-user-context-hash'))->willReturn(null);
 
         $this->tagUserContext($event);
     }

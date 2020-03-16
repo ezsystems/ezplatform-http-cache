@@ -47,6 +47,7 @@ class RepositoryPrefixDecorator implements PurgeClientInterface
 
     public function purgeAll(): void
     {
+        //  No prefix here, this on purpose clears all as use case is deployment of whole install.
         $this->purgeClient->purgeAll();
     }
 }

@@ -14,6 +14,7 @@ use EzSystems\EzPlatformRest\Server\Values\ContentTypeGroupList;
 use EzSystems\EzPlatformRest\Server\Values\ContentTypeGroupRefList;
 use EzSystems\EzPlatformRest\Server\Values\RestContentType;
 use EzSystems\EzPlatformRest\Server\Values\VersionList;
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
 use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -70,23 +71,23 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
         $tags = [];
         switch ($value) {
             case $value instanceof VersionList && !empty($value->versions):
-                $tags[] = 'content-' . $value->versions[0]->contentInfo->id;
-                $tags[] = 'content-versions-' . $value->versions[0]->contentInfo->id;
+                $tags[] = ContentTagInterface::CONTENT_PREFIX . $value->versions[0]->contentInfo->id;
+                $tags[] = ContentTagInterface::CONTENT_VERSION_PREFIX . $value->versions[0]->contentInfo->id;
 
                 break;
 
             case $value instanceof Section:
-                $tags[] = 'section-' . $value->id;
+                $tags[] = 's' . $value->id;
                 break;
 
             case $value instanceof ContentTypeGroupRefList:
                 if ($value->contentType->status !== ContentType::STATUS_DEFINED) {
                     return [];
                 }
-                $tags[] = 'type-' . $value->contentType->id;
+                $tags[] = 't' . $value->contentType->id;
             case $value instanceof ContentTypeGroupList:
                 foreach ($value->contentTypeGroups as $contentTypeGroup) {
-                    $tags[] = 'type-group-' . $contentTypeGroup->id;
+                    $tags[] = 'tg' . $contentTypeGroup->id;
                 }
                 break;
 
@@ -96,11 +97,11 @@ class RestKernelViewSubscriber implements EventSubscriberInterface
                 if ($value->status !== ContentType::STATUS_DEFINED) {
                     return [];
                 }
-                $tags[] = 'type-' . $value->id;
+                $tags[] = 't' . $value->id;
                 break;
 
             case $value instanceof Root:
-                $tags[] = 'ez-all';
+                $tags[] = ContentTagInterface::ALL_TAG;
                 break;
         }
 

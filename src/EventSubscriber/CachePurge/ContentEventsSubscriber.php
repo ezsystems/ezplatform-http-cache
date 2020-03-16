@@ -17,6 +17,7 @@ use eZ\Publish\API\Repository\Events\Content\PublishVersionEvent;
 use eZ\Publish\API\Repository\Events\Content\RevealContentEvent;
 use eZ\Publish\API\Repository\Events\Content\UpdateContentEvent;
 use eZ\Publish\API\Repository\Events\Content\UpdateContentMetadataEvent;
+use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
 
 final class ContentEventsSubscriber extends AbstractSubscriber
 {
@@ -41,9 +42,9 @@ final class ContentEventsSubscriber extends AbstractSubscriber
         $parentLocationId = $event->getDestinationLocationCreateStruct()->parentLocationId;
 
         $this->purgeClient->purge([
-            'content-' . $contentId,
-            'location-' . $parentLocationId,
-            'path-' . $parentLocationId,
+            ContentTagInterface::CONTENT_PREFIX . $contentId,
+            ContentTagInterface::LOCATION_PREFIX . $parentLocationId,
+            ContentTagInterface::PATH_PREFIX . $parentLocationId,
         ]);
     }
 
@@ -52,7 +53,7 @@ final class ContentEventsSubscriber extends AbstractSubscriber
         $contentId = $event->getContentInfo()->id;
 
         $this->purgeClient->purge([
-            'content-versions-' . $contentId,
+            ContentTagInterface::CONTENT_VERSION_PREFIX . $contentId,
         ]);
     }
 
@@ -63,7 +64,7 @@ final class ContentEventsSubscriber extends AbstractSubscriber
         $tags = $this->getContentTags($contentId);
 
         foreach ($event->getLocations() as $locationId) {
-            $tags[] = 'path-' . $locationId;
+            $tags[] = ContentTagInterface::PATH_PREFIX . $locationId;
         }
 
         $this->purgeClient->purge($tags);
@@ -74,7 +75,7 @@ final class ContentEventsSubscriber extends AbstractSubscriber
         $contentId = $event->getVersionInfo()->getContentInfo()->id;
 
         $this->purgeClient->purge([
-            'delete-versions-' . $contentId,
+            ContentTagInterface::CONTENT_VERSION_PREFIX . $contentId,
         ]);
     }
 
@@ -119,7 +120,7 @@ final class ContentEventsSubscriber extends AbstractSubscriber
         $contentId = $event->getContent()->getVersionInfo()->getContentInfo()->id;
 
         $this->purgeClient->purge([
-            'content-versions-' . $contentId,
+            ContentTagInterface::CONTENT_VERSION_PREFIX . $contentId,
         ]);
     }
 

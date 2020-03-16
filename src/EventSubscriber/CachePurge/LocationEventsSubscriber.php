@@ -162,7 +162,7 @@ final class LocationEventsSubscriber extends AbstractSubscriber
             $this->getContentTags((int)$contentId),
             $this->getLocationTags((int)$locationId),
             $this->getParentLocationTags((int)$parentLocationId),
-            );
+        );
 
         $this->purgeClient->purge($tags);
     }

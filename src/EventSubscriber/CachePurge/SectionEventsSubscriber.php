@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace EzSystems\PlatformHttpCacheBundle\EventSubscriber\CachePurge;
 
 use eZ\Publish\API\Repository\Events\Section\AssignSectionEvent;
+use eZ\Publish\API\Repository\Events\Section\AssignSectionToSubtreeEvent;
 use eZ\Publish\API\Repository\Events\Section\DeleteSectionEvent;
 use eZ\Publish\API\Repository\Events\Section\UpdateSectionEvent;
 
@@ -22,6 +23,7 @@ final class SectionEventsSubscriber extends AbstractSubscriber
             AssignSectionEvent::class => 'onAssignSection',
             DeleteSectionEvent::class => 'onDeleteSection',
             UpdateSectionEvent::class => 'onUpdateSection',
+            AssignSectionToSubtreeEvent::class => 'onAssignSectionToSubtree',
         ];
     }
 
@@ -53,5 +55,21 @@ final class SectionEventsSubscriber extends AbstractSubscriber
         $this->purgeClient->purge([
             self::SECTION_TAG_PREFIX . $sectionId,
         ]);
+    }
+
+    public function onAssignSectionToSubtree(AssignSectionToSubtreeEvent $event): void
+    {
+        $location = $event->getLocation();
+
+        $tags = array_merge(
+            $this->getContentTags($location->contentId),
+            $this->getLocationTags($location->id),
+            $this->getParentLocationTags($location->parentLocationId),
+            [
+                'path-' . $location->id,
+            ]
+        );
+
+        $this->purgeClient->purge($tags);
     }
 }

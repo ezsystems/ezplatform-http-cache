@@ -37,9 +37,6 @@ class EzPlatformHttpCacheExtension extends Extension implements PrependExtension
         $loader->load('services.yml');
         $loader->load('event.yml');
         $loader->load('view_cache.yml');
-
-        $this->setDefaultResponseHeader($container);
-        $this->setDefaultTagSeparator($container);
     }
 
     public function prepend(ContainerBuilder $container)
@@ -68,29 +65,5 @@ class EzPlatformHttpCacheExtension extends Extension implements PrependExtension
     public function getExtraConfigParsers()
     {
         return $this->extraConfigParsers;
-    }
-
-    /**
-     * Overrides default header name based on setting tag_mode in FosHttpCacheBundle configuration.
-     */
-    private function setDefaultResponseHeader(ContainerBuilder $container): void
-    {
-        $purgeType = $container->getParameter('ezpublish.http_cache.purge_type');
-
-        $responseHeader = 'http' === $purgeType ? 'xkey' : TagHeaderFormatter::DEFAULT_HEADER_NAME;
-
-        $container->setParameter('fos_http_cache.tag_handler.response_header', $responseHeader);
-    }
-
-    /**
-     * Overrides default header separator based on setting tag_mode in FosHttpCacheBundle configuration.
-     */
-    private function setDefaultTagSeparator(ContainerBuilder $container): void
-    {
-        $purgeType = $container->getParameter('ezpublish.http_cache.purge_type');
-
-        $separator = 'http' === $purgeType ? ' ' : ',';
-
-        $container->setParameter('fos_http_cache.tag_handler.separator', $separator);
     }
 }

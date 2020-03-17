@@ -43,7 +43,6 @@ services:
         arguments:
             - '@fos_http_cache.cache_manager'
         tags:
-            - {name: ezplatform.http_cache.purge_client, purge_type: http}
             - {name: ezplatform.http_cache.purge_client, purge_type: varnish}
 
     ezplatform.http_cache.purge_client.local:

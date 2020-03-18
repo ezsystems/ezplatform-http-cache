@@ -23,6 +23,7 @@ class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
 
     public function it_sets_cache_control_to_public_if_viewcache_is_enabled(Response $response)
     {
+        $response->setPublic()->willReturn($response);
         $this->beConstructedWith(true, false, 0);
         $this->enableCache($response);
 
@@ -57,6 +58,7 @@ class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
 
     public function it_sets_shared_maxage(Response $response, ResponseHeaderBag $headers)
     {
+        $response->setSharedMaxAge(30)->willReturn($response);
         $this->beConstructedWith(true, true, 30);
         $headers->hasCacheControlDirective('s-maxage')->willReturn(false);
 

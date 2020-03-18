@@ -28,7 +28,7 @@ class RepositoryPrefixDecoratorTest extends TestCase
      */
     private $prefixDecorator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +37,7 @@ class RepositoryPrefixDecoratorTest extends TestCase
         $this->prefixDecorator = new RepositoryPrefixDecorator($this->purgeClientMock, $this->tagPrefixMock);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($this->purgeClientMock, $this->tagPrefixMock, $this->prefixDecorator);
 

@@ -63,7 +63,7 @@ class TagHandler extends SymfonyResponseTagger implements ContentTagInterface
             if (!empty($headers)) {
                 // handle both both comma (FOS) and space (this bundle/xkey/fastly) separated strings
                 // As there can be more requests going on, we don't add these to tag handler (ez-user-context-hash)
-                $tags = preg_split("/[\s,]+/", implode(' ', $headers));
+                $tags = preg_split("/[\s,]+/", implode(' ', (array) $headers));
             }
         }
 

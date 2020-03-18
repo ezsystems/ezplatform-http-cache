@@ -20,7 +20,7 @@ class VarnishPurgeClientTest extends TestCase
     /** @var \EzSystems\PlatformHttpCacheBundle\PurgeClient\VarnishPurgeClient */
     private $purgeClient;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->cacheManager = $this->getMockBuilder(CacheManager::class)

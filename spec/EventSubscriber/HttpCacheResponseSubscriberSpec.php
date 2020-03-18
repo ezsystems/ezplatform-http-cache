@@ -14,52 +14,72 @@ use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class HttpCacheResponseSubscriberSpec extends ObjectBehavior
 {
     public function let(
-        ResponseEvent $event,
         Request $request,
-        Response $response,
         ParameterBag $requestAttributes,
         ResponseCacheConfigurator $configurator,
         ResponseTagger $dispatcherTagger
     ) {
         $request->attributes = $requestAttributes;
-        $event->getRequest()->willReturn($request);
-        $event->getResponse()->willReturn($response);
 
         $this->beConstructedWith($configurator, $dispatcherTagger);
     }
 
     public function it_does_not_enable_cache_if_the_view_is_not_a_cachableview(
-        ResponseEvent $event,
+        HttpKernelInterface $kernel,
+        Request $request,
+        Response $response,
         ResponseCacheConfigurator $configurator,
         ParameterBag $requestAttributes,
         View $nonCachableView
     ) {
         $requestAttributes->get('view')->willReturn($nonCachableView);
+
+        $event = new ResponseEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response->getWrappedObject()
+        );
+
         $configurator->enableCache()->shouldNotBecalled();
 
         $this->configureCache($event);
     }
 
     public function it_does_not_enable_cache_if_it_is_disabled_in_the_view(
-        ResponseEvent $event,
+        HttpKernelInterface $kernel,
+        Request $request,
+        Response $response,
         ResponseCacheConfigurator $configurator,
         CachableView $view,
         ParameterBag $requestAttributes
     ) {
         $requestAttributes->get('view')->willReturn($view);
         $view->isCacheEnabled()->willReturn(false);
+
+        $event = new ResponseEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response->getWrappedObject()
+        );
+
         $configurator->enableCache()->shouldNotBecalled();
 
         $this->configureCache($event);
     }
 
     public function it_enables_cache(
-        ResponseEvent $event,
+        HttpKernelInterface $kernel,
+        Request $request,
+        Response $response,
         ResponseCacheConfigurator $configurator,
         CachableView $view,
         ParameterBag $requestAttributes,
@@ -67,6 +87,13 @@ class HttpCacheResponseSubscriberSpec extends ObjectBehavior
     ) {
         $requestAttributes->get('view')->willReturn($view);
         $view->isCacheEnabled()->willReturn(true);
+
+        $event = new ResponseEvent(
+            $kernel->getWrappedObject(),
+            $request->getWrappedObject(),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response->getWrappedObject()
+        );
 
         $this->configureCache($event);
 

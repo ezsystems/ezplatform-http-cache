@@ -38,12 +38,12 @@ class HiddenLocationExceptionSubscriber implements EventSubscriberInterface
 
     public function tagHiddenLocationExceptionResponse(ExceptionEvent $event)
     {
-        if (!$event->getException() instanceof HiddenLocationException) {
+        if (!$event->getThrowable() instanceof HiddenLocationException) {
             return;
         }
 
         /** @var \eZ\Publish\API\Repository\Values\Content\Location $location */
-        $location = $event->getException()->getLocation();
+        $location = $event->getThrowable()->getLocation();
         $this->locationTagger->tag($location);
         $this->contentInfoTagger->tag($location->getContentInfo());
     }

@@ -13,8 +13,8 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.3",
-        "ezsystems/ezpublish-kernel": "dev-symfony5 as 8.0.x-dev",
-        "ezsystems/ezplatform-rest": "dev-symfony5 as 1.0.x-dev",
+        "ezsystems/ezpublish-kernel": "^8.0@dev",
+        "ezsystems/ezplatform-rest": "^1.0@dev",
         "friendsofsymfony/http-cache-bundle": "^2.8",
         "friendsofsymfony/http-cache": "^2.9",
         "symfony/http-foundation": "^5.0",

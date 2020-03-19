@@ -57,10 +57,10 @@ class ConditionallyRemoveVaryHeaderListener implements EventSubscriberInterface
         }
 
         $response = $event->getResponse();
-        $varyHeaders = $response->headers->get('vary', null, false);
+        $varyHeaders = $response->headers->all('vary');
 
         foreach ($this->userIdentifierHeaders as $removableVary) {
-            unset($varyHeaders[array_search(strtolower($removableVary), $varyHeaders)]);
+            unset($varyHeaders[array_search(strtolower($removableVary), [$varyHeaders])]);
         }
         $response->setVary($varyHeaders, true);
     }

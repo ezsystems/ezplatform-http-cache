@@ -59,11 +59,11 @@ class TagHandler extends SymfonyResponseTagger implements ContentTagInterface
     {
         $tags = [];
         if (!$replace && $response->headers->has($this->getTagsHeaderName())) {
-            $headers = $response->headers->get($this->getTagsHeaderName(), null, false);
+            $headers = $response->headers->all($this->getTagsHeaderName());
             if (!empty($headers)) {
                 // handle both both comma (FOS) and space (this bundle/xkey/fastly) separated strings
                 // As there can be more requests going on, we don't add these to tag handler (ez-user-context-hash)
-                $tags = preg_split("/[\s,]+/", implode(' ', (array) $headers));
+                $tags = preg_split("/[\s,]+/", implode(' ', $headers));
             }
         }
 

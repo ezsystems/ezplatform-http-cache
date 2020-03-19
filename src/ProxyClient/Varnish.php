@@ -27,7 +27,7 @@ final class Varnish extends FosVarnish implements BanCapable, PurgeCapable, Refr
         ConfigResolverInterface $configResolver,
         Dispatcher $httpDispatcher,
         array $options = [],
-        RequestFactory $messageFactory = null
+        ?RequestFactory $messageFactory = null
     ) {
         parent::__construct($httpDispatcher, $options, $messageFactory);
         $this->configResolver = $configResolver;

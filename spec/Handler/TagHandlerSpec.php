@@ -55,7 +55,7 @@ class TagHandlerSpec extends ObjectBehavior
     public function it_tags_with_existing_header_string(Response $response, ResponseHeaderBag $responseHeaderBag)
     {
         $responseHeaderBag->has('xkey')->willReturn(true);
-        $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1,tag2 tag3']);
+        $responseHeaderBag->all('xkey')->willReturn(['tag1,tag2 tag3']);
         $responseHeaderBag->set('xkey', Argument::exact('tag1 tag2 tag3 ez-all'))->shouldBeCalled();
 
         $this->tagSymfonyResponse($response);
@@ -64,7 +64,7 @@ class TagHandlerSpec extends ObjectBehavior
     public function it_tags_with_existing_header_array(Response $response, ResponseHeaderBag $responseHeaderBag)
     {
         $responseHeaderBag->has('xkey')->willReturn(true);
-        $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1', 'tag2', 'tag3']);
+        $responseHeaderBag->all('xkey')->willReturn(['tag1', 'tag2', 'tag3']);
         $responseHeaderBag->set('xkey', Argument::exact('tag1 tag2 tag3 ez-all'))->shouldBeCalled();
 
         $this->tagSymfonyResponse($response);
@@ -73,7 +73,7 @@ class TagHandlerSpec extends ObjectBehavior
     public function it_tags_with_existing_header_mixed(Response $response, ResponseHeaderBag $responseHeaderBag)
     {
         $responseHeaderBag->has('xkey')->willReturn(true);
-        $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1', 'tag2,tag3']);
+        $responseHeaderBag->all('xkey')->willReturn(['tag1', 'tag2,tag3']);
         $responseHeaderBag->set('xkey', Argument::exact('tag1 tag2 tag3 ez-all'))->shouldBeCalled();
 
         $this->tagSymfonyResponse($response);
@@ -102,7 +102,7 @@ class TagHandlerSpec extends ObjectBehavior
     {
         $tagPrefix->getRepositoryPrefix()->willReturn('2');
         $responseHeaderBag->has('xkey')->willReturn(true);
-        $responseHeaderBag->get('xkey', null, false)->willReturn(['tag1']);
+        $responseHeaderBag->all('xkey')->willReturn(['tag1']);
         $responseHeaderBag->set('xkey', Argument::exact('ez-all 2tag1 2ez-all 2l4 2c4 2p2'))->shouldBeCalled();
 
         $this->addTags(['l4', 'c4']);

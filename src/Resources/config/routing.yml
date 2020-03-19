@@ -1,4 +1,3 @@
-
 ezplatform.httpcache.invalidatetoken:
     path: /_ez_http_invalidatetoken
     defaults:

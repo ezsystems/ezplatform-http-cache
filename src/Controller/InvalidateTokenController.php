@@ -14,6 +14,8 @@ use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 class InvalidateTokenController
 {
+    public const TOKEN_HEADER_NAME = 'X-Invalidate-Token';
+
     /**
      * @var \eZ\Publish\Core\MVC\ConfigResolverInterface
      */
@@ -46,18 +48,6 @@ class InvalidateTokenController
     }
 
     /**
-     * Request::isFromTrustedProxy is private in Symfony <3.1, so this is a re-implementation of it.
-     *
-     * @param Request $request
-     *
-     * @return bool
-     */
-    private function isFromTrustedProxy(Request $request)
-    {
-        return $request->getTrustedProxies() && IpUtils::checkIp($request->server->get('REMOTE_ADDR'), $request->getTrustedProxies());
-    }
-
-    /**
      * @param Request $request
      *
      * @return Response
@@ -66,7 +56,7 @@ class InvalidateTokenController
     {
         $response = new Response();
 
-        if (!$this->isFromTrustedProxy($request)) {
+        if ($request->isFromTrustedProxy()) {
             $response->setStatusCode('401', 'Unauthorized');
 
             return $response;

@@ -7,6 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection;
 
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ParserInterface;
+use FOS\HttpCache\TagHeaderFormatter\TagHeaderFormatter;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -36,6 +37,15 @@ class EzPlatformHttpCacheExtension extends Extension implements PrependExtension
         $loader->load('services.yml');
         $loader->load('event.yml');
         $loader->load('view_cache.yml');
+
+        $purgeType = $container->getParameter('ezpublish.http_cache.purge_type');
+        if ('local' === $purgeType) {
+            $container->setParameter(
+                'fos_http_cache.tag_handler.response_header',
+                TagHeaderFormatter::DEFAULT_HEADER_NAME
+            );
+            $container->setParameter('fos_http_cache.tag_handler.separator', ',');
+        }
     }
 
     public function prepend(ContainerBuilder $container)

@@ -1,0 +1,6 @@
+proxy_client:
+    default: varnish
+    varnish:
+        http:
+            servers: ['$http_cache.purge_servers$']
+        tag_mode: 'purgekeys'

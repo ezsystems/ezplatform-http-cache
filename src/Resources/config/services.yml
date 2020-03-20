@@ -96,10 +96,3 @@ services:
         class: EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix
         # Use config resolver to be able to lazy load reading SA setting "repository" to avoid scope change issues
         arguments: ["@ezpublish.config.resolver", '%ezpublish.repositories%']
-
-    fos_http_cache.proxy_client.varnish:
-        class: EzSystems\PlatformHttpCacheBundle\ProxyClient\Varnish
-        arguments:
-            $configResolver: '@ezpublish.config.resolver'
-            $httpDispatcher: '@fos_http_cache.proxy_client.varnish.http_dispatcher'
-            $options: '%fos_http_cache.proxy_client.varnish.options%'

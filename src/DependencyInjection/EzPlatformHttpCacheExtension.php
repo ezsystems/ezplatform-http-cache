@@ -31,12 +31,20 @@ class EzPlatformHttpCacheExtension extends Extension implements PrependExtension
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
+        $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
         $loader->load('event.yml');
         $loader->load('view_cache.yml');
+
+        if ($container->getParameter('ezpublish.http_cache.purge_type') === 'varnish') {
+            // Load default varnish config
+            $configFile = __DIR__ . '/../Resources/config/fos_http_cache_varnish.yml';
+            $config = Yaml::parse(file_get_contents($configFile));
+            $container->prependExtensionConfig('fos_http_cache', $config);
+            $container->addResource(new FileResource($configFile));
+        }
     }
 
     public function prepend(ContainerBuilder $container)

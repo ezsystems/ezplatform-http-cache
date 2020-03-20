@@ -35,8 +35,9 @@ final class Varnish extends FosVarnish implements BanCapable, PurgeCapable, Refr
 
     private function fetchAndMergeAuthHeaders(array $headers): array
     {
-        if ($this->configResolver->hasParameter('http_cache.varnish_invalidate_token')) {
-            $headers[InvalidateTokenController::TOKEN_HEADER_NAME] = $this->configResolver->getParameter('http_cache.varnish_invalidate_token');
+        if ($this->configResolver->hasParameter('http_cache.varnish_invalidate_token') &&
+            '' !== $token = $this->configResolver->getParameter('http_cache.varnish_invalidate_token')) {
+            $headers[InvalidateTokenController::TOKEN_HEADER_NAME] = $token;
         }
 
         return $headers;

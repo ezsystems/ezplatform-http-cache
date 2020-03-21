@@ -9,7 +9,6 @@ namespace EzSystems\PlatformHttpCacheBundle\Controller;
 use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\IpUtils;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 class InvalidateTokenController

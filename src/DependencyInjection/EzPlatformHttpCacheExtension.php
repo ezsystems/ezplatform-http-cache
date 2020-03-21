@@ -7,7 +7,6 @@
 namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection;
 
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ParserInterface;
-use FOS\HttpCache\TagHeaderFormatter\TagHeaderFormatter;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;

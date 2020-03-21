@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=7.3",
-        "ezsystems/ezpublish-kernel": "^8.0@dev",
+        "ezsystems/ezplatform-kernel": "^1.0@dev",
         "ezsystems/ezplatform-rest": "^1.0@dev",
         "friendsofsymfony/http-cache-bundle": "^2.8",
         "friendsofsymfony/http-cache": "^2.9",

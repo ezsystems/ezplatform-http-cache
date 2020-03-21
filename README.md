@@ -5,8 +5,7 @@
 
 # platform-http-cache
 
-Provides HTTP cache handling for [eZ Platform][ezplatform], by default since version 1.12. From [ezpublish-kernel](ezpublish-kernel),
-it adds support for mult-tagging for Symfony Proxy, Varnish _(using [xkey][Varnish-xkey])_. Support for Fastly is part of the
+Provides HTTP cache handling for [eZ Platform][ezplatform], by default since version 1.12. It adds support for multi-tagging for Symfony Proxy, Varnish _(using [xkey][Varnish-xkey])_. Support for Fastly is part of the
 eZ Platform Cloud Enterprise offer as of 1.13 LTS.
 
 
@@ -72,5 +71,5 @@ For further reading on tags see [docs/using_tags.md](docs/using_tags.md).
 
 
 [ezplatform]: http://github.com/ezsystems/ezplatform
-[ezpublish-kernel]: http://github.com/ezsystems/ezpubish-kernel
+[ezplatform-kernel]: http://github.com/ezsystems/ezplatform-kernel
 [Varnish-xkey]: https://github.com/varnish/varnish-modules/blob/master/docs/vmod_xkey.rst

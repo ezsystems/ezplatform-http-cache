@@ -1,9 +1,7 @@
 proxy_client:
-    default: varnish
-    varnish:
+    symfony:
         http:
             servers: ['$http_cache.purge_servers$']
-        tag_mode: 'purgekeys'
 
 user_context:
     enabled: true

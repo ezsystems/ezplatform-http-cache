@@ -54,6 +54,6 @@ class ConfigurableResponseCacheConfigurator implements ResponseCacheConfigurator
 
     private function getDefaultTTL(): int
     {
-        return $this->configResolver->getParameter('content.default_ttl');
+        return (int)$this->configResolver->getParameter('content.default_ttl');
     }
 }

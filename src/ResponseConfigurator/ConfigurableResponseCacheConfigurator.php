@@ -4,8 +4,11 @@
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
+declare(strict_types=1);
+
 namespace EzSystems\PlatformHttpCacheBundle\ResponseConfigurator;
 
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -13,37 +16,17 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ConfigurableResponseCacheConfigurator implements ResponseCacheConfigurator
 {
-    /**
-     * True if view cache is enabled, false if it is not.
-     *
-     * @var bool
-     */
-    private $enableViewCache;
+    /** @var \eZ\Publish\Core\MVC\ConfigResolverInterface */
+    private $configResolver;
 
-    /**
-     * True if TTL cache is enabled, false if it is not.
-     *
-     * @var bool
-     */
-    private $enableTtlCache;
-
-    /**
-     * Default ttl for ttl cache.
-     *
-     * @var int
-     */
-    private $defaultTtl;
-
-    public function __construct($enableViewCache, $enableTtlCache, $defaultTtl)
+    public function __construct(ConfigResolverInterface $configResolver)
     {
-        $this->enableViewCache = $enableViewCache;
-        $this->enableTtlCache = $enableTtlCache;
-        $this->defaultTtl = $defaultTtl;
+        $this->configResolver = $configResolver;
     }
 
     public function enableCache(Response $response)
     {
-        if ($this->enableViewCache) {
+        if ($this->isViewCachedEnabled()) {
             $response->setPublic();
         }
 
@@ -52,10 +35,25 @@ class ConfigurableResponseCacheConfigurator implements ResponseCacheConfigurator
 
     public function setSharedMaxAge(Response $response)
     {
-        if ($this->enableViewCache && $this->enableTtlCache && !$response->headers->hasCacheControlDirective('s-maxage')) {
-            $response->setSharedMaxAge($this->defaultTtl);
+        if ($this->isViewCachedEnabled() && $this->isTTLCacheEnabled() && !$response->headers->hasCacheControlDirective('s-maxage')) {
+            $response->setSharedMaxAge($this->getDefaultTTL());
         }
 
         return $this;
+    }
+
+    private function isViewCachedEnabled(): bool
+    {
+        return $this->configResolver->getParameter('content.view_cache');
+    }
+
+    private function isTTLCacheEnabled(): bool
+    {
+        return $this->configResolver->getParameter('content.ttl_cache');
+    }
+
+    private function getDefaultTTL(): int
+    {
+        return $this->configResolver->getParameter('content.default_ttl');
     }
 }

@@ -50,10 +50,7 @@ services:
     ezplatform.view_cache.response_configurator:
         class: EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ConfigurableResponseCacheConfigurator
         arguments:
-            - '$content.view_cache$'
-            - '$content.ttl_cache$'
-            - '$content.default_ttl$'
-            - '@fos_http_cache.http.symfony_response_tagger'
+            - '@ezpublish.config.resolver'
 
     # ResponseTagger dispatcher
     ezplatform.view_cache.response_tagger.dispatcher:

@@ -29,11 +29,11 @@ Connection: close
 Cache-Control: public, s-maxage=60
 Content-Type: text/html; charset=UTF-8
 Vary: X-User-Hash
-xkey: content-1 content-type-1 location-2 parent-1 path-1 path-2 ez-all
+xkey: ez-all c1 ct1 l2 pl1 p1 p2
 ```
 
 _As of v0.7, if you have several repositories configured, the tags will be prefixed by
-repository name on non default repository. E.g. "intranet_path-1"._
+repository name on non default repository. E.g. "1p1", where repository is the second repository in the system (default repository has index 0 but does not have prefix)._
 
 For further reading on tags see [docs/using_tags.md](docs/using_tags.md).
 

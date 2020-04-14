@@ -27,12 +27,12 @@ Host: localhost:8000
 Connection: close
 Cache-Control: public, s-maxage=60
 Content-Type: text/html; charset=UTF-8
-Vary: X-User-Hash
-xkey: content-1 content-type-1 location-2 parent-1 path-1 path-2 ez-all
+Vary: X-User-Context-Hash
+xkey: ez-all c1 ct1 l2 pl1 p1 p2
 ```
 
-_As of v0.7, if you have several repositories configured, the tags will be prefixed by
-repository name on non default repository. E.g. "intranet_path-1"._
+_If you have several repositories configured, the tags will be prefixed by
+repository "index" on non default repository. E.g. "1p1", where repository is the second repository in the system (default repository has index 0 but does not have prefix)._
 
 For further reading on tags see [docs/using_tags.md](docs/using_tags.md).
 
@@ -49,7 +49,7 @@ A set of Slots will send HTTP PURGE requests for each cache tag affected by writ
 
 This bundle lets you configure drivers for handling HTTP cache. The following exists from eZ:
 - `local`: extended Symfony Proxy to support tagging and varying by user rights _(available in this bundle)_
-- `http` aka `varnish`: Varnish proxy using and customizing FosHttpCache for purging _(available in this bundle)_
+- `varnish`: Varnish proxy using and customizing FosHttpCache for purging _(available in this bundle)_
 - `fastly`: Fastly CDN proxy _(available with eZ Platform Enterprise and documented separately)_
 
 

@@ -12,12 +12,9 @@ use eZ\Publish\API\Repository\Values\User\Limitation\RoleLimitation;
 use eZ\Publish\API\Repository\Values\User\Role;
 use eZ\Publish\API\Repository\Values\User\User as APIUser;
 use eZ\Publish\API\Repository\Values\User\UserReference;
-use eZ\Publish\Core\Repository\Permission\LimitationService;
-use eZ\Publish\Core\Repository\Helper\RoleDomainMapper;
 use eZ\Publish\Core\Repository\Permission\PermissionResolver;
 use eZ\Publish\Core\Repository\Repository;
 use eZ\Publish\Core\Repository\Values\User\UserRoleAssignment;
-use eZ\Publish\SPI\Persistence\User\Handler as SPIUserHandler;
 use EzSystems\PlatformHttpCacheBundle\ContextProvider\RoleIdentify;
 use FOS\HttpCache\UserContext\UserContext;
 use PHPUnit\Framework\TestCase;
@@ -183,14 +180,7 @@ class RoleIdentifyTest extends TestCase
         return $this
             ->getMockBuilder(PermissionResolver::class)
             ->setMethods(['getCurrentUserReference'])
-            ->setConstructorArgs(
-                [
-                    $this->createMock(RoleDomainMapper::class),
-                    $this->createMock(LimitationService::class),
-                    $this->createMock(SPIUserHandler::class),
-                    $this->createMock(UserReference::class),
-                ]
-            )
+            ->disableOriginalConstructor()
             ->getMock();
     }
 

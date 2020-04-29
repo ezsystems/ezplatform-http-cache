@@ -55,7 +55,7 @@ class InvalidateTokenController
     {
         $response = new Response();
 
-        if ($request->isFromTrustedProxy()) {
+        if (!$request->isFromTrustedProxy()) {
             $response->setStatusCode('401', 'Unauthorized');
 
             return $response;

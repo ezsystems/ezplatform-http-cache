@@ -39,8 +39,8 @@ class DriverPass implements CompilerPassInterface
         $container->setAlias('fos_http_cache.handler.tag_handler', $configuredFosTagHandlerServiceId);
 
         // Also set Autowire alias for our interfaces
-        $services->alias(ContentTagInterface::class, $configuredFosTagHandlerServiceId);
-        $services->alias(ResponseTaggerInterface::class, $configuredFosTagHandlerServiceId);
+        $container->setAlias(ContentTagInterface::class, 'fos_http_cache.handler.tag_handler');
+        $container->setAlias(ResponseTaggerInterface::class, 'fos_http_cache.handler.tag_handler');
     }
 
     public static function getTaggedService(ContainerBuilder $container, $tag)

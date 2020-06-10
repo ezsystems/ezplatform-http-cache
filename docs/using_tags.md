@@ -141,12 +141,17 @@ TIP: Don't use `ez_http_tag_location` when you are rendering a large amount of c
 
 #### PHP use
 
-Fo PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service which lets you add tags to a response:
+For PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service which lets you add tags to a response.
+
+We overload this to takke into account eZ Platform features, and also allows you to autowire it on the two interfaces used:
 ```php
-    /** @var \FOS\HttpCache\Handler\TagHandler $tagHandler */
+    /** Using low level Response Tagger to add tags manually.
+     *
+     * @var \EzSystems\PlatformHttpCacheBundle\ResponseTaggerInterface $tagHandler
+     */
     $tagHandler->addTags(['relation-33', 'relation-44']);
 
-    /** Better option in order to be more future proof, exposed on the same service as above:
+    /** Better option in order to be more future proof.
      *
      * @var \EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface $tagHandler
      */
@@ -155,8 +160,8 @@ Fo PHP usage, FOSHttpCache exposes `fos_http_cache.handler.tag_handler` service 
 
 See: http://foshttpcachebundle.readthedocs.io/en/1.3/features/tagging.html#tagging-from-code
 
-*WARNING: Be aware service name and type hint will somewhat change once we move to FOSHttpCache 2.x, so in this case
-you can alternatively consider to add tag in twig template or stay with usage of `X-Location-Id` for the time being.*
+*WARNING: Be aware service name and type hint will somewhat change once we move to FOSHttpCache 2.x, which is why it's
+recommended to use te autowirable interfaces exposed.*
 
 ## How purge tagging is done (invalidation) 
 

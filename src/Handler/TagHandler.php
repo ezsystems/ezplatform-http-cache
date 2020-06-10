@@ -8,7 +8,6 @@ namespace EzSystems\PlatformHttpCacheBundle\Handler;
 
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix;
-use EzSystems\PlatformHttpCacheBundle\ResponseTaggerInterface;
 use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\HttpCacheBundle\CacheManager;
@@ -21,7 +20,7 @@ use FOS\HttpCacheBundle\CacheManager;
  * It implements tagResponse() to make sure TagSubscriber (a FOS event listener) sends tags using the header
  * we have configured, and to be able to prefix tags with repository id in order to support multi repo setups.
  */
-class TagHandler extends FOSTagHandler implements ContentTagInterface, ResponseTaggerInterface
+class TagHandler extends FOSTagHandler implements ContentTagInterface
 {
     private $cacheManager;
     private $purgeClient;

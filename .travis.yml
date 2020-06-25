@@ -37,7 +37,8 @@ branches:
         - /^\d.\d+$/
 
 before_script:
-    - travis_retry composer selfupdate
+    # To try to avoid running out of memory on PHP 5, and speed up install on all, using Composer 2.x here
+    - travis_retry composer self-update --preview
     - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - if [ "$TEST_CMD" = "" ] ; then travis_retry composer install --prefer-dist --no-interaction ; fi
     - if [ "$TEST_CMD" != "" ] ; then ./tests/.travis/prepare_for_functional_tests.sh ; fi

@@ -141,7 +141,7 @@ TIP: Don't use `ez_http_tag_location` when you are rendering a large amount of c
 
 #### PHP use
 
-For PHP usage, a few options exists _(autowirable classes of '@fos_http_cache.handler.tag_handler')_:
+For PHP usage, a few options exist _(autowirable classes of '@fos_http_cache.handler.tag_handler')_:
 ```php
     /**
      * Using low level Tag handler to add tags manually.
@@ -152,7 +152,7 @@ For PHP usage, a few options exists _(autowirable classes of '@fos_http_cache.ha
     $tagHandler->addTags(['relation-33', 'relation-44']);
 
     /**
-     * Better option in order to be more future proof when setting specific eZ related tags.
+     * Better option in order to be more future proof when setting specific Ibexa related tags.
      *
      * @var \EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface $tagHandler
      */

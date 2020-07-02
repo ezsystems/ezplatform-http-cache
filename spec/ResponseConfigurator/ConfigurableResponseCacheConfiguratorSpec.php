@@ -7,7 +7,6 @@ use EzSystems\PlatformHttpCacheBundle\ResponseConfigurator\ConfigurableResponseC
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use FOS\HttpCache\Handler\TagHandler;
 
 class ConfigurableResponseCacheConfiguratorSpec extends ObjectBehavior
 {

@@ -48,6 +48,9 @@ services:
         arguments:
             - []
 
+    # Alias for ResponseTagger interface => DispatcherTagger
+    EzSystems\PlatformHttpCacheBundle\ResponseTagger\ResponseTagger: '@ezplatform.view_cache.response_tagger.dispatcher'
+
     # ResponseTagger proxy/extract
     ezplatform.view_cache.response_tagger.content_value_view:
         class: EzSystems\PlatformHttpCacheBundle\ResponseTagger\Delegator\ContentValueViewTagger

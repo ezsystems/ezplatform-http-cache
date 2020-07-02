@@ -7,7 +7,7 @@
 namespace EzSystems\PlatformHttpCacheBundle\DependencyInjection\Compiler;
 
 use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
-use FOS\HttpCacheBundle\Handler\TagHandler as FOSTagHandler;
+use FOS\HttpCache\Handler\TagHandler as FOSTagHandler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

@@ -147,7 +147,7 @@ For PHP usage, a few options exist _(autowirable classes of '@fos_http_cache.han
      * Using low level Tag handler to add tags manually.
      * WARNING: This FOS class name, and service name is different in v3 (FosHttpCache 2.x).
      *
-     * @var \FOS\HttpCacheBundle\Handler\TagHandler $tagHandler
+     * @var \FOS\HttpCache\Handler\TagHandler $tagHandler
      */
     $tagHandler->addTags(['relation-33', 'relation-44']);
 

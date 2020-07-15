@@ -37,7 +37,7 @@ class DriverPass implements CompilerPassInterface
         $container->setAlias('fos_http_cache.http.symfony_response_tagger', $configuredFosTagHandlerServiceId);
 
         // Also set Autowire aliases
-        $container->setAlias(ContentTagInterface::class, 'fos_http_cache.handler.tag_handler');
+        $container->setAlias(ContentTagInterface::class, 'fos_http_cache.http.symfony_response_tagger');
     }
 
     public static function getTaggedService(ContainerBuilder $container, $tag)

@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=7.3",
-        "ezsystems/ezplatform-kernel": "^1.0@dev",
+        "ezsystems/ezplatform-kernel": "~1.1.0@dev",
         "ezsystems/ezplatform-rest": "^1.0@dev",
         "friendsofsymfony/http-cache-bundle": "^2.8",
         "friendsofsymfony/http-cache": "^2.9",
@@ -50,7 +50,7 @@
         ]
     },
     "extra": {
-        "_ezplatform_branch_for_behat_tests": "master",
+        "_ezplatform_branch_for_behat_tests": "3.1",
         "branch-alias": {
             "dev-master": "2.1.x-dev",
             "dev-tmp_ci_branch": "2.1.x-dev"

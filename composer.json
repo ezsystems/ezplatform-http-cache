@@ -21,7 +21,8 @@
         "phpspec/phpspec": "^5.1.2",
         "ezsystems/ezplatform-code-style": "^0.1.0",
         "friendsofphp/php-cs-fixer": "^2.16.1",
-        "memio/spec-gen": "^0.9.0"
+        "memio/spec-gen": "^0.9.0",
+        "symfony/phpunit-bridge": "^5.1"
     },
     "autoload": {
         "psr-4": {

@@ -32,7 +32,8 @@
         "matthiasnoback/symfony-dependency-injection-test": "^4.1",
         "phpspec/phpspec": "^6.1",
         "ezsystems/ezplatform-code-style": "^0.1.0",
-        "friendsofphp/php-cs-fixer": "^2.16.0"
+        "friendsofphp/php-cs-fixer": "^2.16.0",
+        "symfony/phpunit-bridge": "^5.1"
     },
     "autoload": {
         "psr-4": {

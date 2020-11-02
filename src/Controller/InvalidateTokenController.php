@@ -10,6 +10,7 @@ use FOS\HttpCache\ResponseTagger;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use Symfony\Component\HttpKernel\EventListener\SessionListener;
 
 class InvalidateTokenController
 {
@@ -74,6 +75,8 @@ class InvalidateTokenController
         $headers->set('X-Invalidate-Token', $this->configResolver->getParameter('http_cache.varnish_invalidate_token'));
         $response->setSharedMaxAge($this->ttl);
         $response->setVary('Accept', true);
+        // header to avoid Symfony SessionListener overwriting the response to private
+        $response->headers->set(SessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 1);
 
         return $response;
     }

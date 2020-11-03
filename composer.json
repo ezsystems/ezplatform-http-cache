@@ -11,8 +11,8 @@
     ],
     "require": {
         "php": ">=7.3",
-        "ezsystems/ezplatform-kernel": "~1.2.0@dev",
-        "ezsystems/ezplatform-rest": "^1.0@dev",
+        "ezsystems/ezplatform-kernel": "~1.2.0",
+        "ezsystems/ezplatform-rest": "^1.0",
         "friendsofsymfony/http-cache-bundle": "^2.8",
         "friendsofsymfony/http-cache": "^2.9",
         "symfony/http-foundation": "^5.0",
@@ -27,7 +27,7 @@
         "toflar/psr6-symfony-http-cache-store": "^2.2"
     },
     "require-dev": {
-        "ezsystems/doctrine-dbal-schema": "^1.0@dev",
+        "ezsystems/doctrine-dbal-schema": "^1.0",
         "phpunit/phpunit": "^8.5",
         "matthiasnoback/symfony-dependency-injection-test": "^4.1",
         "phpspec/phpspec": "^6.1",

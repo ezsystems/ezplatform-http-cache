@@ -16,3 +16,20 @@ httpCache:
               - EzSystems\Behat\Browser\Context\Hooks
               - EzSystems\Behat\Browser\Context\FrontendContext:
                   argumentParser: '@EzSystems\Behat\Core\Behat\ArgumentParser'
+        varnish:
+            paths:
+                - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/varnish'
+            filters:
+                tags: '@varnish'
+            contexts:
+              - EzSystems\Behat\API\Context\TestContext:
+                  userService: '@ezpublish.api.service.user'
+                  permissionResolver: '@eZ\Publish\API\Repository\PermissionResolver'
+              - EzSystems\Behat\Core\Context\TimeContext
+              - EzSystems\Behat\API\Context\ContentContext:
+                  contentFacade: '@EzSystems\Behat\API\Facade\ContentFacade'
+                  argumentParser: '@EzSystems\Behat\Core\Behat\ArgumentParser'
+              - EzSystems\Behat\Browser\Context\BrowserContext
+              - EzSystems\Behat\Browser\Context\Hooks
+              - EzSystems\Behat\Browser\Context\FrontendContext:
+                  argumentParser: '@EzSystems\Behat\Core\Behat\ArgumentParser'

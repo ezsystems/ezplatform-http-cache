@@ -19,9 +19,9 @@ Feature: As an site administrator I want my pages to be cached using Symfony Htt
 
 
     Examples:
-    | user      | itemName                     | headerValue                                   | 
-    | admin     | TestFolderShortNameAdmin     | GET /site/testfoldershortnameadmin: fresh     |
-    | anonymous | TestFolderShortNameAnonymous | GET /site/testfoldershortnameanonymous: fresh |
+      | user      | password | itemName                     | headerValue                                   |
+      | admin     | publish  | TestFolderShortNameAdmin     | GET /site/testfoldershortnameadmin: fresh     |
+      | anonymous |          | TestFolderShortNameAnonymous | GET /site/testfoldershortnameanonymous: fresh |
 
   @admin
   Scenario Outline: Cache is refreshed when item is edited
@@ -47,6 +47,6 @@ Feature: As an site administrator I want my pages to be cached using Symfony Htt
       | X-Symfony-Cache | <headerValue>          |
 
     Examples:
-      | user      | password | itemName        | itemNameAfterEdit | headerValue                      | 
+      | user      | password | itemName        | itemNameAfterEdit | headerValue                      |
       | admin     | publish  | NameToEditAdmin | NameEditedAdmin   | GET /site/nameeditedadmin: fresh |
       | anonymous |          | NameToEditAnon  | NameEditedAnon    | GET /site/nameeditedanon: fresh  |

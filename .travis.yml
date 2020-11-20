@@ -30,11 +30,27 @@ matrix:
             - SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'"
             - USER_RUNNING_TESTS=root
             - PHP_IMAGE=ezsystems/php:7.3-v1
-        - name: "PHP 7.3 Symfony Cache tests"
+        - name: "PHP 7.3 Symfony Cache integration tests"
           php: 7.3
           env:
-            - TEST_CMD="bin/ezbehat --profile=httpCache --suite=symfonycache"
+            - TEST_CMD="bin/ezbehat --mode=standard --profile=httpCache --suite=symfonycache"
+            - WEB_HOST="web"
             - APP_DEBUG=1
+        - name: "PHP 7.3 Varnish integration tests"
+          php: 7.3
+          env:
+            - TEST_CMD="bin/ezbehat --mode=standard --profile=httpCache --suite=varnish"
+            - APP_DEBUG=1
+            - WEB_HOST=varnish
+            - COMPOSE_FILE="doc/docker/base-dev.yml:doc/docker/varnish.yml:doc/docker/selenium.yml"
+        - name: "PHP 7.3 Varnish integration tests with invalidate token"
+          php: 7.3
+          env:
+            - TEST_CMD="bin/ezbehat --mode=standard --profile=httpCache --suite=varnish"
+            - HTTPCACHE_VARNISH_INVALIDATE_TOKEN=TESTTOKEN
+            - APP_DEBUG=1
+            - WEB_HOST=varnish
+            - COMPOSE_FILE="doc/docker/base-dev.yml:doc/docker/varnish.yml:doc/docker/selenium.yml"
 
 # test only master + stable (+ Pull requests)
 branches:

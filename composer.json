@@ -51,7 +51,7 @@
         ]
     },
     "extra": {
-        "_ezplatform_branch_for_behat_tests": "revert-626-EZP-32214_PHP_configuration_files_are_not_compatible_with_new_Symfony_by_default",
+        "_ezplatform_branch_for_behat_tests": "test-fix",
         "branch-alias": {
             "dev-master": "2.3.x-dev",
             "dev-tmp_ci_branch": "2.3.x-dev"

@@ -51,7 +51,7 @@
         ]
     },
     "extra": {
-        "_ezplatform_branch_for_behat_tests": "master",
+        "_ezplatform_branch_for_behat_tests": "php_config_files",
         "branch-alias": {
             "dev-master": "2.3.x-dev",
             "dev-tmp_ci_branch": "2.3.x-dev"

@@ -13,40 +13,41 @@ env:
     - COMPOSE_FILE="doc/docker/base-dev.yml:doc/docker/selenium.yml"
     - APP_ENV=behat
     - USER_RUNNING_TESTS=www-data
+    - PROJECT_VERSION=dev-master
 
 matrix:
     fast_finish: true
     include:
-        - name: "CS Check"
-          php: 7.3
-          env: CHECK_CS=true
-        - name: "PHP 7.3 PHPUnit & PHPSpec"
-          php: 7.3
-        - name: "PHP 7.3 Rest Functional Tests"
-          php: 7.3
-          env:
-            - TEST_CMD="./bin/.travis/run_rest_tests.sh"
-            - APP_DEBUG=1
-            - SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'"
-            - USER_RUNNING_TESTS=root
-            - PHP_IMAGE=ezsystems/php:7.3-v1
+        # - name: "CS Check"
+        #   php: 7.3
+        #   env: CHECK_CS=true
+        # - name: "PHP 7.3 PHPUnit & PHPSpec"
+        #   php: 7.3
+        # - name: "PHP 7.3 Rest Functional Tests"
+        #   php: 7.3
+        #   env:
+        #     - TEST_CMD="./bin/.travis/run_rest_tests.sh"
+        #     - APP_DEBUG=1
+        #     - SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'"
+        #     - USER_RUNNING_TESTS=root
+        #     - PHP_IMAGE=ezsystems/php:7.3-v1
         - name: "PHP 7.3 Symfony Cache integration tests"
           php: 7.3
           env:
-            - TEST_CMD="bin/ezbehat --mode=standard --profile=httpCache --suite=symfonycache"
+            - TEST_CMD="vendor/bin/ezbehat --mode=standard --profile=httpCache --suite=symfonycache -c=behat_ibexa_oss.yaml"
             - WEB_HOST="web"
             - APP_DEBUG=1
         - name: "PHP 7.3 Varnish integration tests"
           php: 7.3
           env:
-            - TEST_CMD="bin/ezbehat --mode=standard --profile=httpCache --suite=varnish"
+            - TEST_CMD="vendor/bin/ezbehat --mode=standard --profile=httpCache --suite=varnish -c=behat_ibexa_oss.yaml"
             - APP_DEBUG=1
             - WEB_HOST=varnish
             - COMPOSE_FILE="doc/docker/base-dev.yml:doc/docker/varnish.yml:doc/docker/selenium.yml"
         - name: "PHP 7.3 Varnish integration tests with invalidate token"
           php: 7.3
           env:
-            - TEST_CMD="bin/ezbehat --mode=standard --profile=httpCache --suite=varnish"
+            - TEST_CMD="vendor/bin/ezbehat --mode=standard --profile=httpCache --suite=varnish -c=behat_ibexa_oss.yaml"
             - HTTPCACHE_VARNISH_INVALIDATE_TOKEN=TESTTOKEN
             - APP_DEBUG=1
             - WEB_HOST=varnish
@@ -61,14 +62,14 @@ branches:
 before_script:
     - travis_retry composer selfupdate
     - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-    - if [ "$TEST_CMD" = "" ] ; then travis_retry composer install --prefer-dist --no-interaction ; fi
-    - if [ "$TEST_CMD" != "" ] ; then ./tests/.travis/prepare_for_functional_tests.sh ; fi
+    - travis_retry composer install --prefer-dist --no-interaction
+    - if [ "$TEST_CMD" != "" ] ; then ./vendor/bin/prepare_project_variant.sh oss ${PROJECT_VERSION} ${COMPOSE_FILE} ; fi
     # Execute Symfony command if injected into test matrix
-    - if [ "${SYMFONY_CMD}" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user www-data app sh -c "bin/console ${SYMFONY_CMD}" ; fi
+    - if [ "${SYMFONY_CMD}" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user www-data app sh -c "bin/console ${SYMFONY_CMD}" ; fi
 
 script:
     - if [ "$TEST_CMD" = "" ] && [ "$CHECK_CS" != "true" ] ; then php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty ; fi
-    - if [ "$TEST_CMD" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user "$USER_RUNNING_TESTS" app sh -c "$TEST_CMD"  ; fi
+    - if [ "$TEST_CMD" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user "$USER_RUNNING_TESTS" app sh -c "$TEST_CMD"  ; fi
     - if [ "$CHECK_CS" = "true" ]; then phpenv config-rm xdebug.ini && ./vendor/bin/php-cs-fixer fix -v --dry-run --diff --show-progress=estimating; fi
 
 notifications:

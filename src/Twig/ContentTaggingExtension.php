@@ -44,7 +44,10 @@ class ContentTaggingExtension extends AbstractExtension
             new TwigFunction(
                 'ez_http_tag_location',
                 [$this, 'tagHttpCacheForLocation'],
-                ['deprecated' => true, 'alternative' => 'ez_http_cache_tag_location']
+                [
+                    'deprecated' => true, 
+                    'alternative' => 'ez_http_cache_tag_location',
+                ]
             ),
             new TwigFunction(
                 'ez_http_tag_relation_ids',

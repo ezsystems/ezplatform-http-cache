@@ -53,7 +53,7 @@ class ContentTaggingExtension extends AbstractExtension
                 'ez_http_tag_location',
                 [$this, 'tagHttpCacheForLocation'],
                 [
-                    'deprecated' => true, 
+                    'deprecated' => true,
                     'alternative' => 'ez_http_cache_tag_location',
                 ]
             ),
@@ -61,7 +61,7 @@ class ContentTaggingExtension extends AbstractExtension
                 'ez_http_tag_relation_ids',
                 [$this, 'tagHttpCacheForRelationIds'],
                 [
-                    'deprecated' => true, 
+                    'deprecated' => true,
                     'alternative' => 'ez_http_cache_tag_relation_ids',
                 ]
             ),
@@ -69,7 +69,7 @@ class ContentTaggingExtension extends AbstractExtension
                 'ez_http_tag_relation_location_ids',
                 [$this, 'tagHttpCacheForRelationLocationIds'],
                 [
-                    'deprecated' => true, 
+                    'deprecated' => true,
                     'alternative' => 'ez_http_cache_tag_relation_location_ids',
                 ]
             ),

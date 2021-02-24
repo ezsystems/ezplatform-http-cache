@@ -27,6 +27,7 @@
         "toflar/psr6-symfony-http-cache-store": "^2.2"
     },
     "require-dev": {
+        "ibexa/ci-scripts": "^0.1@dev",
         "ezsystems/doctrine-dbal-schema": "^1.0@dev",
         "phpunit/phpunit": "^8.5",
         "matthiasnoback/symfony-dependency-injection-test": "^4.1",
@@ -51,10 +52,8 @@
         ]
     },
     "extra": {
-        "_ezplatform_branch_for_behat_tests": "master",
         "branch-alias": {
-            "dev-master": "2.3.x-dev",
-            "dev-tmp_ci_branch": "2.3.x-dev"
+            "dev-master": "2.3.x-dev"
         }
     }
 }

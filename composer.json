@@ -51,7 +51,7 @@
         ]
     },
     "extra": {
-        "_ezplatform_branch_for_behat_tests": "3.2",
+        "_ezplatform_branch_for_behat_tests": "fix-local-dependency-setup",
         "branch-alias": {
             "dev-master": "2.2.x-dev",
             "dev-tmp_ci_branch": "2.2.x-dev"

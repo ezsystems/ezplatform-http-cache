@@ -7,6 +7,7 @@
 
 vcl 4.1;
 import std;
+import bodyaccess; //@added for POST handling
 import xkey;
 
 // For customizing your backend and acl rules see parameters.vcl
@@ -14,6 +15,7 @@ include "parameters.vcl";
 
 // Called at the beginning of a request, after the complete request has been received
 sub vcl_recv {
+    call ez_handle_post; //@added for POST handling
 
     // Set the backend
     set req.backend_hint = ezplatform;
@@ -31,8 +33,9 @@ sub vcl_recv {
     // Trigger cache purge if needed
     call ez_purge;
 
-    // Don't cache requests other than GET and HEAD.
-    if (req.method != "GET" && req.method != "HEAD") {
+    // @added for POST handling:  `&& !req.http.X-Body-Len`
+    // --> Don't cache requests other than GET and HEAD. + and specific POST Requests
+    if (req.method != "GET" && !req.http.X-Body-Len && req.method != "HEAD") {
         return (pass);
     }
 
@@ -97,12 +100,19 @@ sub vcl_hit {
        return (deliver);
    }
 
+   std.log("MISS: " + req.url + " obj.ttl:" + obj.ttl + " obj.grace:" + obj.grace);
    // fetch & deliver once we get the result
    return (miss);
 }
 
 // Called when the requested object has been retrieved from the backend
 sub vcl_backend_response {
+
+    // @added for POST handling
+    if (bereq.http.X-Body-Len) {
+        set beresp.http.cache-control = "public, max-age=600";
+        set beresp.http.xkey = "ez-all ez-post";
+    }
 
     if (bereq.http.accept ~ "application/vnd.fos.user-context-hash"
         && beresp.status >= 500
@@ -193,7 +203,8 @@ sub ez_user_context_hash {
         return (synth(400));
     }
 
-    if (req.restarts == 0 && (req.method == "GET" || req.method == "HEAD")) {
+    // @added for POST: `req.http.X-Body-Len ||`
+    if (req.restarts == 0 && (req.http.X-Body-Len || req.method == "GET" || req.method == "HEAD")) {
         // Backup accept header, if set
         if (req.http.accept) {
             set req.http.x-fos-original-accept = req.http.accept;
@@ -325,5 +336,38 @@ sub vcl_deliver {
         unset resp.http.xkey;
         // Sanity check to prevent ever exposing the hash to a non debug client.
         unset resp.http.x-user-context-hash;
+    }
+}
+
+// added to handle POST requests
+sub vcl_hash {
+    # To cache POST and PUT requests
+    if (req.http.X-Body-Len) {
+        bodyaccess.hash_req_body();
+    } else {
+        hash_data("");
+    }
+}
+
+sub vcl_backend_fetch {
+    if (bereq.http.X-Body-Len) {
+        set bereq.method = "POST";
+    }
+}
+
+sub ez_handle_post {
+    // Making sure client is not able to preset headers we rely on for internal logic
+    unset req.http.X-Body-Len;
+    if (req.restarts == 0) {
+           unset req.http.x-fos-original-url;
+    }
+    // enables caching for API calls to "/api/ezp/v2/views"
+    if (req.method == "POST" && (req.url == "/api/ezp/v2/views" || req.http.x-fos-original-url == "/api/ezp/v2/views")) {
+        // std.log("ez_handle_post: Will cache POST for: " + req.http.host + req.url);
+        std.cache_req_body(500KB);
+        set req.http.X-Body-Len = bodyaccess.len_req_body();
+        if (req.http.X-Body-Len == "-1") {
+            return(synth(400, "The request body size exceeds the limit"));
+        }
     }
 }

@@ -6,30 +6,33 @@ httpCache:
             filters:
                 tags: '@symfonycache'
             contexts:
-              - EzSystems\Behat\API\Context\TestContext:
-                  userService: '@ezpublish.api.service.user'
-                  permissionResolver: '@eZ\Publish\API\Repository\PermissionResolver'
-              - EzSystems\Behat\API\Context\ContentContext:
-                  contentFacade: '@EzSystems\Behat\API\Facade\ContentFacade'
-                  argumentParser: '@EzSystems\Behat\Core\Behat\ArgumentParser'
-              - EzSystems\Behat\Browser\Context\BrowserContext
-              - EzSystems\Behat\Browser\Context\Hooks
-              - EzSystems\Behat\Browser\Context\FrontendContext:
-                  argumentParser: '@EzSystems\Behat\Core\Behat\ArgumentParser'
+                - EzSystems\Behat\API\Context\TestContext
+                - EzSystems\Behat\API\Context\ContentTypeContext
+                - EzSystems\Behat\API\Context\ContentContext
+                - EzSystems\Behat\Core\Context\TimeContext
+                - EzSystems\Behat\Core\Context\ConfigurationContext
+                - EzSystems\Behat\Browser\Context\BrowserContext
+                - EzSystems\Behat\Browser\Context\Hooks
+                - EzSystems\Behat\Browser\Context\FrontendContext
         varnish:
             paths:
                 - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/varnish'
             filters:
-                tags: '@varnish'
+                tags: '@varnish' 
             contexts:
-              - EzSystems\Behat\API\Context\TestContext:
-                  userService: '@ezpublish.api.service.user'
-                  permissionResolver: '@eZ\Publish\API\Repository\PermissionResolver'
-              - EzSystems\Behat\Core\Context\TimeContext
-              - EzSystems\Behat\API\Context\ContentContext:
-                  contentFacade: '@EzSystems\Behat\API\Facade\ContentFacade'
-                  argumentParser: '@EzSystems\Behat\Core\Behat\ArgumentParser'
-              - EzSystems\Behat\Browser\Context\BrowserContext
-              - EzSystems\Behat\Browser\Context\Hooks
-              - EzSystems\Behat\Browser\Context\FrontendContext:
-                  argumentParser: '@EzSystems\Behat\Core\Behat\ArgumentParser'
+                - EzSystems\Behat\API\Context\TestContext
+                - EzSystems\Behat\API\Context\ContentTypeContext
+                - EzSystems\Behat\Core\Context\TimeContext
+                - EzSystems\Behat\Core\Context\ConfigurationContext
+                - EzSystems\Behat\API\Context\ContentContext
+                - EzSystems\Behat\Browser\Context\BrowserContext
+                - EzSystems\Behat\Browser\Context\Hooks
+                - EzSystems\Behat\Browser\Context\FrontendContext
+        setup:
+            paths:
+                - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/setup'
+            contexts:
+                - EzSystems\Behat\API\Context\TestContext
+                - EzSystems\Behat\API\Context\ContentTypeContext
+                - EzSystems\Behat\Core\Context\ConfigurationContext
+                - EzSystems\Behat\API\Context\ContentContext

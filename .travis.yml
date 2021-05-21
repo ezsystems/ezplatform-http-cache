@@ -36,6 +36,7 @@ matrix:
           php: 7.3
           env:
             - TEST_CMD="vendor/bin/ezbehat --mode=standard --profile=httpCache --suite=symfonycache -c=behat_ibexa_oss.yaml"
+            - SETUP_CMD="vendor/bin/ezbehat --mode=standard --profile=httpCache --suite=setup -c=behat_ibexa_oss.yaml"
             - WEB_HOST="http://web"
             - APP_DEBUG=1
             - ENABLE_SYMFONY_CACHE=1
@@ -43,6 +44,7 @@ matrix:
           php: 7.3
           env:
             - TEST_CMD="vendor/bin/ezbehat --mode=standard --profile=httpCache --suite=varnish -c=behat_ibexa_oss.yaml"
+            - SETUP_CMD="vendor/bin/ezbehat --mode=standard --profile=httpCache --suite=setup -c=behat_ibexa_oss.yaml"
             - APP_DEBUG=1
             - WEB_HOST="http://varnish"
             - COMPOSE_FILE="doc/docker/base-dev.yml:doc/docker/varnish.yml:doc/docker/selenium.yml"
@@ -50,6 +52,7 @@ matrix:
           php: 7.3
           env:
             - TEST_CMD="vendor/bin/ezbehat --mode=standard --profile=httpCache --suite=varnish -c=behat_ibexa_oss.yaml"
+            - SETUP_CMD="vendor/bin/ezbehat --mode=standard --profile=httpCache --suite=setup -c=behat_ibexa_oss.yaml"
             - HTTPCACHE_VARNISH_INVALIDATE_TOKEN=TESTTOKEN
             - APP_DEBUG=1
             - WEB_HOST="http://varnish"
@@ -69,6 +72,8 @@ before_script:
     # Execute Symfony command if injected into test matrix
     - if [ "${SYMFONY_CMD}" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user www-data app sh -c "APP_ENV=behat php bin/console ${SYMFONY_CMD}" ; fi
     - if [ "${ENABLE_SYMFONY_CACHE}" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user www-data app sh -c "patch -p1 -i vendor/ezsystems/ezplatform-http-cache/tests/SymfonyProxy/enable_symfony_proxy.patch" ; fi
+    - if [ "$SETUP_CMD" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user "$USER_RUNNING_TESTS" app sh -c "$SETUP_CMD"  ; fi
+    - if [ "$SETUP_CMD" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user "$USER_RUNNING_TESTS" app sh -c "composer run post-install-cmd"  ; fi
 
 script:
     - if [ "$UNIT_TEST" != "" ] ; then php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty ; fi

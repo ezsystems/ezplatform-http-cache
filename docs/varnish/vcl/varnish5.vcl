@@ -59,7 +59,8 @@ sub vcl_recv {
         }
     }
 
-    // Do a standard lookup on assets (these don't vary by user context hash)
+    // Do a standard lookup on assets (these don't vary by user context hash) unless assets are served by DFS.
+    // If you use DFS in your project, please remember to remove or comment out this section.
     // Note that file extension list below is not extensive, so consider completing it to fit your needs.
     if (req.url ~ "\.(css|js|gif|jpe?g|bmp|png|tiff?|ico|img|tga|wmf|svg|swf|ico|mp3|mp4|m4a|ogg|mov|avi|wmv|zip|gz|pdf|ttf|eot|wof)$") {
         return (hash);

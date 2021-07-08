@@ -1,33 +1,32 @@
-From 25a9974e189564d3bcc20a1477c4962d7ffa24bc Mon Sep 17 00:00:00 2001
+From fe9ff7bd801f978cfc50aae0411bb3eefdd3059a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Marek=20Noco=C5=84?= <mnocon@users.noreply.github.com>
-Date: Fri, 19 Feb 2021 17:58:14 +0100
-Subject: [PATCH] Added cache kernel
+Date: Wed, 7 Jul 2021 15:29:57 +0200
+Subject: [PATCH] Enabled Symfony Reverse Proxy
 
 ---
- public/index.php | 3 +++
- 1 file changed, 3 insertions(+)
+ public/index.php | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/public/index.php b/public/index.php
-index 3bcee0b..f97d416 100644
+index 9982c21..03ac40a 100644
 --- a/public/index.php
 +++ b/public/index.php
-@@ -1,6 +1,7 @@
+@@ -1,9 +1,14 @@
  <?php
  
  use App\Kernel;
 +use EzSystems\PlatformHttpCacheBundle\AppCache;
- use Symfony\Component\Dotenv\Dotenv;
- use Symfony\Component\ErrorHandler\Debug;
- use Symfony\Component\HttpFoundation\Request;
-@@ -16,6 +17,8 @@ if ($_SERVER['APP_DEBUG']) {
- }
++use Symfony\Component\HttpFoundation\Request;
  
- $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
-+$kernel = new AppCache($kernel);
-+Request::enableHttpMethodParameterOverride();
- $request = Request::createFromGlobals();
- $response = $kernel->handle($request);
- $response->send();
+ require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+ 
+ return function (array $context) {
+-    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
++    $kernel = new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
++    Request::enableHttpMethodParameterOverride();
++
++    return new AppCache($kernel);
+ };
 -- 
 2.30.0
 

@@ -11,9 +11,10 @@ httpCache:
                 - EzSystems\Behat\API\Context\ContentContext
                 - EzSystems\Behat\Core\Context\TimeContext
                 - EzSystems\Behat\Core\Context\ConfigurationContext
-                - EzSystems\Behat\Browser\Context\BrowserContext
-                - EzSystems\Behat\Browser\Context\Hooks
-                - EzSystems\Behat\Browser\Context\FrontendContext
+                - Ibexa\Behat\Browser\Context\BrowserContext
+                - Ibexa\Behat\Browser\Context\AuthenticationContext
+                - Behat\MinkExtension\Context\MinkContext
+                - Ibexa\Behat\Browser\Context\ContentPreviewContext
         varnish:
             paths:
                 - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/varnish'
@@ -25,9 +26,10 @@ httpCache:
                 - EzSystems\Behat\Core\Context\TimeContext
                 - EzSystems\Behat\Core\Context\ConfigurationContext
                 - EzSystems\Behat\API\Context\ContentContext
-                - EzSystems\Behat\Browser\Context\BrowserContext
-                - EzSystems\Behat\Browser\Context\Hooks
-                - EzSystems\Behat\Browser\Context\FrontendContext
+                - Ibexa\Behat\Browser\Context\BrowserContext
+                - Ibexa\Behat\Browser\Context\AuthenticationContext
+                - Behat\MinkExtension\Context\MinkContext
+                - Ibexa\Behat\Browser\Context\ContentPreviewContext
         setup:
             paths:
                 - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/setup'

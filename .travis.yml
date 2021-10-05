@@ -1,4 +1,4 @@
-dist: focal
+dist: trusty
 sudo: required
 
 language: php
@@ -10,7 +10,7 @@ cache:
 
 env:
   global:
-    # For functional tests
+    #A For functional tests
     - COMPOSE_FILE="doc/docker/base-dev.yml:doc/docker/selenium.yml"
     - SYMFONY_ENV=behat
 
@@ -21,13 +21,13 @@ matrix:
         - php: 7.2
         - php: 7.3
           env: CHECK_CS=true
-        # Functional
+        #A Functional
         - php: 7.1
           env: TEST_CMD="bin/behat --profile=rest --tags=~@broken --suite=fullJson" PHP_IMAGE=ezsystems/php:7.1-v1
         - php: 7.2
           env: TEST_CMD="bin/phpunit -v vendor/ezsystems/ezpublish-kernel/eZ/Bundle/EzPublishRestBundle/Tests/Functional" SYMFONY_CMD="ez:behat:create-language 'pol-PL' 'Polish (polski)'" PHP_IMAGE=ezsystems/php:7.2-v1
 
-# test only master + stable (+ Pull requests)
+#A test only master + stable (+ Pull requests)
 branches:
     only:
         - master
@@ -35,16 +35,18 @@ branches:
 
 before_script:
     - travis_retry composer selfupdate
+    #A Disable expired certificate
+    - sed -i '/mozilla\/DST_Root_CA_X3.crt/ s/./!&/' /etc/ca-certificates.conf \ && update-ca-certificates --verbose && ./vendor/bin/php-cs-fixer fix -v --dry-run --diff --show-progress=estimating; fi
     - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - if [ "$TEST_CMD" = "" ] ; then travis_retry composer install --prefer-dist --no-interaction ; fi
     - if [ "$TEST_CMD" != "" ] ; then ./tests/.travis/prepare_for_functional_tests.sh ; fi
-    # Execute Symfony command if injected into test matrix
-    - if [ "${SYMFONY_CMD}" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose --env-file=.env exec --user www-data app sh -c "bin/console ${SYMFONY_CMD}" ; fi
+    #A Execute Symfony command if injected into test matrix
+    - if [ "${SYMFONY_CMD}" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user www-data app sh -c "bin/console ${SYMFONY_CMD}" ; fi
 
 script:
     - if [ "$TEST_CMD" = "" ] ; then php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty ; fi
-    - if [ "$TEST_CMD" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose --env-file=.env exec --user www-data app sh -c "$TEST_CMD" ; fi
-    - if [ "$CHECK_CS" = "true" ]; then phpenv config-rm xdebug.ini && ./vendor/bin/php-cs-fixer fix -v --dry-run --diff --show-progress=estimating; fi
+    - if [ "$TEST_CMD" != "" ] ; then cd "$HOME/build/ezplatform"; docker-compose exec --user www-data app sh -c "$TEST_CMD" ; fi
+    - if [ "$CHECK_CS" = "true" ]; then phpenv config-rm xdebug.ini
 
 notifications:
   slack:

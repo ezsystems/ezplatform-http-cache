@@ -16,12 +16,6 @@ env:
 matrix:
     fast_finish: true
     include:
-        - name: "CS Check"
-          php: 7.3
-          env: CHECK_CS=true
-        - name: "PHP 7.3 PHPUnit & PHPSpec"
-          php: 7.3
-          env: UNIT_TEST=true
         - name: "PHP 7.3 Rest Functional Tests"
           php: 7.3
           env:
@@ -68,7 +62,7 @@ before_script:
     - travis_retry composer selfupdate
     - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - travis_retry composer install --prefer-dist --no-interaction
-    - if [ "${TEST_CMD}" != "" ] || [ "${REST_TEST}" != "" ] ; then ./vendor/bin/prepare_project_edition.sh oss ${PROJECT_VERSION} ${COMPOSE_FILE} ; fi
+    - ./vendor/bin/prepare_project_edition.sh oss ${PROJECT_VERSION} ${COMPOSE_FILE}
     # Execute Symfony command if injected into test matrix
     - if [ "${SYMFONY_CMD}" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user www-data app sh -c "APP_ENV=behat php bin/console ${SYMFONY_CMD}" ; fi
     - if [ "${ENABLE_SYMFONY_CACHE}" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user www-data app sh -c "patch -p1 -i vendor/ezsystems/ezplatform-http-cache/tests/SymfonyProxy/enable_symfony_proxy.patch" ; fi
@@ -76,10 +70,8 @@ before_script:
     - if [ "$SETUP_CMD" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user "$USER_RUNNING_TESTS" app sh -c "composer run post-install-cmd"  ; fi
 
 script:
-    - if [ "$UNIT_TEST" != "" ] ; then php vendor/bin/phpunit --coverage-text && php vendor/bin/phpspec run --format=pretty ; fi
     - if [ "$REST_TEST" != "" ] ; then cd "$HOME/build/project"; docker-compose exec app sh -c "cd vendor/ezsystems/ezplatform-rest && composer update && php ./vendor/bin/phpunit -c phpunit-integration-rest.xml" ; fi
     - if [ "$TEST_CMD" != "" ] ; then cd "$HOME/build/project"; docker-compose exec --user "$USER_RUNNING_TESTS" app sh -c "$TEST_CMD"  ; fi
-    - if [ "$CHECK_CS" != "" ]; then  ./vendor/bin/check_cs.sh; fi
 
 notifications:
   slack:

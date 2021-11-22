@@ -40,7 +40,7 @@
         ]
     },
     "extra": {
-        "_ezplatform_branch_for_behat_tests": "2.5",
+        "_ezplatform_branch_for_behat_tests": "fix-build",
         "branch-alias": {
             "dev-1.0": "1.0.x-dev",
             "dev-master": "2.0.x-dev",

@@ -27,7 +27,7 @@
         "toflar/psr6-symfony-http-cache-store": "^2.2"
     },
     "require-dev": {
-        "ibexa/ci-scripts": "^0.1@dev",
+        "ibexa/ci-scripts": "dev-fix-build as 0.1.x-dev",
         "ezsystems/doctrine-dbal-schema": "^1.0@dev",
         "phpunit/phpunit": "^8.5",
         "matthiasnoback/symfony-dependency-injection-test": "^4.1",

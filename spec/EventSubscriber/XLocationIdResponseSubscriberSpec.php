@@ -59,7 +59,6 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
         ResponseHeaderBag $responseHeaders
     ) {
         $responseHeaders->has('X-Location-Id')->willReturn(true);
-        $this->shouldTrigger(E_USER_DEPRECATED, 'X-Location-Id is no longer preferred way to tag content responses, see ezplatform-http-cache/docs/using_tags.md');
         $responseHeaders->get('X-Location-Id')->willReturn('123');
 
         $repository->sudo(new AnyValueToken())->willReturn(
@@ -90,7 +89,9 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
             $response->getWrappedObject()
         );
 
-        $this->rewriteCacheHeader($event);
+        $this
+            ->shouldTrigger(E_USER_DEPRECATED, 'X-Location-Id is no longer preferred way to tag content responses, see ezplatform-http-cache/docs/using_tags.md')
+            ->duringRewriteCacheHeader($event);
     }
 
     public function it_rewrite_header_on_not_found_location(
@@ -102,7 +103,6 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
         ResponseHeaderBag $responseHeaders
     ) {
         $responseHeaders->has('X-Location-Id')->willReturn(true);
-        $this->shouldTrigger(E_USER_DEPRECATED, 'X-Location-Id is no longer preferred way to tag content responses, see ezplatform-http-cache/docs/using_tags.md');
         $responseHeaders->get('X-Location-Id')->willReturn('123');
 
         $repository->sudo(new AnyValueToken())->willThrow(new NotFoundException('id', 123));
@@ -117,7 +117,9 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
             $response->getWrappedObject()
         );
 
-        $this->rewriteCacheHeader($event);
+        $this
+            ->shouldTrigger(E_USER_DEPRECATED, 'X-Location-Id is no longer preferred way to tag content responses, see ezplatform-http-cache/docs/using_tags.md')
+            ->duringRewriteCacheHeader($event);
     }
 
     public function it_rewrite_header_also_in_unofficial_plural_form_and_merges_exisitng_value(
@@ -129,7 +131,6 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
         ResponseHeaderBag $responseHeaders
     ) {
         $responseHeaders->has('X-Location-Id')->willReturn(true);
-        $this->shouldTrigger(E_USER_DEPRECATED, 'X-Location-Id is no longer preferred way to tag content responses, see ezplatform-http-cache/docs/using_tags.md');
         $responseHeaders->get('X-Location-Id')->willReturn('123,34');
 
         $repository->sudo(new AnyValueToken())->willThrow(new NotFoundException('id', 123));
@@ -144,6 +145,8 @@ class XLocationIdResponseSubscriberSpec extends ObjectBehavior
             $response->getWrappedObject()
         );
 
-        $this->rewriteCacheHeader($event);
+        $this
+            ->shouldTrigger(E_USER_DEPRECATED, 'X-Location-Id is no longer preferred way to tag content responses, see ezplatform-http-cache/docs/using_tags.md')
+            ->duringRewriteCacheHeader($event);
     }
 }

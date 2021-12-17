@@ -24,7 +24,7 @@
         "symfony/config": "^5.0",
         "psr/http-client": "^1.0",
         "php-http/curl-client": "^2.1",
-        "toflar/psr6-symfony-http-cache-store": "^2.2"
+        "toflar/psr6-symfony-http-cache-store": "^2.2 || ^3.0"
     },
     "require-dev": {
         "ibexa/ci-scripts": "^0.1@dev",

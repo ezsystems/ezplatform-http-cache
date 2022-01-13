@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UserContextListener extends BaseUserContextListener
 {
-    protected function cleanupHashLookupRequest(Request $hashLookupRequest, Request $originalRequest)
+    protected function cleanupHashLookupRequest(Request $hashLookupRequest, Request $originalRequest): void
     {
         parent::cleanupHashLookupRequest($hashLookupRequest, $originalRequest);
         // Embed the original request as we need it to match the SiteAccess.

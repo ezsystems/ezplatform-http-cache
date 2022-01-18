@@ -1,3 +1,9 @@
+@setup
+Feature: Set up the system to use Symfony Proxy
+
+  Scenario: Set up the system to use Symfony Proxy
+    Given I apply the patch
+"""
 From fe9ff7bd801f978cfc50aae0411bb3eefdd3059a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Marek=20Noco=C5=84?= <mnocon@users.noreply.github.com>
 Date: Wed, 7 Jul 2021 15:29:57 +0200
@@ -29,4 +35,4 @@ index 9982c21..03ac40a 100644
  };
 -- 
 2.30.0
-
+"""

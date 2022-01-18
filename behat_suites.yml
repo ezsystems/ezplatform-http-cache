@@ -32,9 +32,19 @@ httpCache:
                 - Ibexa\Behat\Browser\Context\ContentPreviewContext
         setup:
             paths:
-                - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/setup'
+                - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/setup/setup.feature'
             contexts:
                 - EzSystems\Behat\API\Context\TestContext
                 - EzSystems\Behat\API\Context\ContentTypeContext
                 - EzSystems\Behat\Core\Context\ConfigurationContext
                 - EzSystems\Behat\API\Context\ContentContext
+        setup-token:
+            paths:
+                - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/setup/invalidateToken.feature'
+            contexts:
+                - EzSystems\Behat\Core\Context\ConfigurationContext
+        setup-symfony-cache:
+            paths:
+                - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/setup/symfonyCache.feature'
+            contexts:
+                - EzSystems\Behat\Core\Context\FileContext

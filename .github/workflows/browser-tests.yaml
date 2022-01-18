@@ -1,0 +1,44 @@
+name: Browser tests
+
+on:
+    push:
+        branches:
+            - main
+            - '[0-9]+.[0-9]+'
+    pull_request: ~
+
+jobs:
+    symfony-cache:
+        name: "Symfony Cache integration tests"
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
+        with:
+            project-edition: 'oss'
+            project-version: '^3.3.x-dev'
+            test-suite: '--mode=standard --profile=httpCache --suite=symfonycache'
+            test-setup-phase-1:  '--mode=standard --profile=httpCache --suite=setup-symfony-cache'
+            test-setup-phase-2: '--mode=standard --profile=httpCache --suite=setup'
+        secrets:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    varnish:
+        name: "Varnish integration tests"
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
+        with:
+            project-edition: 'oss'
+            project-version: '^3.3.x-dev'
+            setup: "doc/docker/base-dev.yml:doc/docker/varnish.yml:doc/docker/selenium.yml"
+            test-suite:  '--mode=standard --profile=httpCache --suite=varnish'
+            test-setup-phase-1: '--mode=standard --profile=httpCache --suite=setup'
+        secrets:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    varnish-token:
+        name: "Varnish integration tests with invalidate token"
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
+        with:
+            project-edition: 'oss'
+            project-version: '^3.3.x-dev'
+            setup: "doc/docker/base-dev.yml:doc/docker/varnish.yml:doc/docker/selenium.yml"
+            test-suite:  '--mode=standard --profile=httpCache --suite=varnish'
+            test-setup-phase-1: '--mode=standard --profile=httpCache --suite=setup-token'
+            test-setup-phase-2: '--mode=standard --profile=httpCache --suite=setup'
+        secrets:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

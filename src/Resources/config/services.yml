@@ -92,6 +92,12 @@ services:
         tags:
             - { name: kernel.event_subscriber, priority: -100 }
 
+    Ibexa\HttpCache\EventSubscriber\AddContentLanguageHeaderSubscriber:
+        arguments:
+            - '%ibexa.http_cache.translation_aware.enabled%'
+        tags:
+            - { name: kernel.event_subscriber }
+
     ezplatform.http_cache.repository_tag_prefix:
         class: EzSystems\PlatformHttpCacheBundle\RepositoryTagPrefix
         # Use config resolver to be able to lazy load reading SA setting "repository" to avoid scope change issues

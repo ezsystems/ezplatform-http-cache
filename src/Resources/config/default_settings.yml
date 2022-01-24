@@ -2,3 +2,5 @@ parameters:
     ezplatform.http_cache.store.root: "%kernel.cache_dir%/http_cache"
     ezplatform.http_cache.invalidate_token.ttl: 86400
     ezplatform.http_cache.no_vary.routes: ['ezplatform.httpcache.invalidatetoken']
+    ibexa.http_cache.translation_aware.enabled.default_value: false
+    ibexa.http_cache.translation_aware.enabled: "%env(default:ibexa.http_cache.translation_aware.enabled.default_value:bool:HTTPCACHE_TRANSLATION_AWARE_ENABLED)%"

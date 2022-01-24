@@ -131,6 +131,11 @@ sub vcl_backend_response {
     ) {
         set beresp.do_gzip = true;
     }
+
+    // Modify xkey header to add translation suffix
+    if (beresp.http.xkey && beresp.http.x-lang) {
+        set beresp.http.xkey = beresp.http.xkey + " " + regsuball(beresp.http.xkey, "(\S+)", "\1" + beresp.http.x-lang);
+    }
 }
 
 // Handle purge
@@ -323,6 +328,7 @@ sub vcl_deliver {
     } else {
         // Remove tag headers when delivering to non debug client
         unset resp.http.xkey;
+        unset resp.http.x-lang;
         // Sanity check to prevent ever exposing the hash to a non debug client.
         unset resp.http.x-user-context-hash;
     }

@@ -39,7 +39,8 @@
     "autoload": {
         "psr-4": {
             "EzSystems\\PlatformHttpCacheBundle\\": "src",
-            "EzSystems\\PlatformHttpCacheBundle\\Tests\\": "tests"
+            "EzSystems\\PlatformHttpCacheBundle\\Tests\\": "tests",
+            "Ibexa\\HttpCache\\": "src"
         }
     },
     "scripts": {

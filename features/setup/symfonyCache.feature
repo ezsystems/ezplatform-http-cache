@@ -1,4 +1,4 @@
-@setup
+@setup @symfonyCache
 Feature: Set up the system to use Symfony Proxy
 
   Scenario: Set up the system to use Symfony Proxy

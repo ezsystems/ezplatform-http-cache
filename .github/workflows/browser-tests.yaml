@@ -30,6 +30,18 @@ jobs:
             test-setup-phase-1: '--mode=standard --profile=httpCache --suite=setup'
         secrets:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    varnish-translation-aware:
+        name: "Varnish integration tests (translation-aware)"
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
+        with:
+            project-edition: 'oss'
+            project-version: '^3.3.x-dev'
+            setup: "doc/docker/base-dev.yml:doc/docker/varnish.yml:doc/docker/selenium.yml"
+            test-suite:  '--mode=standard --profile=httpCache --suite=varnish-translation-aware'
+            test-setup-phase-1: '--mode=standard --profile=httpCache --suite=setup-translation-aware'
+            test-setup-phase-2: '--mode=standard --profile=httpCache --suite=setup'
+        secrets:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish-token:
         name: "Varnish integration tests with invalidate token"
         uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main

@@ -4,8 +4,17 @@ services:
         autowire: true
         public: false
 
+    EzSystems\PlatformHttpCacheBundle\EventSubscriber\CachePurge\ContentEventsSubscriber:
+        arguments:
+            $purgeClient: '@ezplatform.http_cache.purge_client'
+            $locationHandler: '@ezpublish.spi.persistence.cache.locationHandler'
+            $urlHandler: '@ezpublish.spi.persistence.cache.urlHandler'
+            $contentHandler: '@ezpublish.spi.persistence.cache.contentHandler'
+            $isTranslationAware: '%ibexa.http_cache.translation_aware.enabled%'
+
     EzSystems\PlatformHttpCacheBundle\EventSubscriber\CachePurge\:
         resource: '../../EventSubscriber/CachePurge/*'
+        exclude: '../../EventSubscriber/CachePurge/ContentEventsSubscriber.php'
         arguments:
             $purgeClient: '@ezplatform.http_cache.purge_client'
             $locationHandler: '@ezpublish.spi.persistence.cache.locationHandler'

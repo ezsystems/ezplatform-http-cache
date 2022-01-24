@@ -17,10 +17,36 @@ use eZ\Publish\API\Repository\Events\Content\PublishVersionEvent;
 use eZ\Publish\API\Repository\Events\Content\RevealContentEvent;
 use eZ\Publish\API\Repository\Events\Content\UpdateContentEvent;
 use eZ\Publish\API\Repository\Events\Content\UpdateContentMetadataEvent;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Values\ContentType\ContentType;
+use eZ\Publish\API\Repository\Values\ContentType\FieldDefinition;
+use eZ\Publish\SPI\Persistence\Content\Handler as ContentHandler;
+use eZ\Publish\SPI\Persistence\Content\Location\Handler as LocationHandler;
+use eZ\Publish\SPI\Persistence\URL\Handler as UrlHandler;
 use EzSystems\PlatformHttpCacheBundle\Handler\ContentTagInterface;
+use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 
 final class ContentEventsSubscriber extends AbstractSubscriber
 {
+    /** @var \eZ\Publish\SPI\Persistence\Content\Handler */
+    private $contentHandler;
+
+    /** @var bool */
+    private $isTranslationAware;
+
+    public function __construct(
+        PurgeClientInterface $purgeClient,
+        LocationHandler $locationHandler,
+        UrlHandler $urlHandler,
+        ContentHandler $contentHandler,
+        bool $isTranslationAware
+    ) {
+        parent::__construct($purgeClient, $locationHandler, $urlHandler);
+
+        $this->isTranslationAware = $isTranslationAware;
+        $this->contentHandler = $contentHandler;
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -93,12 +119,40 @@ final class ContentEventsSubscriber extends AbstractSubscriber
 
     public function onPublishVersionEvent(PublishVersionEvent $event): void
     {
-        $contentId = $event->getContent()->getVersionInfo()->getContentInfo()->id;
+        $content = $event->getContent();
+        $versionInfo = $content->getVersionInfo();
+        $contentType = $content->getContentType();
+        $contentId = $versionInfo->getContentInfo()->id;
 
         $tags = array_merge(
             $this->getContentTags($contentId),
             $this->getContentLocationsTags($contentId)
         );
+
+        $initialLanguageCode = $versionInfo->getInitialLanguage()->languageCode;
+        $mainLanguageCode = $versionInfo->getContentInfo()->mainLanguageCode;
+
+        $isNewTranslation = true;
+        try {
+            $prevVersionInfo = $this->contentHandler->loadVersionInfo($contentId, $event->getVersionInfo()->getContentInfo()->currentVersionNo);
+            $isNewTranslation = !in_array($initialLanguageCode, $prevVersionInfo->languageCodes);
+        } catch (NotFoundException $e) {
+        }
+
+        if (
+            !$this->isTranslationAware ||
+            $isNewTranslation ||
+            ($initialLanguageCode === $mainLanguageCode && !$this->isContentTypeFullyTranslatable($contentType))
+        ) {
+            $this->purgeClient->purge($tags);
+
+            return;
+        }
+
+        $tags = array_map(static function (string $tag) use ($initialLanguageCode): string {
+            return $tag . $initialLanguageCode;
+        }, $tags);
+        $tags[] = ContentTagInterface::CONTENT_ALL_TRANSLATIONS_PREFIX . $contentId;
 
         $this->purgeClient->purge($tags);
     }
@@ -131,5 +185,12 @@ final class ContentEventsSubscriber extends AbstractSubscriber
         $this->purgeClient->purge(
             $this->getContentTags($contentId)
         );
+    }
+
+    private function isContentTypeFullyTranslatable(ContentType $contentType): bool
+    {
+        return !$contentType->getFieldDefinitions()->any(static function (FieldDefinition $fieldDefinition): bool {
+            return !$fieldDefinition->isTranslatable;
+        });
     }
 }

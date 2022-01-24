@@ -1,7 +1,18 @@
 @setup
 Feature: Set system to desired state before tests
   
-  @admin
+  @APIUser:admin
+  Scenario: Set up the system to test translations
+    Given Language "Polish" with code "pol-PL" exists
+    And Language "French" with code "fre-FR" exists
+    And I set configuration to "admin_group" siteaccess
+      | key                          | value                |
+      | languages                    | eng-GB,pol-PL,fre-FR |
+    And I set configuration to "site" siteaccess
+      | key                          | value                |
+      | languages                    | eng-GB,pol-PL,fre-FR |
+
+  @APIUser:admin
   Scenario: Set up the system to test caching of subrequests
     Given I create a "embeddedContentType" Content Type in "Content" with "embeddedContentType" identifier
       | Field Type                | Name      | Identifier | Required | Searchable | Translatable |

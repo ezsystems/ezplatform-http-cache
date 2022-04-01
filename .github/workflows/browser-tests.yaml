@@ -10,7 +10,7 @@ on:
 jobs:
     symfony-cache:
         name: "Symfony Cache integration tests"
-        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@clear-cache-after-every-phase
         with:
             project-edition: 'oss'
             project-version: '^3.3.x-dev'
@@ -21,7 +21,7 @@ jobs:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish:
         name: "Varnish integration tests"
-        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@clear-cache-after-every-phase
         with:
             project-edition: 'oss'
             project-version: '^3.3.x-dev'
@@ -32,7 +32,7 @@ jobs:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish-translation-aware:
         name: "Varnish integration tests (translation-aware)"
-        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@clear-cache-after-every-phase
         with:
             project-edition: 'oss'
             project-version: '^3.3.x-dev'
@@ -44,7 +44,7 @@ jobs:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish-token:
         name: "Varnish integration tests with invalidate token"
-        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@clear-cache-after-every-phase
         with:
             project-edition: 'oss'
             project-version: '^3.3.x-dev'

@@ -71,3 +71,7 @@ jobs:
 
       - name: Run test suite
         run: composer run-script --timeout=600 test
+
+  integration-tests:
+      name: "REST integration tests"
+      uses: ezsystems/ezplatform-rest/.github/workflows/integration-tests-callable.yaml@1.3

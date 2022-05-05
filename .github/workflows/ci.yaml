@@ -47,3 +47,35 @@ jobs:
 
       - name: Run test suite
         run: composer run-script --timeout=600 test
+
+  functional: 
+    name: REST tests
+    runs-on: "ubuntu-20.04"
+    timeout-minutes: 10
+    env:
+      COMPOSE_FILE: "doc/docker/base-dev.yml:doc/docker/selenium.yml"
+      SYMFONY_ENV: "behat"
+      PHP_IMAGE: "ezsystems/php:7.2-v1"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP Action
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.1
+          coverage: none
+          extensions: pdo_sqlite, gd
+          tools: cs2pr
+
+      - name: Setup the project
+        run: ./tests/.travis/prepare_for_functional_tests.sh
+
+      - name: Run setup Command
+        run: | 
+          cd "$HOME/build/ezplatform"
+          docker-compose --env-file=.env exec -T --user www-data app sh -c "bin/console ez:behat:create-language 'pol-PL' 'Polish (polski)'"
+
+      - name: Run tests
+        run: |
+          cd "$HOME/build/ezplatform"
+          docker-compose --env-file=.env exec -T --user www-data app sh -c "bin/phpunit -v vendor/ezsystems/ezpublish-kernel/eZ/Bundle/EzPublishRestBundle/Tests/Functional"

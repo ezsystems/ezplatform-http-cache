@@ -5,7 +5,7 @@
 // https://github.com/ezsystems/ezplatform/blob/master/doc/docker/entrypoint/varnish/parameters.vcl
 
 backend ezplatform {
-    .host = "127.0.0.1";
+    .host = "web"; // Replace with hostname/ip of the application server
     .port = "80";
 }
 
@@ -19,10 +19,12 @@ backend ezplatform {
 acl invalidators {
     "127.0.0.1";
     "192.168.0.0"/16;
+    "172.16.0.0"/12;
 }
 
 // ACL for debuggers IP
 acl debuggers {
     "127.0.0.1";
     "192.168.0.0"/16;
+    "172.16.0.0"/12;
 }

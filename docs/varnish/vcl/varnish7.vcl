@@ -179,10 +179,10 @@ sub ez_purge {
 sub ez_purge_acl {
     if (req.http.x-invalidate-token) {
         if (req.http.x-invalidate-token != req.http.x-backend-invalidate-token) {
-            return (synth(405, "Method not allowed"));
+            return (synth(405, "Method not allowed (invalid token)"));
         }
     } else if  (!client.ip ~ invalidators) {
-        return (synth(405, "Method not allowed"));
+        return (synth(405, "Method not allowed for IP " + client.ip));
     }
 }
 

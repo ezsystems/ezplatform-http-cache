@@ -169,7 +169,7 @@ class TagAwareStore extends Store implements RequestAwarePurger
      */
     protected function purgeAllContent()
     {
-        $this->getFilesystem()->remove((new Finder())->in($this->root));
+        $this->getFilesystem()->remove((new Finder())->in($this->root)->depth(0));
     }
 
     /**

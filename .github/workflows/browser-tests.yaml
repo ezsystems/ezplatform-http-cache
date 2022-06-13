@@ -39,6 +39,7 @@ jobs:
             setup: "doc/docker/base-dev.yml:doc/docker/varnish7.yml:doc/docker/selenium.yml"
             test-suite:  '--mode=standard --profile=httpCache --suite=varnish'
             test-setup-phase-1: '--mode=standard --profile=httpCache --suite=setup'
+            ci-scripts-branch: 'IBX-3014'
         secrets:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish-translation-aware:

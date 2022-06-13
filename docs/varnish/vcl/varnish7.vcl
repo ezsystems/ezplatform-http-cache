@@ -333,4 +333,3 @@ sub vcl_deliver {
         unset resp.http.x-user-context-hash;
     }
 }
-

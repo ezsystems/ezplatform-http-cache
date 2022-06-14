@@ -2,6 +2,12 @@
     "recipesEndpoint": "",
     "packages": [
         {
+            "requirement": "dev-varnish7-debug as 8.3.x-dev",
+            "repositoryUrl": "https://github.com/ezsystems/BehatBundle",
+            "package": "ezsystems/behatbundle",
+            "shouldBeAddedAsVCS": false
+        },
+        {
             "requirement": "dev-IBX-3014 as 0.1.x-dev",
             "repositoryUrl": "https://github.com/ibexa/docker",
             "package": "ibexa/docker",

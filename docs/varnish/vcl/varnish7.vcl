@@ -295,7 +295,7 @@ sub vcl_deliver {
         }
     }
 
-    if (client.ip ~ debuggers) {
+    //if (client.ip ~ debuggers) {
         // Add X-Cache header if debugging is enabled
         if (obj.hits > 0) {
             set resp.http.X-Cache = "HIT";
@@ -304,11 +304,11 @@ sub vcl_deliver {
         } else {
             set resp.http.X-Cache = "MISS";
         }
-    } else {
+    //} else {
         // Remove tag headers when delivering to non debug client
         unset resp.http.xkey;
         unset resp.http.x-lang;
         // Sanity check to prevent ever exposing the hash to a non debug client.
         unset resp.http.x-user-context-hash;
-    }
+    //}
 }

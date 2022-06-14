@@ -1,5 +1,5 @@
 // Varnish VCL for:
-// - Varnish 6.0 or higher (6.0LTS recommended, and is what we mainly test against)
+// - Varnish 7.1 or higher
 //   - Varnish xkey vmod (via varnish-modules package 0.10.2 or higher, or via Varnish Plus)
 // - eZ Platform 3.x or higher with ezplatform-http-cache (this) bundle
 //
@@ -77,28 +77,7 @@ sub vcl_recv {
 
 // Called when a cache lookup is successful. The object being hit may be stale: It can have a zero or negative ttl with only grace or keep time left.
 sub vcl_hit {
-   if (obj.ttl >= 0s) {
-       // A pure unadulterated hit, deliver it
-       return (deliver);
-   }
-
-   if (obj.ttl + obj.grace > 0s) {
-       // Object is in grace, logic below in this block is what differs from default:
-       // https://varnish-cache.org/docs/5.2/users-guide/vcl-grace.html#grace-mode
-       if (!std.healthy(req.backend_hint)) {
-           // Service is unhealthy, deliver from cache
-           return (deliver);
-       } else if (req.http.cookie) {
-           // Request it by a user with session, refresh the cache to avoid issues for editors and forum users
-           return (miss);
-       }
-
-       // By default deliver cache, automatically triggers a background fetch
-       return (deliver);
-   }
-
-   // fetch & deliver once we get the result
-   return (miss);
+   return (pass);
 }
 
 // Called when the requested object has been retrieved from the backend

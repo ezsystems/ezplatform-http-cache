@@ -56,12 +56,12 @@ sub vcl_recv {
         if (req.http.cookie == "") {
             // If there are no more cookies, remove the header to get page cached.
             unset req.http.cookie;
-        } else {
-            if (req.http.cookie) {
-                // Request it by a user with session, miss the cache to avoid issues for editors and forum users
-                set req.hash_always_miss = true;
-            }
         }
+    }
+
+    if (req.restarts > 0 && req.http.cookie) {
+        // Request it by a user with session, miss the cache to avoid issues for editors and forum users
+        set req.hash_always_miss = true;
     }
 
     // Do a standard lookup on assets (these don't vary by user context hash)
@@ -78,6 +78,17 @@ sub vcl_recv {
 
     // If it passes all these tests, do a lookup anyway.
     return (hash);
+}
+
+sub vcl_hit {
+
+    if (req.restarts == 0
+        && req.http.cookie) {
+        // Request it by a user with session, miss the cache to avoid issues for editors and forum users
+        return (restart);
+    }
+
+    return (deliver);
 }
 
 // Called when the requested object has been retrieved from the backend

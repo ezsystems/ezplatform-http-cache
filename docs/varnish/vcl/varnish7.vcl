@@ -81,6 +81,10 @@ sub vcl_recv {
 }
 
 sub vcl_hit {
+   if (obj.ttl >= 0s) {
+       // A pure unadulterated hit, deliver it
+       return (deliver);
+   }
 
     if (req.restarts == 0
         && req.http.cookie) {

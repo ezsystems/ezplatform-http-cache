@@ -75,6 +75,16 @@ sub vcl_recv {
     return (hash);
 }
 
+sub vcl_hit {
+
+    if (req.http.cookie) {
+           // Request it by a user with session, refresh the cache to avoid issues for editors and forum users
+           return (pass);
+    }
+
+    return (deliver);
+}
+
 // Called when the requested object has been retrieved from the backend
 sub vcl_backend_response {
 

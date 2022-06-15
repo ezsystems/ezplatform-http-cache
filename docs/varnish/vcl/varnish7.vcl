@@ -56,6 +56,11 @@ sub vcl_recv {
         if (req.http.cookie == "") {
             // If there are no more cookies, remove the header to get page cached.
             unset req.http.cookie;
+        } else {
+            if (req.http.cookie) {
+                // Request it by a user with session, miss the cache to avoid issues for editors and forum users
+                set req.hash_always_miss = true;
+            }
         }
     }
 
@@ -73,16 +78,6 @@ sub vcl_recv {
 
     // If it passes all these tests, do a lookup anyway.
     return (hash);
-}
-
-sub vcl_hit {
-
-    if (req.http.cookie) {
-           // Request it by a user with session, refresh the cache to avoid issues for editors and forum users
-           return (pass);
-    }
-
-    return (deliver);
 }
 
 // Called when the requested object has been retrieved from the backend
@@ -163,10 +158,10 @@ sub ez_purge {
 sub ez_purge_acl {
     if (req.http.x-invalidate-token) {
         if (req.http.x-invalidate-token != req.http.x-backend-invalidate-token) {
-            return (synth(405, "Method not allowed (invalid token)"));
+            return (synth(405, "Method not allowed"));
         }
     } else if  (!client.ip ~ invalidators) {
-        return (synth(405, "Method not allowed for IP " + client.ip));
+        return (synth(405, "Method not allowed"));
     }
 }
 

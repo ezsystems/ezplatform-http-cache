@@ -75,11 +75,6 @@ sub vcl_recv {
     return (hash);
 }
 
-// Called when a cache lookup is successful. The object being hit may be stale: It can have a zero or negative ttl with only grace or keep time left.
-sub vcl_hit {
-   return (deliver);
-}
-
 // Called when the requested object has been retrieved from the backend
 sub vcl_backend_response {
 

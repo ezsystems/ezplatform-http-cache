@@ -59,11 +59,6 @@ sub vcl_recv {
         }
     }
 
-    if (req.restarts > 0 && req.http.cookie) {
-        // Request it by a user with session, miss the cache to avoid issues for editors and forum users
-        set req.hash_always_miss = true;
-    }
-
     // Do a standard lookup on assets (these don't vary by user context hash)
     // Note that file extension list below is not extensive, so consider completing it to fit your needs.
     if (req.url ~ "\.(css|js|gif|jpe?g|bmp|png|tiff?|ico|img|tga|wmf|svg|swf|ico|mp3|mp4|m4a|ogg|mov|avi|wmv|zip|gz|pdf|ttf|eot|wof)$") {
@@ -86,16 +81,28 @@ sub vcl_hit {
        return (deliver);
    }
 
-    return (deliver);
+   if (obj.ttl + obj.grace > 0s) {
+       // Object is in grace, logic below in this block is what differs from default:
+       // https://varnish-cache.org/docs/5.2/users-guide/vcl-grace.html#grace-mode
+       if (!std.healthy(req.backend_hint)) {
+           // Service is unhealthy, deliver from cache
+           return (deliver);
+       } else if (req.restarts == 0 && req.http.cookie) {
+           // Request it by a user with session, refresh the cache to avoid issues for editors and forum users
+           set req.hash_always_miss = true;
+           return (restart);
+       }
+
+       // By default deliver cache, automatically triggers a background fetch
+       return (deliver);
+   }
+
+   // fetch & deliver once we get the result
+   set req.hash_always_miss = true;
+   return (restart);
 }
 
 sub vcl_miss {
-    if (req.restarts == 0
-        && req.http.cookie) {
-        // Request it by a user with session, miss the cache to avoid issues for editors and forum users
-        return (restart);
-    }
-
     return (fetch);
 }
 

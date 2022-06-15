@@ -86,13 +86,17 @@ sub vcl_hit {
        return (deliver);
    }
 
+    return (deliver);
+}
+
+sub vcl_miss {
     if (req.restarts == 0
         && req.http.cookie) {
         // Request it by a user with session, miss the cache to avoid issues for editors and forum users
         return (restart);
     }
 
-    return (deliver);
+    return (fetch);
 }
 
 // Called when the requested object has been retrieved from the backend

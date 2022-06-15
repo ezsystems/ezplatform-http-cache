@@ -81,6 +81,8 @@ sub vcl_hit {
        return (deliver);
    }
 
+   // Note: this block will always execute on Varnish 7
+   // See: https://varnish-cache.org/docs/7.1/users-guide/vcl-grace.html#the-effect-of-grace-and-keep
    if (obj.ttl + obj.grace > 0s) {
        // Object is in grace, logic below in this block is what differs from default:
        // https://varnish-cache.org/docs/5.2/users-guide/vcl-grace.html#grace-mode
@@ -122,7 +124,10 @@ sub vcl_backend_response {
     }
 
     // Make Varnish keep all objects for up to 1 hour beyond their TTL, see vcl_hit for Request logic on this
+    // This will make Varnish to refresh objects in cache after 1 hour
+    // The total time object can be in cache is 70 minutes (grace + keep time)
     set beresp.grace = 1h;
+    set beresp.keep = 10m;
 
     // Compressing the content
     if (beresp.http.Content-Type ~ "application/javascript"

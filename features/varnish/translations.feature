@@ -36,7 +36,7 @@ Feature: As an site administrator I want my pages to be cached using Varnish
             | admin     | publish  | ItemPolskiAdmin | ItemEnglishAdmin  |
             | anonymous |          | ItemPolskiAnon  | ItemEnglishAnon   |
 
-  @APIUser:admin @javascript @translationNotAware
+  @APIUser:admin @translationNotAware
   Scenario: Main translation cache is purged when a fallback translation is edited
     Given I am viewing the pages on siteaccess "site" as "admin" with password "publish"
     And I create "embeddedContentType" Content items in root in "eng-GB"
@@ -68,7 +68,7 @@ Feature: As an site administrator I want my pages to be cached using Varnish
     And I should see "EmbeddedTranslationEnglish"
     And the action took longer than 5 seconds
 
-  @APIUser:admin @javascript @translationAware
+  @APIUser:admin @translationAware
   Scenario: Main translation cache is not purged when a fallback translation is edited
     Given I am viewing the pages on siteaccess "site" as "admin" with password "publish"
     And I create "embeddedContentType" Content items in root in "eng-GB"

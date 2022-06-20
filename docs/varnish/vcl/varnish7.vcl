@@ -46,7 +46,7 @@ sub vcl_recv {
     }
 
     // Remove all cookies besides Session ID, as JS tracker cookies and so will make the responses effectively un-cached
-    if (req.http.cookie) {
+    if (req.restarts == 0 && req.http.cookie) {
         set req.http.cookie = ";" + req.http.cookie;
         set req.http.cookie = regsuball(req.http.cookie, "; +", ";");
         set req.http.cookie = regsuball(req.http.cookie, ";(eZSESSID[^=]*)=", "; \1=");
@@ -57,6 +57,8 @@ sub vcl_recv {
             // If there are no more cookies, remove the header to get page cached.
             unset req.http.cookie;
         }
+    } else {
+        set req.hash_always_miss = true;
     }
 
     // Do a standard lookup on assets (these don't vary by user context hash)
@@ -73,39 +75,6 @@ sub vcl_recv {
 
     // If it passes all these tests, do a lookup anyway.
     return (hash);
-}
-
-sub vcl_hit {
-   if (obj.ttl >= 0s) {
-       // A pure unadulterated hit, deliver it
-       return (deliver);
-   }
-
-   // Note: this block will always execute on Varnish 7
-   // See: https://varnish-cache.org/docs/7.1/users-guide/vcl-grace.html#the-effect-of-grace-and-keep
-   if (obj.ttl + obj.grace > 0s) {
-       // Object is in grace, logic below in this block is what differs from default:
-       // https://varnish-cache.org/docs/5.2/users-guide/vcl-grace.html#grace-mode
-       if (!std.healthy(req.backend_hint)) {
-           // Service is unhealthy, deliver from cache
-           return (deliver);
-       } else if (req.restarts == 0 && req.http.cookie) {
-           // Request it by a user with session, refresh the cache to avoid issues for editors and forum users
-           set req.hash_always_miss = true;
-           return (restart);
-       }
-
-       // By default deliver cache, automatically triggers a background fetch
-       return (deliver);
-   }
-
-   // fetch & deliver once we get the result
-   set req.hash_always_miss = true;
-   return (restart);
-}
-
-sub vcl_miss {
-    return (fetch);
 }
 
 // Called when the requested object has been retrieved from the backend

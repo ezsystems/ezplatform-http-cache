@@ -46,7 +46,7 @@ sub vcl_recv {
     }
 
     // Remove all cookies besides Session ID, as JS tracker cookies and so will make the responses effectively un-cached
-    if (req.restarts == 0 && req.http.cookie) {
+    if (req.http.cookie) {
         set req.http.cookie = ";" + req.http.cookie;
         set req.http.cookie = regsuball(req.http.cookie, "; +", ";");
         set req.http.cookie = regsuball(req.http.cookie, ";(eZSESSID[^=]*)=", "; \1=");
@@ -57,8 +57,6 @@ sub vcl_recv {
             // If there are no more cookies, remove the header to get page cached.
             unset req.http.cookie;
         }
-    } else {
-        set req.hash_always_miss = true;
     }
 
     // Do a standard lookup on assets (these don't vary by user context hash)

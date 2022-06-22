@@ -75,14 +75,6 @@ sub vcl_recv {
     return (hash);
 }
 
-sub vcl_miss {
-    if (req.http.cookie) {
-        return (pass);
-    }
-    
-    return (fetch);
-}
-
 // Called when the requested object has been retrieved from the backend
 sub vcl_backend_response {
 

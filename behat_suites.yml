@@ -3,8 +3,6 @@ httpCache:
         symfonycache:
             paths:
                 - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/symfony'
-            filters:
-                tags: '@symfonycache'
             contexts:
                 - EzSystems\Behat\API\Context\TestContext
                 - EzSystems\Behat\API\Context\ContentTypeContext
@@ -15,11 +13,11 @@ httpCache:
                 - Ibexa\Behat\Browser\Context\AuthenticationContext
                 - Behat\MinkExtension\Context\MinkContext
                 - Ibexa\Behat\Browser\Context\ContentPreviewContext
-        varnish:
+        varnish6:
             paths:
                 - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/varnish'
             filters:
-                tags: '@varnish&&~@translationAware' 
+                tags: '@varnish6&&~@translationAware' 
             contexts:
                 - EzSystems\Behat\API\Context\TestContext
                 - EzSystems\Behat\API\Context\ContentTypeContext
@@ -30,11 +28,41 @@ httpCache:
                 - Ibexa\Behat\Browser\Context\AuthenticationContext
                 - Behat\MinkExtension\Context\MinkContext
                 - Ibexa\Behat\Browser\Context\ContentPreviewContext
-        varnish-translation-aware:
+        varnish6-translation-aware:
             paths:
                 - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/varnish'
             filters:
-                tags: '@varnish&&~@translationNotAware' 
+                tags: '@varnish6&&~@translationNotAware' 
+            contexts:
+                - EzSystems\Behat\API\Context\TestContext
+                - EzSystems\Behat\API\Context\ContentTypeContext
+                - EzSystems\Behat\Core\Context\TimeContext
+                - EzSystems\Behat\Core\Context\ConfigurationContext
+                - EzSystems\Behat\API\Context\ContentContext
+                - Ibexa\Behat\Browser\Context\BrowserContext
+                - Ibexa\Behat\Browser\Context\AuthenticationContext
+                - Behat\MinkExtension\Context\MinkContext
+                - Ibexa\Behat\Browser\Context\ContentPreviewContext
+        varnish7:
+            paths:
+                - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/varnish'
+            filters:
+                tags: '@varnish7&&~@translationAware' 
+            contexts:
+                - EzSystems\Behat\API\Context\TestContext
+                - EzSystems\Behat\API\Context\ContentTypeContext
+                - EzSystems\Behat\Core\Context\TimeContext
+                - EzSystems\Behat\Core\Context\ConfigurationContext
+                - EzSystems\Behat\API\Context\ContentContext
+                - Ibexa\Behat\Browser\Context\BrowserContext
+                - Ibexa\Behat\Browser\Context\AuthenticationContext
+                - Behat\MinkExtension\Context\MinkContext
+                - Ibexa\Behat\Browser\Context\ContentPreviewContext
+        varnish7-translation-aware:
+            paths:
+                - '%paths.base%/vendor/ezsystems/ezplatform-http-cache/features/varnish'
+            filters:
+                tags: '@varnish7&&~@translationNotAware' 
             contexts:
                 - EzSystems\Behat\API\Context\TestContext
                 - EzSystems\Behat\API\Context\ContentTypeContext

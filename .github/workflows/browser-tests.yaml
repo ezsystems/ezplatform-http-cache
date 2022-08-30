@@ -32,7 +32,7 @@ jobs:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish7:
         name: "Varnish 7 integration tests"
-        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@test-varnish-7
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
         with:
             project-edition: 'oss'
             project-version: '^3.3.x-dev'
@@ -55,7 +55,7 @@ jobs:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish7-translation-aware:
         name: "Varnish 7 integration tests (translation-aware)"
-        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@test-varnish-7
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
         with:
             project-edition: 'oss'
             project-version: '^3.3.x-dev'
@@ -79,7 +79,7 @@ jobs:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish7-token:
         name: "Varnish 7 integration tests with invalidate token"
-        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@test-varnish-7
+        uses: ibexa/gh-workflows/.github/workflows/browser-tests.yml@main
         with:
             project-edition: 'oss'
             project-version: '^3.3.x-dev'

@@ -39,7 +39,6 @@ jobs:
             setup: "doc/docker/base-dev.yml:doc/docker/varnish7.yml:doc/docker/selenium.yml"
             test-suite:  '--mode=standard --profile=httpCache --suite=varnish7'
             test-setup-phase-1: '--mode=standard --profile=httpCache --suite=setup'
-            ci-scripts-branch: 'IBX-3014'
         secrets:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish6-translation-aware:
@@ -64,7 +63,6 @@ jobs:
             test-suite:  '--mode=standard --profile=httpCache --suite=varnish7-translation-aware'
             test-setup-phase-1: '--mode=standard --profile=httpCache --suite=setup-translation-aware'
             test-setup-phase-2: '--mode=standard --profile=httpCache --suite=setup'
-            ci-scripts-branch: 'IBX-3014'
         secrets:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     varnish6-token:
@@ -89,6 +87,5 @@ jobs:
             test-suite:  '--mode=standard --profile=httpCache --suite=varnish7'
             test-setup-phase-1: '--mode=standard --profile=httpCache --suite=setup-token'
             test-setup-phase-2: '--mode=standard --profile=httpCache --suite=setup'
-            ci-scripts-branch: 'IBX-3014'
         secrets:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

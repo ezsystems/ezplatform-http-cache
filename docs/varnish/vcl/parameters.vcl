@@ -5,7 +5,7 @@
 // https://github.com/ezsystems/ezplatform/blob/master/doc/docker/entrypoint/varnish/parameters.vcl
 
 backend ezplatform {
-    .host = "127.0.0.1";
+    .host = "127.0.0.1"; // Replace with hostname/ip of the application server
     .port = "80";
 }
 

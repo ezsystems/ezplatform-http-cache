@@ -38,7 +38,7 @@ class ConditionallyRemoveVaryHeaderListener implements EventSubscriberInterface
     public function __construct(array $routes, array $userIdentifierHeaders = ['Cookie', 'Authorization'])
     {
         $this->routes = $routes;
-        $this->userIdentifierHeaders = $userIdentifierHeaders;
+        $this->userIdentifierHeaders = array_map('strtolower', $userIdentifierHeaders);
     }
 
     /**
@@ -48,7 +48,7 @@ class ConditionallyRemoveVaryHeaderListener implements EventSubscriberInterface
      */
     public function onKernelResponse(ResponseEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST != $event->getRequestType()) {
+        if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType()) {
             return;
         }
 
@@ -57,10 +57,13 @@ class ConditionallyRemoveVaryHeaderListener implements EventSubscriberInterface
         }
 
         $response = $event->getResponse();
-        $varyHeaders = $response->headers->all('vary');
+        $varyHeaders = array_map('strtolower', $response->headers->all('vary'));
 
         foreach ($this->userIdentifierHeaders as $removableVary) {
-            unset($varyHeaders[array_search(strtolower($removableVary), [$varyHeaders])]);
+            $key = array_search($removableVary, $varyHeaders);
+            if ($key !== false) {
+                unset($varyHeaders[$key]);
+            }
         }
         $response->setVary($varyHeaders, true);
     }

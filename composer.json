@@ -43,6 +43,11 @@
             "Ibexa\\HttpCache\\": "src"
         }
     },
+    "autoload-dev": {
+        "autoload-dev": {
+            "Ibexa\\Tests\\Bundle\\HttpCache\\": "tests/bundle/"
+        }
+    },
     "scripts": {
         "fix-cs": "php-cs-fixer fix -v --show-progress=estimating",
         "unit": "phpunit -c phpunit.xml",

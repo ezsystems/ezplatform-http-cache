@@ -2,9 +2,9 @@
     "recipesEndpoint": "",
     "packages": [
         {
-            "requirement": "dev-upgrade-varnish as 3.3.x-dev",
-            "repositoryUrl": "https://github.com/ibexa/docker",
-            "package": "ibexa/docker",
+            "requirement": "dev-mink-package-upgrades as 8.3.x-dev",
+            "repositoryUrl": "https://github.com/ezsystems/BehatBundle",
+            "package": "ezsystems/behatbundle",
             "shouldBeAddedAsVCS": false
         }
     ]

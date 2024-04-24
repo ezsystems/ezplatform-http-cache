@@ -3,15 +3,15 @@ eZ Platform Varnish configuration
 
 Prerequisites
 -------------
-* A working Varnish 5.1 and higher _(6.0LTS recommended)_
+* A working Varnish 6.0 or higher _(6.0LTS recommended)_
   * With 'xkey' VMOD, correct version is provided with `varnish-modules` 0.10.2 or higher
-* Varnish Plus comes with xkey out of the box and can also be used.
+* Varnish Enterprise comes with xkey out of the box and can also be used.
 
 Recommended VCL base files
 --------------------------
 For Varnish to work properly with eZ, you'll need to use the provided configuration:
 
-* [eZ Platform 2.5LTs optimized Varnish 5.1+ VCL](vcl/varnish5.vcl)
+* [eZ Platform 2.5LTs optimized Varnish 6.0+ VCL](vcl/varnish6.vcl)
 
 For tuning the VCL further to you needs, see the following relevant examples:
 - [FOSHttpCache documentation](https://foshttpcache.readthedocs.io/en/latest/varnish-configuration.html)

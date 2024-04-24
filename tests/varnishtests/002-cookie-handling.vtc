@@ -1,0 +1,22 @@
+varnishtest "Simple request"
+
+
+server s1 {
+    rxreq
+    expect req.http.cookie == "eZSESSID=session"
+    txresp
+} -start
+
+
+shell {
+    sed "s/.host =.*/.host = \"${s1_addr}\";/;s/.port = .*/.port = \"${s1_port}\";/" ${pwd}/docs/varnish/vcl/parameters.vcl > ${tmpdir}/parameters.vcl
+    echo "${s1_addr} ${s1_port}"
+} -run
+
+varnish v1 -arg "-p vcl_path=${tmpdir} -f $PWD/docs/varnish/vcl/${vclfile}" -start
+
+client c1 {
+    txreq -hdr "Cookie: unrelated_cookie=something; eZSESSID=session; another_cooke=something_else;"
+    rxresp
+} -run
+

@@ -8,12 +8,15 @@
 vcl 4.1;
 import std;
 import xkey;
+import cookie;
 
 // For customizing your backend and acl rules see parameters.vcl
-include "/etc/varnish/parameters.vcl";
+include "parameters.vcl";
 
 // Called at the beginning of a request, after the complete request has been received
 sub vcl_recv {
+    // debug header, unset to make sure it's empty:
+    unset req.http.x-cache;
 
     // Set the backend
     set req.backend_hint = ezplatform;
@@ -47,11 +50,9 @@ sub vcl_recv {
 
     // Remove all cookies besides Session ID, as JS tracker cookies and so will make the responses effectively un-cached
     if (req.http.cookie) {
-        set req.http.cookie = ";" + req.http.cookie;
-        set req.http.cookie = regsuball(req.http.cookie, "; +", ";");
-        set req.http.cookie = regsuball(req.http.cookie, ";(eZSESSID[^=]*)=", "; \1=");
-        set req.http.cookie = regsuball(req.http.cookie, ";[^ ][^;]*", "");
-        set req.http.cookie = regsuball(req.http.cookie, "^[; ]+|[; ]+$", "");
+        cookie.parse(req.http.cookie);
+        cookie.keep("eZSESSID");
+        set req.http.cookie = cookie.get_string();
 
         if (req.http.cookie == "") {
             // If there are no more cookies, remove the header to get page cached.
@@ -73,6 +74,27 @@ sub vcl_recv {
 
     // If it passes all these tests, do a lookup anyway.
     return (hash);
+}
+
+// Set debug header to the appropriate value:
+sub vcl_hit {
+    set req.http.x-cache = "hit";
+}
+
+sub vcl_miss {
+    set req.http.x-cache = "miss";
+}
+
+sub vcl_pass {
+    set req.http.x-cache = "pass";
+}
+
+sub vcl_pipe {
+    set req.http.x-cache = "pipe uncacheable";
+}
+
+sub vcl_synth {
+    set resp.http.x-cache = "synth synth";
 }
 
 // Called when the requested object has been retrieved from the backend
@@ -293,15 +315,18 @@ sub vcl_deliver {
         }
     }
 
+    if (obj.uncacheable) {
+        set req.http.x-cache = req.http.x-cache + " uncacheable" ;
+    } else {
+        set req.http.x-cache = req.http.x-cache + " cached" ;
+    }
     if (client.ip ~ debuggers) {
-        // Add X-Cache header if debugging is enabled
-        if (obj.hits > 0) {
-            set resp.http.X-Cache = "HIT";
+        // Add X-Cache (and other) debug header(s) if debugging is enabled
+        if (req.http.x-cache ~ "^hit") {
             set resp.http.X-Cache-Hits = obj.hits;
             set resp.http.X-Cache-TTL = obj.ttl;
-        } else {
-            set resp.http.X-Cache = "MISS";
         }
+        set resp.http.x-cache = req.http.x-cache;
     } else {
         // Remove tag headers when delivering to non debug client
         unset resp.http.xkey;
